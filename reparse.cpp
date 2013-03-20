@@ -7,14 +7,16 @@ int TRAIN = 0;
 class PhraseNode {
     int id;
   //int position;
-    int child_num_id;
-    int child_orientation;
-    int child_num_left;
-    int child_num_right;
+  int child_num;
+  int child_num_id;
+  // int child_orientation;
+  //int child_num_left;
+  //int child_num_right;
     string token; 
     PhraseNode *parent;
-    deque<PhraseNode *> left_children;
-    deque<PhraseNode *> right_children;
+    deque<PhraseNode *> children;
+     deque<PhraseNode *> left_children;
+  // deque<PhraseNode *> right_children;
   public:
     friend std::ostream& operator<<(std::ostream&, const PhraseNode&);
     friend class ShiftReduceParser;
@@ -40,16 +42,16 @@ class ShiftReduceParser {
     istringstream iss;
   //int words;
   public:
-    void ShiftReduceParser();
+    ShiftReduceParser();
     void readIn(string sentence);
     void shift(); 
     void reduce(string);
-    void unshift();
+  //void unshift();
     void parse(string);
     void printStack();
 };
 
-void ShiftReduceParser::ShiftReduceParser() {
+ShiftReduceParser::ShiftReduceParser() {
   //words = 0;
 }
 
@@ -97,7 +99,7 @@ void ShiftReduceParser::reduce(string direction) {
   printStack();
 }
 
-void ShiftReduceParser::unshift() {
+/*void ShiftReduceParser::unshift() {
   my_queue.push_front(my_stack.back());
   my_stack.pop_back();
 
@@ -145,7 +147,7 @@ void ShiftReduceParser::unreduce(string direction) {
   }
 
   printStack();
-}
+ }*/
 
 void ShiftReduceParser::parse(string sentence) {
   readIn(sentence);
@@ -163,14 +165,14 @@ void ShiftReduceParser::parse(string sentence) {
       cin >> direction;
       reduce(direction);
     }
-    else if (command == "unshift") {
+    /* else if (command == "unshift") {
       unshift();
     }
     else if (command == "unreduce") {
       cout << "left or right:" << flush;
       cin >> direction;
       unreduce(direction);
-    }
+      }*/
   }
 }
 
@@ -192,6 +194,7 @@ int main(int argc, char* argv[])
 {
   ShiftReduceParser parser;
 
+  /*
   // read options                                                                     
   ksopts opt( ":threads 1 :maxst 15 :numactcut 3 :actcut 0 :b 0.01 :m tmp.mod :it 400 t 0 :n 1 :h 0 :f 0 :i 1.0 help 0", argc, argv );
   opt.optset( "t", TRAIN, "Training mode.  The parser runs in parsing mode by default" );
@@ -306,7 +309,7 @@ int main(int argc, char* argv[])
     q.back().link = -1;
     q.back().label = "*NONE*";
   }
-
+  */
   string sentence; 
   for (int i = 1; i < argc; i++) {
     sentence = argv[i];
