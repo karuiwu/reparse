@@ -60,6 +60,10 @@ public class OracleTest {
 		}
 	}
 	
+	/**
+	 * Finds the parser actions with the minimum cost
+	 * @return
+	 */
 	public ArrayList<Integer> nextAction() {
 		System.out.println("Cost of Left-Arc: " + costOfLeftArc());
 		System.out.println("Cost of Right-Arc: " + costOfRightArc());
@@ -95,9 +99,11 @@ public class OracleTest {
 				cost++;
 			}
 			ArrayList<Integer> rightChildrenIDs = dependencies.getRightChildren(currentSentenceNum).get(topOfStack);
-			ArrayList<Integer> rightChildrenInBuffer = (ArrayList<Integer>) buffer.clone();
-			rightChildrenInBuffer.retainAll(rightChildrenIDs);
-			cost += rightChildrenInBuffer.size();
+			if (rightChildrenIDs != null) {
+				ArrayList<Integer> rightChildrenInBuffer = (ArrayList<Integer>) buffer.clone();
+				rightChildrenInBuffer.retainAll(rightChildrenIDs);
+				cost += rightChildrenInBuffer.size();
+			}
 			
 			return cost;
 		}
@@ -111,13 +117,15 @@ public class OracleTest {
 			Integer topOfBuffer = buffer.get(0);
 			int cost = 0;
 			Integer parentID = dependencies.getParent(currentSentenceNum).get(topOfBuffer);
-			if ((parentID != stack.get(0) && stack.contains(parentID)) || buffer.contains(parentID)) {
+			if ((parentID != stack.get(stack.size()-1) && stack.contains(parentID)) || buffer.contains(parentID)) {
 				cost++;
 			}
 			ArrayList<Integer> leftChildrenIDs = dependencies.getLeftChildren(currentSentenceNum).get(topOfBuffer);
-			ArrayList<Integer> leftChildrenInStack = (ArrayList<Integer>) stack.clone();
-			leftChildrenInStack.retainAll(leftChildrenIDs);
-			cost += leftChildrenInStack.size();
+			if (leftChildrenIDs != null) {
+				ArrayList<Integer> leftChildrenInStack = (ArrayList<Integer>) stack.clone();
+				leftChildrenInStack.retainAll(leftChildrenIDs);
+				cost += leftChildrenInStack.size();
+			}
 			
 			return cost;
 		}
@@ -131,9 +139,11 @@ public class OracleTest {
 			Integer topOfStack = stack.get(0);
 			int cost = 0;
 			ArrayList<Integer> rightChildrenIDs = dependencies.getRightChildren(currentSentenceNum).get(topOfStack);
-			ArrayList<Integer> rightChildrenInBuffer = (ArrayList<Integer>) buffer.clone();
-			rightChildrenInBuffer.retainAll(rightChildrenIDs);
-			cost += rightChildrenInBuffer.size();
+			if (rightChildrenIDs != null) {
+				ArrayList<Integer> rightChildrenInBuffer = (ArrayList<Integer>) buffer.clone();
+				rightChildrenInBuffer.retainAll(rightChildrenIDs);
+				cost += rightChildrenInBuffer.size();
+			}
 			
 			return cost;
 		}
@@ -151,14 +161,45 @@ public class OracleTest {
 				cost++;
 			}
 			ArrayList<Integer> leftChildrenIDs = dependencies.getLeftChildren(currentSentenceNum).get(topOfBuffer);
-			ArrayList<Integer> leftChildrenInStack = (ArrayList<Integer>) stack.clone();
-			leftChildrenInStack.retainAll(leftChildrenIDs);
-			cost += leftChildrenInStack.size();
+			if (leftChildrenIDs != null) {
+				ArrayList<Integer> leftChildrenInStack = (ArrayList<Integer>) stack.clone();
+				leftChildrenInStack.retainAll(leftChildrenIDs);
+				cost += leftChildrenInStack.size();
+			}
 			
 			return cost;
 		}
 	}
+	
+	//region Lazy implementations of parser actions since we don't need to information about the arcs at every step ... yet
+	public void leftArc() {
+		stack.remove(stack.size()-1);
+	}
+	
+	public void rightArc() {
+		stack.add(buffer.get(0));
+		buffer.remove(0);
+	}
+	
+	public void reduce() {
+		stack.remove(stack.size()-1);
+	}
 
+	public void shift() {
+		stack.add(buffer.get(0));
+		buffer.remove(0);
+	}
+	//endregion
+	
+	/**
+	 * Lazy implementation of pickActions since we don't need to add more sophistication ... yet
+	 * @param actions
+	 * @return the action
+	 */
+	public Integer pickAction(ArrayList<Integer> actions) {
+		return actions.get(0);
+	}
+	
 	public void parseAll() {
 		for (currentSentenceNum = 0; currentSentenceNum < conllSentences.size(); currentSentenceNum++) {
 			stack = new ArrayList<Integer>();
@@ -166,11 +207,27 @@ public class OracleTest {
 			for (String[] word: conllSentences.get(currentSentenceNum)) {
 				buffer.add(Integer.parseInt(word[CoNLLFieldType.ID.ordinal()]));
 			}
-			ArrayList<Integer> actions = nextAction();
-			System.out.println(actions);
-			/*while (stack.size() > 1 || !buffer.isEmpty()) {
-				nextAction();
-			}*/
+			System.out.println(buffer);
+			
+			while (stack.size() > 1 || !buffer.isEmpty()) {
+				ArrayList<Integer> possibleActions = nextAction();
+				System.out.println(possibleActions);
+				Integer action = pickAction(possibleActions);
+				if (action == ParserActionType.LEFTARC.ordinal()) {
+					leftArc();
+				}
+				else if (action == ParserActionType.RIGHTARC.ordinal()) {
+					rightArc();
+				}
+				else if (action == ParserActionType.REDUCE.ordinal()) {
+					reduce();
+				}
+				else if (action == ParserActionType.SHIFT.ordinal()) {
+					shift();
+				}
+			}
+
+			System.out.println("\n===========\n");
 		}
 	}
 	
