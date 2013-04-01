@@ -1,0 +1,5 @@
+
+public enum CoNLLFieldType {
+	ID, FORM, LEMMA, CPOSTAG, POSTAG, FEATS, HEAD, 
+	DEPREL, PHEAD, PDEPREL
+}
