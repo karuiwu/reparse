@@ -1,0 +1,1873 @@
+Buildfile: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/build.xml
+
+init:
+
+clean:
+   [delete] Deleting directory /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2
+
+javadoc:
+    [mkdir] Created dir: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/docs/api
+  [javadoc] Generating Javadoc
+  [javadoc] Javadoc execution
+  [javadoc] Loading source files for package org.maltparser.core.config...
+  [javadoc] Loading source files for package org.maltparser.core.config.version...
+  [javadoc] Loading source files for package org.maltparser.core.exception...
+  [javadoc] Loading source files for package org.maltparser.core.feature...
+  [javadoc] Loading source files for package org.maltparser.core.feature.function...
+  [javadoc] Loading source files for package org.maltparser.core.feature.map...
+  [javadoc] Loading source files for package org.maltparser.core.feature.spec...
+  [javadoc] Loading source files for package org.maltparser.core.feature.spec.reader...
+  [javadoc] Loading source files for package org.maltparser.core.feature.system...
+  [javadoc] Loading source files for package org.maltparser.core.feature.value...
+  [javadoc] Loading source files for package org.maltparser.core.flow...
+  [javadoc] Loading source files for package org.maltparser.core.flow.item...
+  [javadoc] Loading source files for package org.maltparser.core.flow.spec...
+  [javadoc] Loading source files for package org.maltparser.core.flow.system...
+  [javadoc] Loading source files for package org.maltparser.core.flow.system.elem...
+  [javadoc] Loading source files for package org.maltparser.core.helper...
+  [javadoc] Loading source files for package org.maltparser.core.io.dataformat...
+  [javadoc] Loading source files for package org.maltparser.core.options...
+  [javadoc] Loading source files for package org.maltparser.core.options.option...
+  [javadoc] Loading source files for package org.maltparser.core.plugin...
+  [javadoc] Loading source files for package org.maltparser.core.pool...
+  [javadoc] Loading source files for package org.maltparser.core.propagation...
+  [javadoc] Loading source files for package org.maltparser.core.propagation.spec...
+  [javadoc] Loading source files for package org.maltparser.core.symbol...
+  [javadoc] Loading source files for package org.maltparser.core.symbol.nullvalue...
+  [javadoc] Loading source files for package org.maltparser.core.symbol.trie...
+  [javadoc] Loading source files for package org.maltparser.core.syntaxgraph...
+  [javadoc] Loading source files for package org.maltparser.core.syntaxgraph.ds2ps...
+  [javadoc] Loading source files for package org.maltparser.core.syntaxgraph.edge...
+  [javadoc] Loading source files for package org.maltparser.core.syntaxgraph.feature...
+  [javadoc] Loading source files for package org.maltparser.core.syntaxgraph.headrules...
+  [javadoc] Loading source files for package org.maltparser.core.syntaxgraph.node...
+  [javadoc] Loading source files for package org.maltparser.core.syntaxgraph.reader...
+  [javadoc] Loading source files for package org.maltparser.core.syntaxgraph.writer...
+  [javadoc] Loading source files for package org.maltparser.ml...
+  [javadoc] Loading source files for package org.maltparser.ml.lib...
+  [javadoc] Loading source files for package org.maltparser.parser...
+  [javadoc] Loading source files for package org.maltparser.parser.algorithm.covington...
+  [javadoc] Loading source files for package org.maltparser.parser.algorithm.nivre...
+  [javadoc] Loading source files for package org.maltparser.parser.algorithm.planar...
+  [javadoc] Loading source files for package org.maltparser.parser.algorithm.stack...
+  [javadoc] Loading source files for package org.maltparser.parser.algorithm.twoplanar...
+  [javadoc] Loading source files for package org.maltparser.parser.guide...
+  [javadoc] Loading source files for package org.maltparser.parser.guide.decision...
+  [javadoc] Loading source files for package org.maltparser.parser.guide.instance...
+  [javadoc] Loading source files for package org.maltparser.parser.history...
+  [javadoc] Loading source files for package org.maltparser.parser.history.action...
+  [javadoc] Loading source files for package org.maltparser.parser.history.container...
+  [javadoc] Loading source files for package org.maltparser.parser.history.kbest...
+  [javadoc] Loading source files for package org.maltparser.parser.transition...
+  [javadoc] Loading source files for package org.maltparser.transform.pseudo...
+  [javadoc] Constructing Javadoc information...
+  [javadoc] Standard Doclet version 1.6.0_27
+  [javadoc] Building tree for all the packages and classes...
+  [javadoc] Building index for all the packages and classes...
+  [javadoc] Building index for all classes...
+
+appdata:
+     [copy] Copying 40 files to /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/classes
+
+build:
+    [mkdir] Created dir: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/plugin
+    [javac] Compiling 292 source files to /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/classes
+    [javac] Note: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/src/org/maltparser/ml/liblinear/Liblinear.java uses unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+
+prejar:
+    [mkdir] Created dir: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/lib
+
+jar:
+     [copy] Copying 1 file to /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/lib
+     [copy] Copying 1 file to /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/lib
+     [copy] Copying 1 file to /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/lib
+      [jar] Building jar: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/maltparser-1.7.2.jar
+   [delete] Deleting: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/MANIFEST.MF
+
+options:
+
+site:
+     [copy] Copying 16 files to /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/docs
+
+dist:
+    [mkdir] Created dir: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/images
+    [mkdir] Created dir: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/tmp/maltparser-1.7.2
+     [copy] Copying 764 files to /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/tmp/maltparser-1.7.2
+     [copy] Copying 36 files to /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/tmp/maltparser-1.7.2
+     [copy] Copying 1134 files to /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/tmp/maltparser-1.7.2
+     [copy] Copying 1 file to /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/tmp/maltparser-1.7.2
+      [tar] Building tar: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/images/maltparser-1.7.2.tar.gz
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/feature/spec/reader/class-use/ParReader.ColumnNames.html longer than 100 characters.
+      [tar] Resulting tar file can only be processed successfully by GNU compatible tar commands
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/feature/spec/reader/class-use/ParReader.DataStructures.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/io/dataformat/DataFormatSpecification.DataStructure.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/io/dataformat/class-use/DataFormatSpecification.DataStructure.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/io/dataformat/class-use/DataFormatSpecification.Dependency.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/propagation/spec/class-use/PropagationSpecsReader.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/symbol/nullvalue/class-use/NullValues.NullValueDegree.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/symbol/nullvalue/class-use/NullValues.NullValueId.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/class-use/MappablePhraseStructureGraph.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/ds2ps/class-use/Dependency2PhraseStructure.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/feature/DGraphAddressFunction.DGraphSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/feature/class-use/DGraphAddressFunction.DGraphSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/feature/class-use/DGraphAddressFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/feature/class-use/NumOfFeature.NumOfRelation.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/feature/class-use/OutputColumnFeature.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/headrules/PrioSetMember.RelationToPrevMember.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/headrules/class-use/HeadRuleException.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/headrules/class-use/PrioSetMember.RelationToPrevMember.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/reader/TigerXMLHeader.FeatureEdgeLabel.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/reader/class-use/TigerXMLHeader.Domain.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/core/syntaxgraph/reader/class-use/TigerXMLHeader.FeatureEdgeLabel.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/covington/CovingtonAddressFunction.CovingtonSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/covington/class-use/CovingtonAddressFunction.CovingtonSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/covington/class-use/CovingtonAddressFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/covington/class-use/CovingtonNonProjFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/covington/class-use/CovingtonProjFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/nivre/NivreAddressFunction.NivreSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/nivre/class-use/NivreAddressFunction.NivreSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/nivre/class-use/NivreArcStandardFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/planar/PlanarAddressFunction.PlanarSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/planar/class-use/NivrePlanarArcEagerFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/planar/class-use/PlanarAddressFunction.PlanarSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/planar/class-use/PlanarAddressFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/planar/class-use/PlanarArcEagerOracle.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/stack/StackAddressFunction.StackSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/stack/class-use/StackAddressFunction.StackSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/stack/class-use/StackSwapEagerFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/twoplanar/TwoPlanarAddressFunction.TwoPlanarSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/twoplanar/class-use/TwoPlanarAddressFunction.TwoPlanarSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/twoplanar/class-use/TwoPlanarAddressFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/twoplanar/class-use/TwoPlanarArcEagerFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/algorithm/twoplanar/class-use/TwoPlanarArcEagerOracle.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/history/container/TableContainer.RelationToNextDecision.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/history/container/class-use/CombinedTableContainer.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/history/container/class-use/DecisionPropertyTable.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/org/maltparser/parser/history/container/class-use/TableContainer.RelationToNextDecision.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/feature/spec/reader/ParReader.ColumnNames.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/feature/spec/reader/ParReader.DataStructures.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/io/dataformat/DataFormatSpecification.DataStructure.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/io/dataformat/DataFormatSpecification.Dependency.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/symbol/nullvalue/NullValues.NullValueDegree.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/syntaxgraph/MappablePhraseStructureGraph.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/syntaxgraph/ds2ps/Dependency2PhraseStructure.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/syntaxgraph/feature/DGraphAddressFunction.DGraphSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/syntaxgraph/feature/DGraphAddressFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/syntaxgraph/feature/NumOfFeature.NumOfRelation.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/syntaxgraph/headrules/PrioSetMember.RelationToPrevMember.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/syntaxgraph/reader/TigerXMLHeader.Domain.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/core/syntaxgraph/reader/TigerXMLHeader.FeatureEdgeLabel.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/covington/CovingtonAddressFunction.CovingtonSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/covington/CovingtonAddressFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/covington/CovingtonNonProjFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/covington/CovingtonProjFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/nivre/NivreAddressFunction.NivreSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/nivre/NivreArcStandardFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/planar/NivrePlanarArcEagerFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/planar/PlanarAddressFunction.PlanarSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/planar/PlanarAddressFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/stack/StackAddressFunction.StackSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/twoplanar/TwoPlanarAddressFunction.TwoPlanarSubFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/twoplanar/TwoPlanarAddressFunction.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/twoplanar/TwoPlanarArcEagerFactory.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/algorithm/twoplanar/TwoPlanarArcEagerOracle.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/history/container/CombinedTableContainer.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/history/container/DecisionPropertyTable.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/docs/api/src-html/org/maltparser/parser/history/container/TableContainer.RelationToNextDecision.html longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/examples/apiexamples/classes/org/maltparser/examples/CreatePhraseStructureGraph.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/examples/apiexamples/classes/org/maltparser/examples/OptionFreeInitialization.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/core/io/dataformat/DataFormatSpecification$DataStructure.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/core/syntaxgraph/feature/DGraphAddressFunction$DGraphSubFunction.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/core/syntaxgraph/headrules/PrioSetMember$RelationToPrevMember.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/core/syntaxgraph/reader/TigerXMLHeader$FeatureEdgeLabel.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/core/syntaxgraph/writer/BracketWriter$PennWriterFormat.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/parser/algorithm/covington/CovingtonAddressFunction$CovingtonSubFunction.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/parser/algorithm/nivre/NivreAddressFunction$NivreSubFunction.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/parser/algorithm/planar/PlanarAddressFunction$PlanarSubFunction.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/parser/algorithm/stack/StackAddressFunction$StackSubFunction.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/parser/algorithm/twoplanar/TwoPlanarAddressFunction$TwoPlanarSubFunction.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/parser/history/container/TableContainer$RelationToNextDecision.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/transform/pseudo/PseudoProjectivity$CoveredRootAttachment.class longer than 100 characters.
+      [tar] Entry: maltparser-1.7.2/src/bin/org/maltparser/transform/pseudo/PseudoProjectivity$PseudoProjectiveEncoding.class longer than 100 characters.
+      [zip] Building zip: /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/dist/maltparser-1.7.2/images/maltparser-1.7.2.zip
+   [delete] Deleting directory /home/juneki/Documents/school/0_Research/arc-eager-parser/maltparser-1.7.2/tmp
+
+BUILD SUCCESSFUL
+Total time: 50 seconds
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid alltså upphör Grundavdraget 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Grundavdraget 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid alltså upphör 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid alltså upphör 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		upphör 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid alltså 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör alltså 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		upphör 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör vid 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		upphör vid en 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		upphör vid en taxerad 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör vid en 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör vid 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör vid inkomst 
+JUNEKI INPUT QUEUE: 	. kr 52500 på 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		upphör vid 
+JUNEKI INPUT QUEUE: 	. kr 52500 på 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		upphör 
+JUNEKI INPUT QUEUE: 	. kr 52500 på 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör på 
+JUNEKI INPUT QUEUE: 	. kr 52500 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		upphör på 52500 
+JUNEKI INPUT QUEUE: 	. kr 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör på 
+JUNEKI INPUT QUEUE: 	. kr 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör på kr 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		upphör på 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		upphör 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 1
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	: Exempel 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Exempel 
+JUNEKI INPUT QUEUE: 	: 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	: 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 2
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår inkomst taxerad Statligt 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Statligt 
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår inkomst taxerad 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Statligt taxerad 
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår inkomst 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		Statligt 
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår inkomst 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår inkomst 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		inkomst 
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. kr 40000 till 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. kr 40000 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 40000 
+JUNEKI INPUT QUEUE: 	. kr 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. kr 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till kr 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 3
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 2500 blir Grundavdraget 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Grundavdraget 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 2500 blir 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 2500 blir 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 2500 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		blir 2500 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir kr 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir ( 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir = 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		blir = 4500 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		blir = 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir minskat 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir med 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir med 1/5 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir med 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir av 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		blir av 10000 
+JUNEKI INPUT QUEUE: 	. ) kr 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		blir av 
+JUNEKI INPUT QUEUE: 	. ) kr 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir av kr 
+JUNEKI INPUT QUEUE: 	. ) 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir av 
+JUNEKI INPUT QUEUE: 	. ) 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir ) 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 4
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp samma till uppgår Grundavdraget 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Grundavdraget 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp samma till uppgår 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp samma till uppgår 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp samma till 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp samma 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår till samma 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till belopp 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid statlig 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid statlig och 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid statlig och kommunal 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid statlig och 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid statlig 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid taxering 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid taxering och 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid taxering 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den till statlig 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den till inkomstskatt 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den taxerade 
+JUNEKI INPUT QUEUE: 	. inkomsten 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den 
+JUNEKI INPUT QUEUE: 	. inkomsten 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av 
+JUNEKI INPUT QUEUE: 	. inkomsten 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av inkomsten 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 5
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas kan grundavdrag Kommunalt 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Kommunalt 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas kan grundavdrag 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas kan grundavdrag 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas kan 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas kan 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		kan 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan även 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan från 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan från inkomst 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan från 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan i 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		kan i annan 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		kan i 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan i kommun 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		kan i kommun än 
+JUNEKI INPUT QUEUE: 	. hemortskommunen 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		kan i kommun 
+JUNEKI INPUT QUEUE: 	. hemortskommunen 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan i kommun hemortskommunen 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan i kommun 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan i 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 6
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat maken ena För 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		För 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat maken ena 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		För ena 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat maken 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		För 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat maken 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		För maken 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		För 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		outnyttjat 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag eller 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del därav 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan inte 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras 
+JUNEKI INPUT QUEUE: 	. maken andra den till 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till 
+JUNEKI INPUT QUEUE: 	. maken andra den 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till den 
+JUNEKI INPUT QUEUE: 	. maken andra 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till den andra 
+JUNEKI INPUT QUEUE: 	. maken 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till den 
+JUNEKI INPUT QUEUE: 	. maken 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till 
+JUNEKI INPUT QUEUE: 	. maken 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till maken 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 7
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid alltså upphör Grundavdraget 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Grundavdraget 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid alltså upphör 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid alltså upphör 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid alltså 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör alltså 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		upphör 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en vid 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör vid 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad en 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		upphör vid en 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst taxerad 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		upphör vid en taxerad 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör vid en 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör vid 
+JUNEKI INPUT QUEUE: 	. kr 52500 på inkomst 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör vid inkomst 
+JUNEKI INPUT QUEUE: 	. kr 52500 på 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		upphör vid 
+JUNEKI INPUT QUEUE: 	. kr 52500 på 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		upphör 
+JUNEKI INPUT QUEUE: 	. kr 52500 på 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör på 
+JUNEKI INPUT QUEUE: 	. kr 52500 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		upphör på 52500 
+JUNEKI INPUT QUEUE: 	. kr 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör på 
+JUNEKI INPUT QUEUE: 	. kr 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		upphör på kr 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		upphör på 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		upphör 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 1
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	: Exempel 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Exempel 
+JUNEKI INPUT QUEUE: 	: 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	: 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 2
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår inkomst taxerad Statligt 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Statligt 
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår inkomst taxerad 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Statligt taxerad 
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår inkomst 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		Statligt 
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår inkomst 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår inkomst 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		inkomst 
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. kr 40000 till uppgår 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. kr 40000 till 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. kr 40000 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 40000 
+JUNEKI INPUT QUEUE: 	. kr 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. kr 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till kr 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 3
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 2500 blir Grundavdraget 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Grundavdraget 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 2500 blir 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 2500 blir 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 2500 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		blir 2500 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( kr 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir kr 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = ( 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir ( 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 = 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir = 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 4500 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		blir = 4500 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		blir = 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med minskat 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir minskat 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 med 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir med 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 1/5 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir med 1/5 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir med 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 av 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir av 
+JUNEKI INPUT QUEUE: 	. ) kr 10000 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		blir av 10000 
+JUNEKI INPUT QUEUE: 	. ) kr 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		blir av 
+JUNEKI INPUT QUEUE: 	. ) kr 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir av kr 
+JUNEKI INPUT QUEUE: 	. ) 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir av 
+JUNEKI INPUT QUEUE: 	. ) 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. ) 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		blir ) 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		blir 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 4
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp samma till uppgår Grundavdraget 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Grundavdraget 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp samma till uppgår 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp samma till uppgår 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp samma till 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp samma 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår till samma 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid belopp 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår till belopp 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig vid 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och statlig 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid statlig 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal och 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid statlig och 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering kommunal 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid statlig och kommunal 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid statlig och 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid statlig 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och taxering 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid taxering 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas och 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid taxering och 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid taxering 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår vid 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med beräknas 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning med 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av ledning 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den av 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till den 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig till 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt statlig 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den till statlig 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade inkomstskatt 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den till inkomstskatt 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den till 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den 
+JUNEKI INPUT QUEUE: 	. inkomsten taxerade 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den taxerade 
+JUNEKI INPUT QUEUE: 	. inkomsten 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av den 
+JUNEKI INPUT QUEUE: 	. inkomsten 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av 
+JUNEKI INPUT QUEUE: 	. inkomsten 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av inkomsten 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning av 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med ledning 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas med 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår beräknas 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		uppgår 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 5
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas kan grundavdrag Kommunalt 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		Kommunalt 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas kan grundavdrag 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas kan grundavdrag 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas kan 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas kan 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även avräknas 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från även 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas även 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst från 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas från 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i inkomst 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas från inkomst 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas från 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan i 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas i 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun annan 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas i annan 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas i 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än kommun 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas i kommun 
+JUNEKI INPUT QUEUE: 	. hemortskommunen än 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas i kommun än 
+JUNEKI INPUT QUEUE: 	. hemortskommunen 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas i kommun 
+JUNEKI INPUT QUEUE: 	. hemortskommunen 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas i kommun hemortskommunen 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas i kommun 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas i 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan avräknas 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		kan 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 6
+
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat maken ena För 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		För 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat maken ena 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		För ena 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat maken 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		För 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat maken 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		För maken 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		För 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag outnyttjat 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		outnyttjat 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller grundavdrag 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del eller 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag eller 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav del 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan därav 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del därav 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte kan 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras inte 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan inte 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan 
+JUNEKI INPUT QUEUE: 	. maken andra den till överföras 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras 
+JUNEKI INPUT QUEUE: 	. maken andra den till 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till 
+JUNEKI INPUT QUEUE: 	. maken andra den 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till den 
+JUNEKI INPUT QUEUE: 	. maken andra 
+>> DECISION MADE: SHIFT OR OTHER
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till den andra 
+JUNEKI INPUT QUEUE: 	. maken 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till den 
+JUNEKI INPUT QUEUE: 	. maken 
+>> DECISION MADE: LEFTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till 
+JUNEKI INPUT QUEUE: 	. maken 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till maken 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras till 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan överföras 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del kan 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag del 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		grundavdrag 
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: REDUCE
+---------------------------------
+
+JUNEKI STACK: 		
+JUNEKI INPUT QUEUE: 	. 
+>> DECISION MADE: RIGHTARC
+---------------------------------
+
+
+(Engine.java, line 81) JUNEKI: sentenceCounter 7
+
+
