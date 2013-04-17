@@ -1,0 +1,8 @@
+Compiling MaltParser:
+ant dist
+java -jar ./dist/maltparser-1.7.2/maltparser-1.7.2.jar -c test -i examples/data/english_train.conll -m learn
+java -jar ./dist/maltparser-1.7.2/maltparser-1.7.2.jar -c test -i examples/data/english_test.conll -o out.conll -m parse
+
+Running CoNLL data splitting tool:
+num_sets indicates not only how many train and dev data sets produced (through jack-knifing), but also the ratio of training to dev data. For instance, if we have 10,000 sentences in train.dep.parse, setting num_sets to 2 will yield 5,000 training sentences and 5,000 dev sentences (x2). If we set num_sets to 10, we will have 9,000 training sentences and 1,000 dev sentences (x10). Therefore, I like to run with at least num_sets > 9.
+python CoNLLSplitter.py train.dep.parse [num_sets]
