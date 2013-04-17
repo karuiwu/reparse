@@ -1,0 +1,19 @@
+
+
+COMPILATION ISSUES:
+
+When compiling MegaM, I ran into issues trying to make. 
+It couldn't find some flag -lstr
+
+So basically, I found this link:
+http://stackoverflow.com/questions/13584629/ocaml-compile-error-usr-bin-ld-cannot-find-lstr
+
+... and then I made a change to my Ocaml libraries.
+
+
+Here is the fix, copy-pasted from the website:
+locate libcamlstr
+cd /usr/lib/ocaml
+sudo ln -s libcamlstr.a libstr.a
+cd /usr/local/src/cil
+make clean && ./configure && make
