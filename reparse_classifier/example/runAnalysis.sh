@@ -1,10 +1,12 @@
 #!/bin/bash
 
-#LAMBDA= 1
-for i in {1..2}
+LAMBDA=1
+MAX=2
+for i in {1..$MAX}
 do
-    FILENAME="weights$i"
-    ../megam.opt -lambda $LAMBDA binary ../data/classifier/train/0 > $FILENAME
+    WEIGHTS_FILENAME="../data/classifier/weights/$i"
+    PR_FILENAME="../data/classifier/precision_recall/$i"
+    echo "Training classifier: ../megam_i686.opt -lambda $LAMBDA binary ../data/classifier/train/0 > $WEIGHTS_FILENAME"
+    ./megam_i686.opt -lambda $LAMBDA binary ../data/classifier/train/0 > $WEIGHTS_FILENAME
+    python evaluteParse.py $WEIGHTS_FILENAME ../data/classifier/dev/0 > $PR_FILENAME
 done
-
-#python evaluteParse.py results data/classifier/dev/0 
