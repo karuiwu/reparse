@@ -1,0 +1,22 @@
+1	fifty	-	CD	CD	-	3	num	-	-
+2	eight	-	CD	CD	-	3	num	-	-
+3	percent	-	NN	NN	-	0	root	-	-
+4	to	-	TO	TO	-	3	p	-	-
+5	rick	-	NNP	NNP	-	6	mod	-	-
+6	lazio	-	NNP	NNP	-	10	mod	-	-
+7	's	-	POS	POS	-	6	mod	-	-
+8	forty	-	CD	CD	-	10	num	-	-
+9	one	-	CD	CD	-	10	num	-	-
+10	percent	-	NN	NN	-	4	pobj	-	-
+
+1	lots	-	NNS	NNS	-	4	mod	-	-
+2	of	-	IN	IN	-	1	p	-	-
+3	people	-	NNS	NNS	-	2	pobj	-	-
+4	go	-	VB	VB	-	0	root	-	-
+5	out	-	RP	RP	-	4	mod	-	-
+6	for	-	IN	IN	-	4	p	-	-
+7	a	-	DT	DT	-	8	det	-	-
+8	jog	-	NN	NN	-	6	pobj	-	-
+9	to	-	TO	TO	-	10	mod	-	-
+10	keep	-	VB	VB	-	4	i	-	-
+11	fit	-	JJ	JJ	-	10	i	-	-
