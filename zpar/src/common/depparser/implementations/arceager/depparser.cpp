@@ -675,14 +675,14 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			return;
 		}
 
-//		CStateItem* tempPGeneratorPointer = m_Agenda->generatorStart();
-		pGenerator = m_Agenda->generatorStart();
-//		pGenerator = tempPGeneratorPointer;
+		CStateItem* tempPGeneratorPointer = m_Agenda->generatorStart();
+//		pGenerator = m_Agenda->generatorStart();
+		pGenerator = tempPGeneratorPointer;
 
 		// iterate generators
 		for (int j = 0; j < m_Agenda->generatorSize(); ++j) {
 			// Every time we iterate through generators, we can save the previous state of the stack.
-//			tempPGeneratorPointer->saveCurrentStacksToPrevious();
+			tempPGeneratorPointer->saveCurrentStacksToPrevious();
 //			pGenerator->saveCurrentStacksToPrevious();
 
 			// for the state items that already contain all words
@@ -761,7 +761,9 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				bCorrect = true;
 			}
 			// JUNEKI: pGenerator iterates over each dependency parser in the beam
-			pGenerator = m_Agenda->generatorNext();
+			tempPGeneratorPointer = m_Agenda->generatorNext();
+			pGenerator = tempPGeneratorPointer;
+//			pGenerator = m_Agenda->generatorNext();
 
 		}
 
