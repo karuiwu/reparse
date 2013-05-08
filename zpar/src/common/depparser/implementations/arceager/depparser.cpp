@@ -574,6 +574,8 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	const int length = sentence.size();
 
 	const CStateItem *pGenerator;
+//	CStateItem *pGenerator;
+
 	static CStateItem pCandidate(&m_lCache);
 
 	// used only for training
@@ -673,9 +675,15 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			return;
 		}
 
+//		CStateItem* tempPGeneratorPointer = m_Agenda->generatorStart();
 		pGenerator = m_Agenda->generatorStart();
+//		pGenerator = tempPGeneratorPointer;
+
 		// iterate generators
 		for (int j = 0; j < m_Agenda->generatorSize(); ++j) {
+			// Every time we iterate through generators, we can save the previous state of the stack.
+//			tempPGeneratorPointer->saveCurrentStacksToPrevious();
+//			pGenerator->saveCurrentStacksToPrevious();
 
 			// for the state items that already contain all words
 			m_Beam->clear();
@@ -758,9 +766,12 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		}
 
 
-		// JUNEKI: m_Agenda is the beam. Each element in the beam is a CStateItem.
-		// JUNEKI: CStateItems are the stack of a dependency parser.
+		// JUNEKI: m_Agenda is the "global" beam. Each element in the beam is a CStateItem.
+		// JUNEKI: CStateItems are instances of a dependency parser.
 		// JUNEKI: pGenerator is a CStateItem
+		// JUNEKI: m_Beam is the "local" beam of possible actions to take for a particular dependency parser.
+
+
 //		std::cout << " A ";
 //		CStateItem* firstGenerator = m_Agenda->generator(0);
 //		for (int i = 0; i < firstGenerator->stacksize(); i++)
