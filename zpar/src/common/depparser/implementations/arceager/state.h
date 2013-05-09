@@ -66,10 +66,12 @@ public:
 
 	std::vector<int> previous_m_Stack;
 	std::vector<int> previous_m_HeadStack;
+	int previous_m_nNextWord;
 
 	void saveCurrentStacksToPrevious() {
 		previous_m_Stack = std::vector<int>(m_Stack);
 		previous_m_HeadStack = std::vector<int>(m_HeadStack);
+		previous_m_nNextWord = m_nNextWord;
 	}
 
 public:

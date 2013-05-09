@@ -626,6 +626,11 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	}
 
 	// JUNEKI: ok, so at this point m_lCache is a vector filled with the sentence.
+	/**
+	 * Edited by JK
+	 */
+	oracle.readInSentence(conllSentence);
+	//end
 
 	// initialise agenda
 	m_Agenda->clear();
@@ -823,6 +828,20 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			pGenerator->GenerateTree(sentence, retval[i]);
 			if (scores)
 				scores[i] = pGenerator->score;
+
+			/**
+			 * Edited by JK
+			 */
+			std::vector<int> buffer;
+			buffer.push_back(pGenerator->previous_m_nNextWord);
+			std::vector<int> actions = oracle.nextAction(pGenerator->previous_m_Stack, buffer);
+
+			std::cout << "Possible actions: " << std::endl;
+			for (int j=0; j < actions.size(); j++) {
+			  std::cout << actions.at(j) << std::endl;
+			}
+
+			//end
 		}
 	}TRACE("Done, the highest score is: " << m_Agenda->bestGenerator()->score ) ;TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
 }
@@ -913,6 +932,12 @@ void CDepParser::parse_conll(const CCoNLLInput &sentence, CCoNLLOutput *retval,
 	assert(m_bCoNLL);
 
 	initCoNLLCache(sentence);
+
+	/**
+	 * Edited by JK
+	 */
+	conllSentence = sentence;
+	//end
 
 	sentence.toTwoStringVector(input);
 

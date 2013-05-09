@@ -88,6 +88,16 @@ inline std::istream & operator >> (std::istream &is, CCoNLLInputNode &node) {
    getline(is, line, '\t');
    ASSERT(is && !line.empty(), "Not well formatted CoNLL data (features not found)");
    node.feats = line;
+
+   /**
+    * Edited by JK
+    */
+   getline(is, line, '\t');
+   ASSERT(is && !line.empty(), "Not well formatted CoNLL data (head not found)");
+   std::istringstream iss_head(line);
+   iss_head >> node.head;
+   //end
+
    return is ;
 }
 

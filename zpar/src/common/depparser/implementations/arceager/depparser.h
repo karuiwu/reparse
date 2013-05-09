@@ -13,6 +13,7 @@
 #define _DEPPARSER_IMPL_H 
 
 #include "depparser_base.h"
+#include "dynamicOracle.h"
 
 /*===============================================================
  *
@@ -61,6 +62,15 @@ private:
    bool m_bScoreModified;
    int m_nScoreIndex;
 
+   /**
+    * Edited by JK
+    */
+
+   DynamicOracle oracle;
+   CCoNLLInput conllSentence;
+
+   //end
+
 public:
    // constructor and destructor
    CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
@@ -69,6 +79,16 @@ public:
       m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
+
+      /**
+       * Edited by JK
+       */
+
+      oracle = DynamicOracle();
+      conllSentence = CCoNLLInput();
+
+      //end
+
       if (bTrain) m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eAverage ;
    }
    ~CDepParser() {
