@@ -12,7 +12,7 @@
 #include <map>
 #include <string>
 
-enum { CONLLFIELD_ID, CONLLFIELD_FORM, CONLLFIELD_LEMMA,
+enum { CONLLFIELD_ID = 0, CONLLFIELD_FORM, CONLLFIELD_LEMMA,
 	   CONLLFIELD_CPOSTAG, CONLLFIELD_POSTAG, CONLLFIELD_FEATS,
 	   CONLLFIELD_HEAD, CONLLFIELD_DEPREL, CONLLFIELD_PHEAD,
 	   CONLLFIELD_PDEPREL };
@@ -20,7 +20,8 @@ enum { CONLLFIELD_ID, CONLLFIELD_FORM, CONLLFIELD_LEMMA,
 typedef std::map<int, std::vector<int> > siblings_t;
 typedef std::map<int, int> parent_t;
 typedef std::vector<std::vector<std::string> > sentence_t;
-typedef std::pair<int, int> relation_t;
+typedef std::pair<int, int> parent_relation_t;
+typedef std::pair<int, std::vector<int> > sibling_relation_t;
 
 class DependenciesCollection {
   public:

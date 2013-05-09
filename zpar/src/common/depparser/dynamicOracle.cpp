@@ -25,15 +25,20 @@ void DynamicOracle::readInSentence(CCoNLLInput conllData) {
 		conllSentences.at(sentenceNum).push_back(word_fields);
 
 		if (DEBUG) {
-			std::cout << word_fields << std::endl;
+			std::cout << "Word Fields: " << std::endl;
+			for (int i=0; i < word_fields.size(); i++) {
+				std::cout << word_fields.at(i) << " ";
+			}
+			std::cout << std::endl;
 		}
 	}
 
 	dependencies.addAll(conllSentences.at(sentenceNum));
 	if (DEBUG) {
-		std::cout << dependencies.getParent(sentenceNum) << std::endl;
+		/*std::cout << dependencies.getParent(sentenceNum) << std::endl;
 		std::cout << dependencies.getLeftChildren(sentenceNum) << std::endl;
-		std::cout << dependencies.getRightChildren(sentenceNum) << std::endl;
+		std::cout << dependencies.getRightChildren(sentenceNum) << std::endl;*/
+		std::cout << "Print family tree here" << std::endl;
 	}
 	dependencies.newSentence();
 }
@@ -42,8 +47,16 @@ std::vector<int> DynamicOracle::nextAction(std::vector<int> stack, std::vector<i
 	currentSentenceNum = conllSentences.size()-1;
 
 	if (DEBUG) {
-		std::cout << "Stack: " << stack << std::endl;
-		std::cout << "Queue: " << buffer << std::endl;
+		std::cout << "Stack: ";
+		for (int i=0; i < stack.size(); i++) {
+			std::cout << stack.at(i) << " ";
+		}
+		std::cout << std::endl;
+		std::cout << "Queue: ";
+		for (int i=0; i < buffer.size(); i++) {
+			std::cout << buffer.at(i) << " ";
+		}
+		std::cout << std::endl;
 	}
 
 	std::vector<int> costs;
@@ -98,7 +111,7 @@ int DynamicOracle::costOfLeftArc(std::vector<int> stack, std::vector<int> buffer
       std::sort(buffer.begin(), buffer.end());
       std::sort(rightChildrenIDs.begin(), rightChildrenIDs.end());
       std::vector<int>::iterator rightChildrenInBuffer_it = std::set_difference(buffer.begin(), buffer.end(),
-    		  rightChildrenIDs.begin(), rightChildrenIDs.end(), std::back_inserter(rightChildrenInBuffer));
+    		  rightChildrenIDs.begin(), rightChildrenIDs.end(), rightChildrenInBuffer.begin());
       cost += rightChildrenInBuffer.size();
     }
     if (DEBUG) {
@@ -145,7 +158,7 @@ int DynamicOracle::costOfRightArc(std::vector<int> stack, std::vector<int> buffe
       std::sort(buffer.begin(), buffer.end());
       std::sort(leftChildrenIDs.begin(), leftChildrenIDs.end());
       std::vector<int>::iterator rightChildrenInBuffer_it = std::set_difference(buffer.begin(), buffer.end(),
-    		  leftChildrenIDs.begin(), leftChildrenIDs.end(), std::back_inserter(leftChildrenInBuffer));
+    		  leftChildrenIDs.begin(), leftChildrenIDs.end(), leftChildrenInBuffer.begin());
       cost += leftChildrenInBuffer.size();
     }
     if (DEBUG) {
@@ -175,7 +188,7 @@ int DynamicOracle::costOfReduce(std::vector<int> stack, std::vector<int> buffer)
       std::sort(buffer.begin(), buffer.end());
       std::sort(rightChildrenIDs.begin(), rightChildrenIDs.end());
       std::vector<int>::iterator rightChildrenInBuffer_it = std::set_difference(buffer.begin(), buffer.end(),
-    		  rightChildrenIDs.begin(), rightChildrenIDs.end(), std::back_inserter(rightChildrenInBuffer));
+    		  rightChildrenIDs.begin(), rightChildrenIDs.end(), rightChildrenInBuffer.begin());
       cost += rightChildrenInBuffer.size();
     }
     if (DEBUG) {
@@ -221,7 +234,7 @@ int DynamicOracle::costOfShift(std::vector<int> stack, std::vector<int> buffer) 
       std::sort(buffer.begin(), buffer.end());
       std::sort(leftChildrenIDs.begin(), leftChildrenIDs.end());
       std::vector<int>::iterator rightChildrenInBuffer_it = std::set_difference(buffer.begin(), buffer.end(),
-    		  leftChildrenIDs.begin(), leftChildrenIDs.end(), std::back_inserter(leftChildrenInBuffer));
+    		  leftChildrenIDs.begin(), leftChildrenIDs.end(), leftChildrenInBuffer.begin());
       cost += leftChildrenInBuffer.size();
     }
     if (DEBUG) {
@@ -230,15 +243,4 @@ int DynamicOracle::costOfShift(std::vector<int> stack, std::vector<int> buffer) 
 
     return cost;
   }
-}
-
-
-
-int main() {
-
-/*ofstream conllFile;
-  myfile.open("example.txt");
-  myfile << "Writing this to a file.\n";
-  myfile.close();*/
-  return 0;
 }

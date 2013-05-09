@@ -18,7 +18,7 @@
 #include "linguistics/conll.h"
 
 #define INT_MAX_ORACLE std::numeric_limits<int>::max()
-#define DEBUG false
+#define DEBUG true
 
 class DynamicOracle {
   public:

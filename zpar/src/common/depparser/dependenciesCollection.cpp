@@ -21,7 +21,7 @@ parent_t DependenciesCollection::getParent(int sentence) {
 
 void DependenciesCollection::addAll(sentence_t conllSentence) {
   for (int i=0; i < conllSentence.size(); i++) {
-    int parentID = conllSentence.at(CONLLFIELD_HEAD);
+    int parentID = atoi(conllSentence.at(i).at(CONLLFIELD_HEAD).c_str());
     int childID = CONLLFIELD_ID;
 
     add(parentID, childID);
@@ -29,19 +29,19 @@ void DependenciesCollection::addAll(sentence_t conllSentence) {
 }
 
 void DependenciesCollection::add(int parentID, int childID) {
-  parents.at(numSentences).insert(relation_t(childID, parentID));
+  parents.at(numSentences).insert(parent_relation_t(childID, parentID));
 
   if (childID > parentID) {
 	siblings_t::iterator parent_right_it = rightChildren.at(numSentences).find(parentID);
     if (parent_right_it == rightChildren.at(numSentences).end()) {
-      rightChildren.at(numSentences).insert(relation_t(parentID, std::vector<int>()));
+      rightChildren.at(numSentences).insert(sibling_relation_t(parentID, std::vector<int>()));
     }
     parent_right_it->second.push_back(childID);
   }
   else if (childID < parentID) {
 	siblings_t::iterator parent_left_it = leftChildren.at(numSentences).find(parentID);
     if (parent_left_it == leftChildren.at(numSentences).end()) {
-      leftChildren.at(numSentences).insert(relation_t(parentID, std::vector<int>()));
+      leftChildren.at(numSentences).insert(sibling_relation_t(parentID, std::vector<int>()));
     }
     parent_left_it->second.push_back(childID);
   }
