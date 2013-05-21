@@ -1,0 +1,174 @@
+%
+% File acl2013.tex
+%
+% Contact  navigli@di.uniroma1.it
+%%
+%% Based on the style files for ACL-2012, which were, in turn,
+%% based on the style files for ACL-2011, which were, in turn, 
+%% based on the style files for ACL-2010, which were, in turn, 
+%% based on the style files for ACL-IJCNLP-2009, which were, in turn,
+%% based on the style files for EACL-2009 and IJCNLP-2008...
+
+%% Based on the style files for EACL 2006 by 
+%%e.agirre@ehu.es or Sergi.Balari@uab.es
+%% and that of ACL 08 by Joakim Nivre and Noah Smith
+
+\documentclass[11pt]{article}
+\usepackage{acl2013}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+%\setlength\titlebox{6.5cm}    % You can expand the title box if you
+% really have to
+
+\title{Title}
+
+\author{JJK \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\\And
+  Second Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\}
+
+\date{}
+
+
+
+\begin{document}
+\maketitle
+\begin{abstract}
+
+\end{abstract}
+
+
+\newpage
+
+
+
+\section{Introduction}
+
+
+\newpage
+
+
+\section{examples of latex things:}
+
+\begin{itemize}
+\item Left and right margins: 2.5 cm
+\item Top margin: 2.5 cm
+\item Bottom margin: 2.5 cm
+\item Column width: 7.7 cm
+\item Column height: 24.7 cm
+\item Gap between columns: 0.6 cm
+\end{itemize}
+
+\noindent noindent ensures that there is no indent on a new paragraph.
+
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|rl|}
+\hline \bf Type of Text & \bf Font Size & \bf Style \\ \hline
+paper title & 15 pt & bold \\
+author names & 12 pt & bold \\
+author affiliation & 12 pt & \\
+the word ``Abstract'' & 12 pt & bold \\
+section titles & 12 pt & bold \\
+document text & 11 pt  &\\
+captions & 11 pt & \\
+abstract text & 10 pt & \\
+bibliography & 10 pt & \\
+footnotes & 9 pt & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{font-table} Font guide. }
+\end{table}
+
+
+{\bf Headings}: Type and label section and subsection headings in the
+style shown on the present document.  Use numbered sections (Arabic
+numerals) in order to facilitate cross references. Number subsections
+with the section number and the subsection number separated by a dot,
+in Arabic numerals. Do not number subsubsections.
+
+{\bf Citations}: Citations within the text appear
+in parentheses as~\cite{Gusfield:97} or, if the author's name appears in
+the text itself, as Gusfield~\shortcite{Gusfield:97}. 
+Append lowercase letters to the year in cases of ambiguity.  
+Treat double authors as in~\cite{Aho:72}, but write as in~\cite{Chandra:81} when more than two authors are involved. Collapse multiple citations as in~\cite{Gusfield:97,Aho:72}. Also refrain from using full citations as sentence constituents. We suggest that instead of
+\begin{quote}
+  ``\cite{Gusfield:97} showed that ...''
+\end{quote}
+you use
+\begin{quote}
+``Gusfield \shortcite{Gusfield:97}   showed that ...''
+\end{quote}
+
+If you are using the provided \LaTeX{} and Bib\TeX{} style files, you
+can use the command \verb|\newcite| to get ``author (year)'' citations.
+
+
+
+\subsection{Graphics}
+
+{\bf Illustrations}: Place figures, tables, and photographs in the
+paper near where they are first discussed, rather than at the end, if
+possible.  Wide illustrations may run across both columns.  Color
+illustrations are discouraged, unless you have verified that  
+they will be understandable when printed in black ink.
+
+{\bf Captions}: Provide a caption for every illustration; number each one
+sequentially in the form:  ``Figure 1. Caption of the Figure.'' ``Table 1.
+Caption of the Table.''  Type the captions of the figures and 
+tables below the body, using 11 point text.  
+
+
+
+\section*{Acknowledgments}
+
+Do not number the acknowledgment section. Do not include this section
+when submitting your paper for review.
+%\bibliographystyle{acl}
+% you bib file should really go here 
+%\bibliography{acl2013}
+
+\begin{thebibliography}{}
+
+\bibitem[\protect\citename{Aho and Ullman}1972]{Aho:72}
+Alfred~V. Aho and Jeffrey~D. Ullman.
+\newblock 1972.
+\newblock {\em The Theory of Parsing, Translation and Compiling}, volume~1.
+\newblock Prentice-{Hall}, Englewood Cliffs, NJ.
+
+\bibitem[\protect\citename{{American Psychological Association}}1983]{APA:83}
+{American Psychological Association}.
+\newblock 1983.
+\newblock {\em Publications Manual}.
+\newblock American Psychological Association, Washington, DC.
+
+\bibitem[\protect\citename{{Association for Computing Machinery}}1983]{ACM:83}
+{Association for Computing Machinery}.
+\newblock 1983.
+\newblock {\em Computing Reviews}, 24(11):503--512.
+
+\bibitem[\protect\citename{Chandra \bgroup et al.\egroup }1981]{Chandra:81}
+Ashok~K. Chandra, Dexter~C. Kozen, and Larry~J. Stockmeyer.
+\newblock 1981.
+\newblock Alternation.
+\newblock {\em Journal of the Association for Computing Machinery},
+  28(1):114--133.
+
+\bibitem[\protect\citename{Gusfield}1997]{Gusfield:97}
+Dan Gusfield.
+\newblock 1997.
+\newblock {\em Algorithms on Strings, Trees and Sequences}.
+\newblock Cambridge University Press, Cambridge, UK.
+
+\end{thebibliography}
+
+\end{document}
