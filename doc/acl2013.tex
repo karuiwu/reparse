@@ -45,12 +45,24 @@
 \end{abstract}
 
 
-\newpage
 
 
 
 \section{Introduction}
 
+\begin{itemize}
+\item What dependency parsing is. Its a way to parse sentences to construct dependency trees.
+
+\item Dependency parsers have issues when the "greedy" decision is not always optimal. In fact, parsing decisions may cause errors further down the line in things like garden path sentences. In order to parse these sentences well, dependency parsers may rely on a beam to search for an optimal parse. 
+
+\item We introduce additional revision actions to be included with dependency parsers, that will increase our parsing accuracy and thus will allow parsers to run with smaller beam sizes for speed.
+
+
+\end{itemize}
+
+
+
+\section{Previous Work}
 
 
 \section{Arc Eager Dependency Parsing}
@@ -80,6 +92,8 @@
 
 
 \section{examples of latex things:}
+
+\newpage
 
 \begin{itemize}
 \item Left and right margins: 2.5 cm
