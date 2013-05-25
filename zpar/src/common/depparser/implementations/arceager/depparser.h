@@ -66,7 +66,7 @@ private:
     * Edited by JK
     */
 
-   DynamicOracle oracle;
+   DynamicOracle *oracle;
    CCoNLLInput conllSentence;
 
    //end
@@ -84,7 +84,7 @@ public:
        * Edited by JK
        */
 
-      oracle = DynamicOracle();
+      oracle = new DynamicOracle;
       conllSentence = CCoNLLInput();
 
       //end
@@ -95,6 +95,8 @@ public:
       delete m_Agenda;
       delete m_Beam;
       delete m_weights;
+
+      delete oracle;
    }
    CDepParser( CDepParser &depparser) : CDepParserBase(depparser) { 
       assert(1==0);

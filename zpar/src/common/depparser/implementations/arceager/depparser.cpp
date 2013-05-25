@@ -629,7 +629,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	/**
 	 * Edited by JK
 	 */
-	oracle.readInSentence(conllSentence);
+	oracle->readInSentence(conllSentence);
 	//end
 
 	// initialise agenda
@@ -687,7 +687,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		// iterate generators
 		for (int j = 0; j < m_Agenda->generatorSize(); ++j) {
 			// Every time we iterate through generators, we can save the previous state of the stack.
-			tempPGeneratorPointer->saveCurrentStacksToPrevious();
+			//tempPGeneratorPointer->saveCurrentStacksToPrevious();
 //			pGenerator->saveCurrentStacksToPrevious();
 
 			// for the state items that already contain all words
@@ -756,6 +756,45 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			// insert item
 			for (unsigned i = 0; i < m_Beam->size(); ++i) {
 				pCandidate = *pGenerator;
+
+				/**
+				 * Edited by JK
+				 */
+				std::vector<int> buffer;
+				if (pCandidate.NextWord < length-1) {
+				  buffer.push_back(pCandidate.NextWord);
+				}
+
+				if (!pCandidate.Stack.empty() && pCandidate.Stack.back() == DEPENDENCY_LINK_NO_HEAD) {
+				  oracle->noReduce = true;
+				}
+				std::vector<int> actions = oracle->nextAction(pCandidate.Stack, buffer);
+				int action;
+#ifdef LABELED
+				action = action::getUnlabeledAction(m_Beam->item(i)->action);
+#else
+				action = m_Beam->item(i)->action & INT_MAX;
+#endif
+
+				if (DEBUG) {
+				  std::cout << "Possible actions: ";
+				  for (int j=0; j < actions.size(); j++) {
+				    std::cout << actions.at(j) << " ";
+				  }
+				  std::cout << std::endl;
+				  std::cout << "Action: " << action << std::endl;
+				}
+
+				if (oracle->isOracleAction(actions, action)) {
+				  std::cout << "1" << std::endl;
+				}
+				else {
+				  std::cout << "0" << std::endl;
+				}
+
+				// features
+				//end
+
 				pCandidate.score = m_Beam->item(i)->score;
 				pCandidate.Move(m_Beam->item(i)->action);
 				m_Agenda->pushCandidate(&pCandidate);
@@ -828,20 +867,6 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			pGenerator->GenerateTree(sentence, retval[i]);
 			if (scores)
 				scores[i] = pGenerator->score;
-
-			/**
-			 * Edited by JK
-			 */
-			std::vector<int> buffer;
-			buffer.push_back(pGenerator->previous_m_nNextWord);
-			std::vector<int> actions = oracle.nextAction(pGenerator->previous_m_Stack, buffer);
-
-			std::cout << "Possible actions: " << std::endl;
-			for (int j=0; j < actions.size(); j++) {
-			  std::cout << actions.at(j) << std::endl;
-			}
-
-			//end
 		}
 	}TRACE("Done, the highest score is: " << m_Agenda->bestGenerator()->score ) ;TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
 }

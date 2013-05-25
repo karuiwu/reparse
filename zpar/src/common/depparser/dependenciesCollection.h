@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <iostream>
 
 enum { CONLLFIELD_ID = 0, CONLLFIELD_FORM, CONLLFIELD_LEMMA,
 	   CONLLFIELD_CPOSTAG, CONLLFIELD_POSTAG, CONLLFIELD_FEATS,
@@ -23,15 +24,17 @@ typedef std::vector<std::vector<std::string> > sentence_t;
 typedef std::pair<int, int> parent_relation_t;
 typedef std::pair<int, std::vector<int> > sibling_relation_t;
 
+#define DEBUG false
+
 class DependenciesCollection {
   public:
     DependenciesCollection() {
-    	  leftChildren.push_back(siblings_t());
-    	  rightChildren.push_back(siblings_t());
-    	  parents.push_back(parent_t());
+    	  leftChildren.push_back(std::map<int, std::vector<int> >());
+    	  rightChildren.push_back(std::map<int, std::vector<int> >());
+    	  parents.push_back(std::map<int,int>());
     	  numSentences = 0;
     }
-    //~DependenciesCollection();
+    ~DependenciesCollection() {};
     siblings_t getLeftChildren(int sentence);
     siblings_t getRightChildren(int sentence);
     parent_t getParent(int sentence);

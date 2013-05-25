@@ -68,6 +68,9 @@ public:
 	std::vector<int> previous_m_HeadStack;
 	int previous_m_nNextWord;
 
+	std::vector<int> Stack;
+	int NextWord;
+
 	void saveCurrentStacksToPrevious() {
 		previous_m_Stack = std::vector<int>(m_Stack);
 		previous_m_HeadStack = std::vector<int>(m_HeadStack);
@@ -221,6 +224,12 @@ public:
 
 	void operator =(const CStateItem &item) {
 		m_Stack = item.m_Stack;
+
+		/* Edited by JK */
+		Stack = item.m_Stack;
+		NextWord = item.m_nNextWord;
+		//end
+
 		m_HeadStack = item.m_HeadStack;
 		m_nNextWord = item.m_nNextWord;
 		m_nLastAction = item.m_nLastAction;
@@ -343,6 +352,7 @@ public:
 
 	// the move action is a simple call to do action according to the action code
 	void Move(const unsigned long &ac) {
+		saveCurrentStacksToPrevious();
 #ifdef LABELED
 		switch (action::getUnlabeledAction(ac)) {
 #else

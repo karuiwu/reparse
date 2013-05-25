@@ -86,8 +86,8 @@ include Makefile.common
 
 INCLUDES = -I$(SRC_INCLUDES)
 
-CXX = g++
-CXXFLAGS = -W -O3 $(INCLUDES) $(DEBUG)
+CXX = g++ 
+CXXFLAGS = -W $(INCLUDES) $(DEBUG) -g #-O3
 
 LD=$(CXX)
 LDFLAGS =
