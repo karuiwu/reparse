@@ -12,6 +12,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <stdlib.h>
 
 enum { CONLLFIELD_ID = 0, CONLLFIELD_FORM, CONLLFIELD_LEMMA,
 	   CONLLFIELD_CPOSTAG, CONLLFIELD_POSTAG, CONLLFIELD_FEATS,

@@ -266,6 +266,23 @@ public:
 		m_Stack.pop_back();
 		m_HeadStack.pop_back();
 		m_lHeads[left] = m_nNextWord;
+
+
+//		std::cout << "m_Stack: " << std::endl;
+//		for( std::vector<int>::const_iterator i = m_Stack.begin(); i != m_Stack.end(); ++i)
+//		    std::cout << *i << ' ';
+//		std::cout << std::endl;
+//
+//		std::cout << "m_HeadStack: " << std::endl;
+//		for( std::vector<int>::const_iterator i = m_HeadStack.begin(); i != m_HeadStack.end(); ++i)
+//		    std::cout << *i << ' ';
+//		std::cout << std::endl;
+//		std::cout << std::endl;
+
+
+
+
+
 #ifdef LABELED
 		m_lLabels[left] = lab;
 		m_lDepTagL[m_nNextWord].add(lab);

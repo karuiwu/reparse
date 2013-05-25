@@ -58,9 +58,17 @@ english.depparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_ENGLISH_DEPPARSER) $(DIST_
 $(OBJECT_ENGLISH_DEPPARSER)/weight.o: $(OBJECT_ENGLISH_DEPPARSER) $(SRC_COMMON_DEPPARSER)/depparser_weight_base.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser_weight.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser_weight.cpp ./Makefile
 	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser_weight.cpp -o $(OBJECT_ENGLISH_DEPPARSER)/weight.o
 
+
+# dynamic oracle
+#$(OBJECT_DIR)/dynamicOracle.o: $(SRC_COMMON_DEPPARSER)/dynamicOracle.h ./Makefile
+#	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -TDTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/imp#lementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/dynamicOracle.cpp -o $(OBJECT_DIR)/dynamicOracle.o
+
+
+
 # the depparser object
-$(OBJECT_DIR)/english.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_COMMON_DEPPARSER)/depparser_base.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.cpp $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/state.h $(SRC_ENGLISH)/dep.h ./Makefile
+$(OBJECT_DIR)/english.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_COMMON_DEPPARSER)/depparser_base.h $(SRC_COMMON_DEPPARSER)/dependenciesCollection.h $(SRC_COMMON_DEPPARSER)/dependenciesCollection.cpp $(SRC_COMMON_DEPPARSER)/dynamicOracle.h $(SRC_COMMON_DEPPARSER)/dynamicOracle.cpp  $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.cpp $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/state.h $(SRC_ENGLISH)/dep.h ./Makefile
 	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/english.depparser.o
+
 
 # the main executable
 $(DIST_ENGLISH_DEPPARSER)/depparser: $(SRC_COMMON_DEPPARSER)/main.cpp $(OBJECT_DIR)/english.depparser.o $(OBJECT_ENGLISH_DEPPARSER)/weight.o $(OBJECTS)

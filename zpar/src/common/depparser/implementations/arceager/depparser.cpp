@@ -961,7 +961,7 @@ void CDepParser::parse_conll(const CCoNLLInput &sentence, CCoNLLOutput *retval,
 	/**
 	 * Edited by JK
 	 */
-	conllSentence = sentence;
+//	conllSentence = sentence;
 	//end
 
 	sentence.toTwoStringVector(input);
