@@ -792,13 +792,51 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				  std::cout << "0" << std::endl;
 				}
 
+				if (DEBUG && false) {
+					std::cout << "Children: " << std::endl;
+					siblings_t children = pCandidate.m_Children;
+					for(siblings_t::const_iterator it = children.begin(); it != children.end(); it++)
+					{
+					  std::cout << "(" << it->first << ", " << "{ ";
+					  for(std::vector<int>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); vec_it++) {
+						  std::cout << *vec_it << " ";
+					  }
+					  std::cout << "}) ";
+					}
+					std::cout << std::endl;
+				}
+
 				// features
 				//end
 
 				pCandidate.score = m_Beam->item(i)->score;
 				pCandidate.Move(m_Beam->item(i)->action);
-				m_Agenda->pushCandidate(&pCandidate);
 
+				std::vector<int> stackAfter = pCandidate.Stack;
+
+				/**
+				 * Edited by JK
+				 */
+				int ngram = 3;
+				// Feature 0: POS Tags
+
+				// Feature 1: Arc-Features
+				std::vector<std::vector<std::string> > arcs;
+				siblings_t children = pCandidate.m_Children;
+				for (int k=0; k<stackAfter.size(); ++k) {
+					arcs.push_back(std::vector<std::string>());
+					int item = stackAfter.at(k);
+					siblings_t::iterator it = children.find(item);
+					arcs.push_back(std::vector<std::string>());
+					if (it != children.end()) {
+					  for(std::vector<int>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); vec_it++) {
+						  arcs.back().push_back("(" + item + ", " + *vec_it + ")");
+					  }
+					}
+				}
+				//end
+
+				m_Agenda->pushCandidate(&pCandidate);
 			}
 
 			if (bTrain && *pGenerator == correctState) {
@@ -961,7 +999,7 @@ void CDepParser::parse_conll(const CCoNLLInput &sentence, CCoNLLOutput *retval,
 	/**
 	 * Edited by JK
 	 */
-//	conllSentence = sentence;
+	conllSentence = sentence;
 	//end
 
 	sentence.toTwoStringVector(input);

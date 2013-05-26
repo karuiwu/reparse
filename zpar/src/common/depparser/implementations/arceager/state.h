@@ -67,6 +67,7 @@ public:
 	std::vector<int> previous_m_Stack;
 	std::vector<int> previous_m_HeadStack;
 	int previous_m_nNextWord;
+	std::map<int, std::vector<int> > m_Children;
 
 	std::vector<int> Stack;
 	int NextWord;
@@ -219,6 +220,12 @@ public:
 		m_HeadStack.clear();
 		score = 0;
 		m_nLastAction = action::NO_ACTION;
+
+		/**
+		 * Edited by JK
+		 */
+		m_Children.clear();
+
 		ClearNext();
 	}
 
@@ -232,6 +239,10 @@ public:
 
 		m_HeadStack = item.m_HeadStack;
 		m_nNextWord = item.m_nNextWord;
+		/**
+		 * Edited by JK
+		 */
+		m_Children = item.m_Children;
 		m_nLastAction = item.m_nLastAction;
 		m_lCache = item.m_lCache;
 		score = item.score;
@@ -263,6 +274,17 @@ public:
 		assert(m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD);
 		static int left;
 		left = m_Stack.back();
+
+		/**
+		 * Edited by JK
+		 */
+		std::map<int, std::vector<int> >::iterator it = m_Children.find(m_nNextWord);
+		if (it == m_Children.end()) {
+			m_Children.insert(std::map<int, std::vector<int> >::value_type(m_nNextWord, std::vector<int>()));
+		}
+		m_Children[m_nNextWord].push_back(left);
+		//end
+
 		m_Stack.pop_back();
 		m_HeadStack.pop_back();
 		m_lHeads[left] = m_nNextWord;
@@ -308,6 +330,17 @@ public:
 		left = m_Stack.back();
 		m_Stack.push_back(m_nNextWord);
 		m_lHeads[m_nNextWord] = left;
+
+		/**
+		 * Edited by JK
+		 */
+		std::map<int, std::vector<int> >::iterator it = m_Children.find(left);
+		if (it == m_Children.end()) {
+			m_Children.insert(std::map<int, std::vector<int> >::value_type(left, std::vector<int>()));
+		}
+		m_Children[left].push_back(m_nNextWord);
+		//end
+
 #ifdef LABELED
 		m_lLabels[m_nNextWord] = lab;
 		m_lDepTagR[left].add(lab);
