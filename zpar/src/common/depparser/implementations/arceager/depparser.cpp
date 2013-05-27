@@ -575,8 +575,14 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			int parentID = conllSentenceTrain.at(i).head;
 			std::string parent = conllSentenceTrain.at(parentID).word;
 
+
+//			std::cout << "parentID: " << parentID << " childID: " << childID << std::endl;
+
 			//right child
 			if (childID > parentID) {
+//				std::cout << "test1" << std::endl;
+
+
 				std::map<std::string, std::vector<std::string> >::iterator right_it = rightTags.find(parent);
 				if (right_it == rightTags.end()) {
 					std::cout << "new item" << std::endl;
@@ -585,7 +591,9 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				}
 				rightTags[parent].push_back(tag);
 			}
-			else if (parentID < childID) {
+			else if (childID < parentID) {
+//				std::cout << "test2" << std::endl;
+
 				std::map<std::string, std::vector<std::string> >::iterator left_it = leftTags.find(parent);
 				if (left_it == leftTags.end()) {
 					leftTags.insert(std::map<std::string, std::vector<std::string> >::value_type(
@@ -658,7 +666,26 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 
 		}
 
-		std::cout << "Children: " << std::endl;
+
+
+
+
+
+		std::cout << "left Children: " << std::endl;
+
+
+		for (std::map<std::string, std::vector<std::string> >::const_iterator it = leftTags.begin(); it != leftTags.end(); ++it) {
+			std::cout << "(" << it->first << ", " << "{ ";
+			for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+				std::cout << *vec_it << " ";
+			}
+			std::cout << "}) ";
+		}
+		std::cout << std::endl;
+
+		std::cout << "right Children: " << std::endl;
+
+
 		for (std::map<std::string, std::vector<std::string> >::const_iterator it = rightTags.begin(); it != rightTags.end(); ++it) {
 			std::cout << "(" << it->first << ", " << "{ ";
 			for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
@@ -668,7 +695,6 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		}
 		std::cout << std::endl;
 
-//		std::cout << leftTags;
 
 		leftTags.clear();
 		rightTags.clear();
