@@ -270,6 +270,13 @@ public:
 #else
 	void ArcLeft() {
 #endif
+
+		/**
+		 * Edited by JK
+		 */
+		std::cout << "ACTION: ARCLEFT\n";
+//		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
+		//end
 		assert(m_Stack.size() > 0);
 		assert(m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD);
 		static int left;
@@ -278,9 +285,12 @@ public:
 		/**
 		 * Edited by JK
 		 */
-		std::map<int, std::vector<int> >::iterator it = m_Children.find(m_nNextWord);
+		std::map<int, std::vector<int> >::iterator it = m_Children.find(
+				m_nNextWord);
 		if (it == m_Children.end()) {
-			m_Children.insert(std::map<int, std::vector<int> >::value_type(m_nNextWord, std::vector<int>()));
+			m_Children.insert(
+					std::map<int, std::vector<int> >::value_type(m_nNextWord,
+							std::vector<int>()));
 		}
 		m_Children[m_nNextWord].push_back(left);
 		//end
@@ -289,25 +299,16 @@ public:
 		m_HeadStack.pop_back();
 		m_lHeads[left] = m_nNextWord;
 
-
-//		std::cout << "m_Stack: " << std::endl;
-//		for( std::vector<int>::const_iterator i = m_Stack.begin(); i != m_Stack.end(); ++i)
-//		    std::cout << *i << ' ';
-//		std::cout << std::endl;
-//
-//		std::cout << "m_HeadStack: " << std::endl;
-//		for( std::vector<int>::const_iterator i = m_HeadStack.begin(); i != m_HeadStack.end(); ++i)
-//		    std::cout << *i << ' ';
-//		std::cout << std::endl;
-//		std::cout << std::endl;
-
-
-
-
-
 #ifdef LABELED
 		m_lLabels[left] = lab;
 		m_lDepTagL[m_nNextWord].add(lab);
+
+		// JUNEKI: Just poking around dependency labels objects.
+		// CSetOfTags<CDependencyLabel> depTagLabel_left = m_lDepTagL[m_nNextWord];
+		// depTagLabel_left is the arc label to the next word.
+		// std::cout << "LEFT: " << depTagLabel_left << std::endl << std::endl;
+		//end
+
 #endif
 		m_lSibling[left] = m_lDepsL[m_nNextWord];
 		m_lDepsL[m_nNextWord] = left;
@@ -317,6 +318,46 @@ public:
 #else
 		m_nLastAction = action::encodeAction(action::ARC_LEFT);
 #endif
+
+		/**
+		 * Edited by JK
+		 */
+//		std::cout << "m_Stack: ";
+//		for (std::vector<int>::const_iterator i = m_Stack.begin();
+//				i != m_Stack.end(); ++i)
+//			std::cout << *i << ' ';
+//		std::cout << std::endl;
+//
+//		std::cout << "m_HeadStack: ";
+//		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
+//				i != m_HeadStack.end(); ++i)
+//			std::cout << *i << ' ';
+//		std::cout << std::endl;
+//
+//		std::cout << "m_lHeads: ";
+//		for (int i = 0; i < MAX_SENTENCE_SIZE/2; i++) {
+//			std::cout << m_lHeads[i] << " ";
+//		}
+//		std::cout << std::endl;
+//
+//		int nextWordChild = -1;
+//		for(int i = 0; i<MAX_SENTENCE_SIZE; i++){
+//			if (m_lHeads[i] == m_nNextWord){
+//				nextWordChild = i;
+//			}
+//		}
+//#ifdef LABELED
+//		std::cout << std::endl;
+//		std::cout << "m_lLabels: ";
+//		for(int i = 0; i<MAX_SENTENCE_SIZE/2; i++){
+//			std::cout << m_lLabels[i] << m_lDepTagL[i] << " ";
+//		}
+//		std::cout << std::endl;
+//#endif
+//		std::cout << "(" <<"child: " << nextWordChild << "," << "parent: " <<m_lHeads[m_nNextWord]<< ")";
+//		std::cout << std::endl;
+//		std::cout << std::endl;
+		//end
 	}
 
 	// the arc right action links the next word to the current stack top with pushing
@@ -325,6 +366,14 @@ public:
 #else
 	void ArcRight() {
 #endif
+
+		/**
+		 * Edited by JK
+		 */
+		std::cout << "ACTION: ARCRIGHT\n";
+//		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
+		//end
+
 		assert(m_Stack.size() > 0);
 		static int left;
 		left = m_Stack.back();
@@ -336,7 +385,9 @@ public:
 		 */
 		std::map<int, std::vector<int> >::iterator it = m_Children.find(left);
 		if (it == m_Children.end()) {
-			m_Children.insert(std::map<int, std::vector<int> >::value_type(left, std::vector<int>()));
+			m_Children.insert(
+					std::map<int, std::vector<int> >::value_type(left,
+							std::vector<int>()));
 		}
 		m_Children[left].push_back(m_nNextWord);
 		//end
@@ -344,6 +395,12 @@ public:
 #ifdef LABELED
 		m_lLabels[m_nNextWord] = lab;
 		m_lDepTagR[left].add(lab);
+
+		// JUNEKI: Just poking around dependency labels objects.
+//		CSetOfTags<CDependencyLabel> depTagLabel_right = m_lDepTagR[m_nNextWord];
+//		std::cout << "RIGHT: " << depTagLabel_right << std::endl;
+//		std::cout << std::endl;
+
 #endif
 		m_lSibling[m_nNextWord] = m_lDepsR[left];
 		m_lDepsR[left] = m_nNextWord;
@@ -355,22 +412,108 @@ public:
 #else
 		m_nLastAction = action::encodeAction(action::ARC_RIGHT);
 #endif
+
+		/**
+		 * Edited by JK
+		 */
+//		std::cout << "m_Stack: ";
+//		for (std::vector<int>::const_iterator i = m_Stack.begin();
+//				i != m_Stack.end(); ++i)
+//			std::cout << *i << ' ';
+//		std::cout << std::endl;
+//
+//		std::cout << "m_HeadStack: ";
+//		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
+//				i != m_HeadStack.end(); ++i)
+//			std::cout << *i << ' ';
+//		std::cout << std::endl;
+//		std::cout << "m_lHeads: ";
+//		for (int i = 0; i < MAX_SENTENCE_SIZE/2; i++) {
+//			std::cout << m_lHeads[i] << " ";
+//		}
+//		std::cout << std::endl;
+//
+//		int nextWordChild = -1;
+//		for(int i = 0; i<MAX_SENTENCE_SIZE; i++){
+//			if (m_lHeads[i] == m_nNextWord){
+//				nextWordChild = i;
+//			}
+//		}
+//#ifdef LABELED
+//		std::cout << std::endl;
+//		std::cout << "m_lLabels: ";
+//		for(int i = 0; i<MAX_SENTENCE_SIZE/2; i++){
+//			std::cout << m_lLabels[i] << m_lDepTagR[i] << " ";
+//		}
+//		std::cout << std::endl;
+//#endif
+//		std::cout << "(" <<"child: " << nextWordChild << "," << "parent: " <<m_lHeads[m_nNextWord]<< ")";
+//
+//		std::cout << std::endl;
+//		std::cout << std::endl;
+		//end
 	}
 
 	// the shift action does pushing
 	void Shift() {
+
+		/**
+		 * Edited by JK
+		 */
+		std::cout << "ACTION: SHIFT\n";
+//		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
+		//end
 		m_Stack.push_back(m_nNextWord);
-		m_HeadStack.push_back(m_nNextWord);
+		m_HeadStack.push_back(m_nNextWord); // look at this next
 		m_nNextWord++;
 		ClearNext();
 		m_nLastAction = action::encodeAction(action::SHIFT);
+
+		/**
+		 * Edited by JK
+		 */
+//		std::cout << "m_Stack: ";
+//		for (std::vector<int>::const_iterator i = m_Stack.begin();
+//				i != m_Stack.end(); ++i)
+//			std::cout << *i << ' ';
+//		std::cout << std::endl;
+//
+//		std::cout << "m_HeadStack: ";
+//		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
+//				i != m_HeadStack.end(); ++i)
+//			std::cout << *i << ' ';
+//		std::cout << std::endl << std::endl;
+		//end
 	}
 
 	// the reduce action does popping
 	void Reduce() {
+
+		/**
+		 * Edited by JK
+		 */
+		std::cout << "ACTION: REDUCE\n";
+		// end
+
 		assert(m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD);
 		m_Stack.pop_back();
 		m_nLastAction = action::encodeAction(action::REDUCE);
+
+		/**
+		 * Edited by JK
+		 */
+//		std::cout << "m_Stack: ";
+//		for (std::vector<int>::const_iterator i = m_Stack.begin();
+//				i != m_Stack.end(); ++i)
+//			std::cout << *i << ' ';
+//		std::cout << std::endl;
+//
+//		std::cout << "m_HeadStack: ";
+//		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
+//				i != m_HeadStack.end(); ++i)
+//			std::cout << *i << ' ';
+//		std::cout << std::endl << std::endl;
+		//end
 	}
 
 	// this is used for the convenience of scoring and updating

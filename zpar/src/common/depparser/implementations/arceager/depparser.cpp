@@ -761,14 +761,16 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				 * Edited by JK
 				 */
 				std::vector<int> buffer;
-				if (pCandidate.NextWord < length-1) {
-				  buffer.push_back(pCandidate.NextWord);
+				if (pCandidate.NextWord < length - 1) {
+					buffer.push_back(pCandidate.NextWord);
 				}
 
-				if (!pCandidate.Stack.empty() && pCandidate.Stack.back() == DEPENDENCY_LINK_NO_HEAD) {
-				  oracle->noReduce = true;
+				if (!pCandidate.Stack.empty()
+						&& pCandidate.Stack.back() == DEPENDENCY_LINK_NO_HEAD) {
+					oracle->noReduce = true;
 				}
-				std::vector<int> actions = oracle->nextAction(pCandidate.Stack, buffer);
+				std::vector<int> actions = oracle->nextAction(pCandidate.Stack,
+						buffer);
 				int action;
 #ifdef LABELED
 				action = action::getUnlabeledAction(m_Beam->item(i)->action);
@@ -777,31 +779,32 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 #endif
 
 				if (DEBUG) {
-				  std::cout << "Possible actions: ";
-				  for (int j=0; j < actions.size(); j++) {
-				    std::cout << actions.at(j) << " ";
-				  }
-				  std::cout << std::endl;
-				  std::cout << "Action: " << action << std::endl;
+					std::cout << "Possible actions: ";
+					for (int j = 0; j < actions.size(); j++) {
+						std::cout << actions.at(j) << " ";
+					}
+					std::cout << std::endl;
+					std::cout << "Action: " << action << std::endl;
 				}
 
 				if (oracle->isOracleAction(actions, action)) {
-				  std::cout << "1" << std::endl;
-				}
-				else {
-				  std::cout << "0" << std::endl;
+					std::cout << "1" << std::endl;
+				} else {
+					std::cout << "0" << std::endl;
 				}
 
 				if (DEBUG && false) {
 					std::cout << "Children: " << std::endl;
 					siblings_t children = pCandidate.m_Children;
-					for(siblings_t::const_iterator it = children.begin(); it != children.end(); it++)
-					{
-					  std::cout << "(" << it->first << ", " << "{ ";
-					  for(std::vector<int>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); vec_it++) {
-						  std::cout << *vec_it << " ";
-					  }
-					  std::cout << "}) ";
+					for (siblings_t::const_iterator it = children.begin();
+							it != children.end(); it++) {
+						std::cout << "(" << it->first << ", " << "{ ";
+						for (std::vector<int>::const_iterator vec_it =
+								it->second.begin(); vec_it != it->second.end();
+								vec_it++) {
+							std::cout << *vec_it << " ";
+						}
+						std::cout << "}) ";
 					}
 					std::cout << std::endl;
 				}
@@ -820,20 +823,50 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				int ngram = 3;
 				// Feature 0: POS Tags
 
-				// Feature 1: Arc-Features
-				std::vector<std::vector<std::string> > arcs;
-				siblings_t children = pCandidate.m_Children;
-				for (int k=0; k<stackAfter.size(); ++k) {
-					arcs.push_back(std::vector<std::string>());
-					int item = stackAfter.at(k);
-					siblings_t::iterator it = children.find(item);
-					arcs.push_back(std::vector<std::string>());
-					if (it != children.end()) {
-					  for(std::vector<int>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); vec_it++) {
-						  arcs.back().push_back("(" + item + ", " + *vec_it + ")");
-					  }
-					}
+				// Here are the POS tags for the sentence.
+//				std::cout << "m_lCacheCoNLLCPOS: ";
+//				for (int j = 0; j < sentence.size(); j++) {
+//					std::cout << m_lCacheCoNLLCPOS[j] << " ";
+//				}
+//				std::cout << std::endl;
+//
+//				std::cout << "pCandidate.Stack: ";
+//				for (int j = 0; j < pCandidate.Stack.size(); j++) {
+//					std::cout << pCandidate.Stack[j] << " ";
+//				}
+//				std::cout << std::endl;
+
+				std::cout << "Trigram of stack: ";
+				int j = pCandidate.Stack.size() - ngram;
+				if (j < 0) {
+					j = 0;
 				}
+				while (j < pCandidate.Stack.size()) {
+					int sentenceIndex = pCandidate.Stack[j];
+					CCoNLLCPOS sentenceTag = m_lCacheCoNLLCPOS[sentenceIndex];
+					std::cout << pCandidate.Stack[j] << ":" << sentenceTag
+							<< ", ";
+					j++;
+				}
+				std::cout << std::endl;
+
+				// Feature 1: Arc-Features
+//				std::vector<std::vector<std::string> > arcs;
+//				siblings_t children = pCandidate.m_Children;
+//				for (int k = 0; k < stackAfter.size(); ++k) {
+//					arcs.push_back(std::vector<std::string>());
+//					int item = stackAfter.at(k);
+//					siblings_t::iterator it = children.find(item);
+//					arcs.push_back(std::vector<std::string>());
+//					if (it != children.end()) {
+//						for (std::vector<int>::const_iterator vec_it =
+//								it->second.begin(); vec_it != it->second.end();
+//								vec_it++) {
+//							arcs.back().push_back(
+//									"(" + item + ", " + *vec_it + ")");
+//						}
+//					}
+//				}
 				//end
 
 				m_Agenda->pushCandidate(&pCandidate);
@@ -849,12 +882,10 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 
 		}
 
-
 		// JUNEKI: m_Agenda is the "global" beam. Each element in the beam is a CStateItem.
 		// JUNEKI: CStateItems are instances of a dependency parser.
 		// JUNEKI: pGenerator is a CStateItem
 		// JUNEKI: m_Beam is the "local" beam of possible actions to take for a particular dependency parser.
-
 
 //		std::cout << " A ";
 //		CStateItem* firstGenerator = m_Agenda->generator(0);
@@ -864,14 +895,13 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 //		}
 //		std::cout << std::endl;
 
-
-
 		// when we are doing training, we need to consider the standard move and update
 		if (bTrain) {
 #ifdef EARLY_UPDATE
 			if (!bCorrect) {
 				TRACE("Error at the "<<correctState.size()<<"th word; total is "<<correct.size())
-				updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1);
+				updateScoresForStates(m_Agenda->bestGenerator(), &correctState,
+						1, -1);
 				return;
 			}
 #endif

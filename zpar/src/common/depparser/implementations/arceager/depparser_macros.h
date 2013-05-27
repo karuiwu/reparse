@@ -22,8 +22,13 @@ typedef long SCORE_TYPE ;
 // supertag
 #define SR_SUPERTAG 1
 
+
+// JUNEKI: THIS IS THE SIZE OF THE BEAM:
 // The size of agenda
+//const unsigned AGENDA_SIZE = 64 ;
 const unsigned AGENDA_SIZE = 1 ;
+
+
 
 // The size of a sentence and the words
 const unsigned MAX_SENTENCE_SIZE = 256 ; 

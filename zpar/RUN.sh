@@ -9,8 +9,9 @@
 
 
 # Parsing step
-dist/generic.depparser/depparser data/INPUT data/output_small.txt model
-#dist/generic.depparser/depparser data/english_bnews_test.conll data/outputTemp.txt model
+#dist/generic.depparser/depparser data/INPUT data/output_small.txt model
+#dist/generic.depparser/depparser -c data/english_bnews_test.conll_head data/outputTemp.txt_small model_beam1
+dist/generic.depparser/depparser -c data/input2.txt data/outputTemp.txt_small model_beam1
 
 # #Evaluation step
 #python data/evaluate.py data/output.txt data/reference.txt
