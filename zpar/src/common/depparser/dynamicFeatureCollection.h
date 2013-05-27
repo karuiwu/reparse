@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <sstream>
 
+#include "linguistics/conll.h"
+
 enum { ARCFEATURES = 0 };
 
 typedef std::map<int, std::vector<int> > siblings_t;
@@ -23,7 +25,9 @@ class DynamicFeatureCollection {
 public:
 	DynamicFeatureCollection();
 	virtual ~DynamicFeatureCollection();
-	void makeFeatures(std::vector<int> stack, std::vector<int> buffer, siblings_t children);//, parent_t parents);
+	void makeFeatures(std::vector<int> stack, std::vector<int> buffer,
+			siblings_t children, std::vector<CCoNLLCPOS> tags);//, parent_t parents);
+	void posFeatures();
 	void arcFeatures();
 	void readInFeature(std::vector<std::string> feature);
 	void printFeatures();
@@ -35,7 +39,7 @@ public:
 	std::vector<int> m_buffer;
 	siblings_t m_children;
 	parent_t m_parents;
-
+	std::vector<CCoNLLCPOS> m_tags;
 };
 
 #endif /* DYNAMICFEATURECOLLECTION_H_ */

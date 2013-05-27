@@ -887,57 +887,12 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				 * Edited by JK
 				 */
 				featureCollection->makeFeatures(pCandidate.Stack,
-						std::vector<int>(), pCandidate.m_Children);
+						std::vector<int>(), pCandidate.m_Children,
+						m_lCacheCoNLLCPOS);
+
 				featureCollection->printFeatures();
 				featureCollection->clear();
 				// Feature 0: POS Tags
-
-				int ngram = 3;
-				// Here are the POS tags for the sentence.
-//				std::cout << "m_lCacheCoNLLCPOS: ";
-//				for (int j = 0; j < sentence.size(); j++) {
-//					std::cout << m_lCacheCoNLLCPOS[j] << " ";
-//				}
-//				std::cout << std::endl;
-//
-//				std::cout << "pCandidate.Stack: ";
-//				for (int j = 0; j < pCandidate.Stack.size(); j++) {
-//					std::cout << pCandidate.Stack[j] << " ";
-//				}
-//				std::cout << std::endl;
-
-				std::cout << "Trigram of stack: ";
-				int j = pCandidate.Stack.size() - ngram;
-				if (j < 0) {
-					j = 0;
-				}
-				while (j < pCandidate.Stack.size()) {
-					int sentenceIndex = pCandidate.Stack[j];
-					CCoNLLCPOS sentenceTag = m_lCacheCoNLLCPOS[sentenceIndex];
-					std::cout << pCandidate.Stack[j] << ":" << sentenceTag
-							<< ", ";
-					j++;
-				}
-				std::cout << std::endl;
-
-				// Feature 1: Arc-Features
-//				std::vector<std::vector<std::string> > arcs;
-//				siblings_t children = pCandidate.m_Children;
-//				for (int k = 0; k < stackAfter.size(); ++k) {
-//					arcs.push_back(std::vector<std::string>());
-//					int item = stackAfter.at(k);
-//					siblings_t::iterator it = children.find(item);
-//					arcs.push_back(std::vector<std::string>());
-//					if (it != children.end()) {
-//						for (std::vector<int>::const_iterator vec_it =
-//								it->second.begin(); vec_it != it->second.end();
-//								vec_it++) {
-//							arcs.back().push_back(
-//									"(" + item + ", " + *vec_it + ")");
-//						}
-//					}
-//				}
-				//end
 
 				m_Agenda->pushCandidate(&pCandidate);
 			}

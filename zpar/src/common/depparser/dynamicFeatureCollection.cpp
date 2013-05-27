@@ -21,13 +21,49 @@ DynamicFeatureCollection::~DynamicFeatureCollection() {
  * Feature Zero: Base features
  * - POS tags on the stack and buffer
  */
-void DynamicFeatureCollection::makeFeatures(std::vector<int> stack, std::vector<int> buffer, siblings_t children) {//, parent_t parents) {
+void DynamicFeatureCollection::makeFeatures(std::vector<int> stack, std::vector<int> buffer,
+		siblings_t children, std::vector<CCoNLLCPOS> tags) {//, parent_t parents) {
 	m_stack = stack;
 	m_buffer = buffer;
 	m_children = children;
+	m_tags = tags;
 	//m_parents = parents;
 
+	posFeatures();
 	arcFeatures();
+}
+
+void DynamicFeatureCollection::posFeatures() {
+	int ngram = 3;
+	// Here are the POS tags for the sentence.
+//				std::cout << "m_lCacheCoNLLCPOS: ";
+//				for (int j = 0; j < sentence.size(); j++) {
+//					std::cout << m_lCacheCoNLLCPOS[j] << " ";
+//				}
+//				std::cout << std::endl;
+//
+//				std::cout << "pCandidate.Stack: ";
+//				for (int j = 0; j < pCandidate.Stack.size(); j++) {
+//					std::cout << pCandidate.Stack[j] << " ";
+//				}
+//				std::cout << std::endl;
+
+	//std::cout << "Trigram of stack: ";
+	std::vector<std::string> tagFeatures;
+	int j = m_stack.size()-ngram;
+	if (j < 0) {
+		j = 0;
+	}
+	while (j < m_stack.size()) {
+		int sentenceIndex = m_stack[j];
+		CCoNLLCPOS sentenceTag = m_tags[sentenceIndex];
+		tagFeatures.push_back(sentenceTag.str());
+		j++;
+	}
+
+
+
+	features.push_back(tagFeatures);
 }
 
 void DynamicFeatureCollection::arcFeatures() {
