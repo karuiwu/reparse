@@ -70,6 +70,7 @@ private:
    DynamicOracle *oracle;
    DynamicFeatureCollection *featureCollection;
    CCoNLLInput conllSentence;
+   CCoNLLOutput conllSentenceTrain;
 
    std::map <std::string, std::vector<std::string> > leftTags;
    std::map <std::string, std::vector<std::string> > rightTags;
@@ -91,6 +92,7 @@ public:
       oracle = new DynamicOracle;
       featureCollection = new DynamicFeatureCollection;
       conllSentence = CCoNLLInput();
+      conllSentenceTrain = CCoNLLOutput();
 
       //end
 

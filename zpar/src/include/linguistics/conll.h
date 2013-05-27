@@ -92,10 +92,12 @@ inline std::istream & operator >> (std::istream &is, CCoNLLInputNode &node) {
    /**
     * Edited by JK
     */
+   int where = is.tellg();
    getline(is, line, '\t');
    ASSERT(is && !line.empty(), "Not well formatted CoNLL data (head not found)");
    std::istringstream iss_head(line);
    iss_head >> node.head;
+   is.seekg(where);
    //end
 
    return is ;
