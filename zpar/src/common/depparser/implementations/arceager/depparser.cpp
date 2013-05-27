@@ -562,10 +562,78 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		CDependencyParse *retval, const CDependencyParse &correct, int nBest,
 		SCORE_TYPE *scores) {
 
-//	for (int i = 0; i < sentence.size(); i++) {
-//		std::pair<std::string, std::string> something = sentence[i];
-//		std::cout << something.first << " || " << something.second << std::endl;
-//	}
+	/**
+	 * Edited by JK
+	 */
+
+	bool temp = true;
+	if (bTrain) {
+		for (int i = 0; i < sentence.size(); i++) {
+			std::pair<std::string, std::string> sentenceTokenPair = sentence[i];
+			std::cout << sentenceTokenPair.first << " || "
+					<< sentenceTokenPair.second << std::endl;
+
+			std::string token = sentenceTokenPair.first;
+			std::string tag = sentenceTokenPair.second;
+
+			if (i > 0) {
+				std::pair<std::string, std::string> previousSentenceTokenPair =
+						sentence[i - 1];
+				std::string previousTag = previousSentenceTokenPair.second;
+
+				std::map<std::string, std::vector<std::string> >::iterator it =
+						leftTags.find(token);
+				if (it == leftTags.end()) {
+					leftTags.insert(
+							std::map<std::string, std::vector<std::string> >::value_type(
+									token, std::vector<std::string>()));
+				}
+				std::vector<std::string> tokenLeftTags = leftTags[token];
+				bool found = false;
+				for (int j = 0; j < tokenLeftTags.size(); j++) {
+					if (tokenLeftTags[j] == previousTag) {
+						found = true;
+					}
+				}
+				if (!found) {
+					tokenLeftTags.push_back(previousTag);
+				}
+			}
+			if (i < sentence.size() - 1) {
+				std::pair<std::string, std::string> nextSentenceTokenPair =
+						sentence[i + 1];
+				std::string nextTag = nextSentenceTokenPair.second;
+
+				std::map<std::string, std::vector<std::string> >::iterator it =
+						rightTags.find(token);
+				if (it == rightTags.end()) {
+					rightTags.insert(
+							std::map<std::string, std::vector<std::string> >::value_type(
+									token, std::vector<std::string>()));
+				}
+
+				std::vector<std::string> tokenRightTags = leftTags[token];
+				bool found = false;
+				for (int j = 0; j < tokenRightTags.size(); j++) {
+					if (tokenRightTags[j] == nextTag) {
+						found = true;
+					}
+				}
+				if (!found) {
+					tokenRightTags.push_back(nextTag);
+				}
+
+				rightTags[token].push_back(nextTag);
+			}
+
+		}
+
+	}
+
+//	   std::map <std::string, std::vector<std::string> > leftTags;
+//	   std::map <std::string, std::vector<std::string> > rightTags;
+
+	//end
 
 #ifdef DEBUG
 	clock_t total_start_time = clock();
@@ -788,10 +856,9 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				}
 
 				if (oracle->isOracleAction(actions, action)) {
-				  std::cout << "1\t";
-				}
-				else {
-				  std::cout << "0\t";
+					std::cout << "1\t";
+				} else {
+					std::cout << "0\t";
 				}
 
 				if (DEBUG && false) {
@@ -819,7 +886,8 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				/**
 				 * Edited by JK
 				 */
-				featureCollection->makeFeatures(pCandidate.Stack, std::vector<int>(), pCandidate.m_Children);
+				featureCollection->makeFeatures(pCandidate.Stack,
+						std::vector<int>(), pCandidate.m_Children);
 				featureCollection->printFeatures();
 				featureCollection->clear();
 				// Feature 0: POS Tags

@@ -71,6 +71,8 @@ private:
    DynamicFeatureCollection *featureCollection;
    CCoNLLInput conllSentence;
 
+   std::map <std::string, std::vector<std::string> > leftTags;
+   std::map <std::string, std::vector<std::string> > rightTags;
    //end
 
 public:
