@@ -565,8 +565,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	/**
 	 * Edited by JK
 	 */
-
-	bool temp = true;
+//	bool temp = true;
 	if (bTrain) {
 		std::cout << conllSentenceTrain << std::endl;
 		//skips the ROOT
@@ -668,6 +667,12 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			std::cout << "}) ";
 		}
 		std::cout << std::endl;
+
+//		std::cout << leftTags;
+
+		leftTags.clear();
+		rightTags.clear();
+
 	}
 
 	//end
