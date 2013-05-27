@@ -568,7 +568,6 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 
 	bool temp = true;
 	if (bTrain) {
-		std::cout << conllSentenceTrain << std::endl;
 		//skips the ROOT
 		for (int i = 1; i < conllSentenceTrain.size(); i++) {
 			int childID = conllSentenceTrain.at(i).id;
@@ -580,7 +579,6 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			if (childID > parentID) {
 				std::map<std::string, std::vector<std::string> >::iterator right_it = rightTags.find(parent);
 				if (right_it == rightTags.end()) {
-					std::cout << "new item" << std::endl;
 					rightTags.insert(std::map<std::string, std::vector<std::string> >::value_type(
 							parent, std::vector<std::string>()));
 				}
@@ -915,16 +913,16 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 						}
 						std::cout << std::endl;
 					}
+				}
+				//end
 
-					// features
-					//end
+				pCandidate.score = m_Beam->item(i)->score;
+				pCandidate.Move(m_Beam->item(i)->action);
 
-					pCandidate.score = m_Beam->item(i)->score;
-					pCandidate.Move(m_Beam->item(i)->action);
-
-					/**
-					 * Edited by JK
-					 */
+				/**
+				 * Edited by JK
+				 */
+				if (!bTrain) {
 					featureCollection->makeFeatures(pCandidate.Stack,
 							std::vector<int>(), pCandidate.m_Children,
 							m_lCacheCoNLLCPOS);
@@ -933,6 +931,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 					featureCollection->clear();
 					// Feature 0: POS Tags
 				}
+				//end
 
 				m_Agenda->pushCandidate(&pCandidate);
 			}
