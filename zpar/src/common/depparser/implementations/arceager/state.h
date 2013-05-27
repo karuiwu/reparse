@@ -274,7 +274,7 @@ public:
 		/**
 		 * Edited by JK
 		 */
-		std::cout << "ACTION: ARCLEFT\n";
+//		std::cout << "ACTION: ARCLEFT\n";
 //		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
 		//end
 		assert(m_Stack.size() > 0);
@@ -370,7 +370,7 @@ public:
 		/**
 		 * Edited by JK
 		 */
-		std::cout << "ACTION: ARCRIGHT\n";
+//		std::cout << "ACTION: ARCRIGHT\n";
 //		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
 		//end
 
@@ -460,7 +460,7 @@ public:
 		/**
 		 * Edited by JK
 		 */
-		std::cout << "ACTION: SHIFT\n";
+//		std::cout << "ACTION: SHIFT\n";
 //		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
 		//end
 		m_Stack.push_back(m_nNextWord);
@@ -492,7 +492,7 @@ public:
 		/**
 		 * Edited by JK
 		 */
-		std::cout << "ACTION: REDUCE\n";
+//		std::cout << "ACTION: REDUCE\n";
 		// end
 
 		assert(m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD);
