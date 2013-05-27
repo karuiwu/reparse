@@ -571,25 +571,16 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		std::cout << conllSentenceTrain << std::endl;
 		//skips the ROOT
 		for (int i = 1; i < conllSentenceTrain.size(); i++) {
-			//std::cout << conllSentenceTrain.at(i) << std::endl;
-			/*std::cout << conllSentenceTrain.at(i).id << std::endl;
-			std::cout << conllSentenceTrain.at(i).head << std::endl;
-			std::cout << conllSentenceTrain.at(i).tag << std::endl;*/
-
 			int childID = conllSentenceTrain.at(i).id;
 			std::string tag = conllSentenceTrain.at(childID).tag;
 			int parentID = conllSentenceTrain.at(i).head;
 			std::string parent = conllSentenceTrain.at(parentID).word;
 
-			std::cout << childID << std::endl;
-			std::cout << tag << std::endl;
-			std::cout << parentID << std::endl;
-			std::cout << parent << std::endl;
-
 			//right child
 			if (childID > parentID) {
 				std::map<std::string, std::vector<std::string> >::iterator right_it = rightTags.find(parent);
 				if (right_it == rightTags.end()) {
+					std::cout << "new item" << std::endl;
 					rightTags.insert(std::map<std::string, std::vector<std::string> >::value_type(
 							parent, std::vector<std::string>()));
 				}
@@ -669,22 +660,14 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		}
 
 		std::cout << "Children: " << std::endl;
-		std::map<std::string, std::vector<std::string> > children = leftTags;
-		for (std::map<std::string, std::vector<std::string> >::const_iterator it = children.begin();
-				it != children.end(); it++) {
+		for (std::map<std::string, std::vector<std::string> >::const_iterator it = rightTags.begin(); it != rightTags.end(); ++it) {
 			std::cout << "(" << it->first << ", " << "{ ";
-			for (std::vector<std::string>::const_iterator vec_it =
-					it->second.begin(); vec_it != it->second.end();
-					vec_it++) {
+			for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
 				std::cout << *vec_it << " ";
 			}
 			std::cout << "}) ";
 		}
 		std::cout << std::endl;
-
-		leftTags.clear();
-		rightTags.clear();
-
 	}
 
 	//end
