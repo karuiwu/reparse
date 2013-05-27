@@ -94,7 +94,7 @@ $(OBJECT_GENERIC_DEPPARSER)/weight.o: $(OBJECT_GENERIC_DEPPARSER) $(SRC_GENERIC_
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_weight.cpp -o $(OBJECT_GENERIC_DEPPARSER)/weight.o
 
 # the depparser object
-$(OBJECT_DIR)/generic.depparser.o: $(SRC_GENERIC_DEPPARSER)/dynamicOracle.h $(SRC_GENERIC_DEPPARSER)/dependenciesCollection.h $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_DEPPARSER)/depparser_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/state.h ./Makefile
+$(OBJECT_DIR)/generic.depparser.o: $(SRC_GENERIC_DEPPARSER)/dynamicOracle.h $(SRC_GENERIC_DEPPARSER)/dependenciesCollection.h $(SRC_GENERIC_DEPPARSER)/dynamicFeatureCollection.h $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_DEPPARSER)/depparser_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/state.h ./Makefile
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/generic.depparser.o
 
 # the dynamic oracle
@@ -105,15 +105,19 @@ $(OBJECT_DIR)/dynamic.oracle.o: $(SRC_GENERIC_DEPPARSER)/dynamicOracle.h $(SRC_G
 $(OBJECT_DIR)/dependencies.collection.o: $(SRC_GENERIC_DEPPARSER)/dependenciesCollection.h $(SRC_GENERIC_DEPPARSER)/dependenciesCollection.cpp 
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/dependenciesCollection.cpp -o $(OBJECT_DIR)/dependencies.collection.o
 
+# the feature collection
+$(OBJECT_DIR)/feature.collection.o: $(SRC_GENERIC_DEPPARSER)/dynamicFeatureCollection.h $(SRC_GENERIC_DEPPARSER)/dynamicFeatureCollection.cpp 
+	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/dynamicFeatureCollection.cpp -o $(OBJECT_DIR)/feature.collection.o
+
 # the main executable
-$(DIST_GENERIC_DEPPARSER)/depparser: $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(SRC_GENERIC_DEPPARSER)/main.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
+$(DIST_GENERIC_DEPPARSER)/depparser: $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(SRC_GENERIC_DEPPARSER)/main.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/main.cpp -o $(OBJECT_GENERIC_DEPPARSER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/depparser $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/main.o $(OBJECTS)
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/depparser $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/main.o $(OBJECTS)
 
 # the trainer for depparser
-$(DIST_GENERIC_DEPPARSER)/train: $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(SRC_GENERIC_DEPPARSER)/train.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
+$(DIST_GENERIC_DEPPARSER)/train: $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(SRC_GENERIC_DEPPARSER)/train.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/train.cpp -o $(OBJECT_GENERIC_DEPPARSER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/train $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/train.o $(OBJECTS)
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/train $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/train.o $(OBJECTS)
 
 #===================================================================
 

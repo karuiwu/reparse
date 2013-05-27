@@ -788,9 +788,10 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				}
 
 				if (oracle->isOracleAction(actions, action)) {
-					std::cout << "1" << std::endl;
-				} else {
-					std::cout << "0" << std::endl;
+				  std::cout << "1\t";
+				}
+				else {
+				  std::cout << "0\t";
 				}
 
 				if (DEBUG && false) {
@@ -815,14 +816,15 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				pCandidate.score = m_Beam->item(i)->score;
 				pCandidate.Move(m_Beam->item(i)->action);
 
-				std::vector<int> stackAfter = pCandidate.Stack;
-
 				/**
 				 * Edited by JK
 				 */
-				int ngram = 3;
+				featureCollection->makeFeatures(pCandidate.Stack, std::vector<int>(), pCandidate.m_Children);
+				featureCollection->printFeatures();
+				featureCollection->clear();
 				// Feature 0: POS Tags
 
+				int ngram = 3;
 				// Here are the POS tags for the sentence.
 //				std::cout << "m_lCacheCoNLLCPOS: ";
 //				for (int j = 0; j < sentence.size(); j++) {

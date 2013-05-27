@@ -14,6 +14,7 @@
 
 #include "depparser_base.h"
 #include "dynamicOracle.h"
+#include "dynamicFeatureCollection.h"
 
 /*===============================================================
  *
@@ -67,6 +68,7 @@ private:
     */
 
    DynamicOracle *oracle;
+   DynamicFeatureCollection *featureCollection;
    CCoNLLInput conllSentence;
 
    //end
@@ -85,6 +87,7 @@ public:
        */
 
       oracle = new DynamicOracle;
+      featureCollection = new DynamicFeatureCollection;
       conllSentence = CCoNLLInput();
 
       //end
