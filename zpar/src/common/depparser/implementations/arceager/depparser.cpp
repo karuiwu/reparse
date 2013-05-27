@@ -786,10 +786,10 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				}
 
 				if (oracle->isOracleAction(actions, action)) {
-				  std::cout << "1" << std::endl;
+				  std::cout << "1\t";
 				}
 				else {
-				  std::cout << "0" << std::endl;
+				  std::cout << "0\t";
 				}
 
 				if (DEBUG && false) {
@@ -812,28 +812,15 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				pCandidate.score = m_Beam->item(i)->score;
 				pCandidate.Move(m_Beam->item(i)->action);
 
-				std::vector<int> stackAfter = pCandidate.Stack;
-
 				/**
 				 * Edited by JK
 				 */
-				int ngram = 3;
+				featureCollection->makeFeatures(pCandidate.Stack, std::vector<int>(), pCandidate.m_Children);
+				featureCollection->printFeatures();
+				featureCollection->clear();
 				// Feature 0: POS Tags
 
 				// Feature 1: Arc-Features
-				std::vector<std::vector<std::string> > arcs;
-				siblings_t children = pCandidate.m_Children;
-				for (int k=0; k<stackAfter.size(); ++k) {
-					arcs.push_back(std::vector<std::string>());
-					int item = stackAfter.at(k);
-					siblings_t::iterator it = children.find(item);
-					arcs.push_back(std::vector<std::string>());
-					if (it != children.end()) {
-					  for(std::vector<int>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); vec_it++) {
-						  arcs.back().push_back("(" + item + ", " + *vec_it + ")");
-					  }
-					}
-				}
 				//end
 
 				m_Agenda->pushCandidate(&pCandidate);
