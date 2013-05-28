@@ -8,11 +8,13 @@
 #ifndef DYNAMICFEATURECOLLECTION_H_
 #define DYNAMICFEATURECOLLECTION_H_
 
+#include <stdlib.h>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 #include <vector>
 #include <map>
-#include <iostream>
-#include <stdlib.h>
-#include <sstream>
+#include <string>
 
 #include "linguistics/conll.h"
 
@@ -30,11 +32,18 @@ public:
 	void posFeatures();
 	void arcFeatures();
 	void readInFeature(std::vector<std::string> feature);
+	void readToMap(std::string fileName = "map.txt");
+	void writeToMap(CCoNLLOutput conllSentenceTrain);
+	void writeToMap(std::string fileName = "map.txt");
 	void printFeatures();
 	void clear();
 
 	std::vector<std::vector<std::string> > features;
 	int ngram;
+
+	std::map<std::string, std::vector<std::string> > leftTags;
+	std::map<std::string, std::vector<std::string> > rightTags;
+
 	std::vector<int> m_stack;
 	std::vector<int> m_buffer;
 	siblings_t m_children;

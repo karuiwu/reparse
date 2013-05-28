@@ -25,7 +25,7 @@ typedef std::vector<std::vector<std::string> > sentence_t;
 typedef std::pair<int, int> parent_relation_t;
 typedef std::pair<int, std::vector<int> > sibling_relation_t;
 
-#define DEBUG false
+#define DEBUG true
 
 class DependenciesCollection {
   public:

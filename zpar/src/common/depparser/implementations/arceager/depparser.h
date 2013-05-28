@@ -91,6 +91,9 @@ public:
 
       oracle = new DynamicOracle;
       featureCollection = new DynamicFeatureCollection;
+      if (!bTrain) {
+    	  featureCollection->readToMap();
+      }
       conllSentence = CCoNLLInput();
       conllSentenceTrain = CCoNLLOutput();
 
@@ -119,6 +122,12 @@ public:
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<depparser::CWeight*>(m_weights)->saveScores();
+
+      /**
+       * Edited by JK
+       */
+      featureCollection->writeToMap();
+      //end
       std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
    depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);

@@ -7,6 +7,25 @@
 
 #include "dynamicFeatureCollection.h"
 
+
+// support functions
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss(s);
+    std::string item;
+
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
+
 DynamicFeatureCollection::DynamicFeatureCollection() {
 	ngram = 3;
 
@@ -34,21 +53,6 @@ void DynamicFeatureCollection::makeFeatures(std::vector<int> stack, std::vector<
 }
 
 void DynamicFeatureCollection::posFeatures() {
-	int ngram = 3;
-	// Here are the POS tags for the sentence.
-//				std::cout << "m_lCacheCoNLLCPOS: ";
-//				for (int j = 0; j < sentence.size(); j++) {
-//					std::cout << m_lCacheCoNLLCPOS[j] << " ";
-//				}
-//				std::cout << std::endl;
-//
-//				std::cout << "pCandidate.Stack: ";
-//				for (int j = 0; j < pCandidate.Stack.size(); j++) {
-//					std::cout << pCandidate.Stack[j] << " ";
-//				}
-//				std::cout << std::endl;
-
-	//std::cout << "Trigram of stack: ";
 	std::vector<std::string> tagFeatures;
 	int j = m_stack.size()-ngram;
 	if (j < 0) {
@@ -61,7 +65,9 @@ void DynamicFeatureCollection::posFeatures() {
 		j++;
 	}
 
-
+	while (tagFeatures.size() < ngram) {
+		tagFeatures.push_back("###");
+	}
 
 	features.push_back(tagFeatures);
 }
@@ -112,6 +118,166 @@ void DynamicFeatureCollection::readInFeature(std::vector<std::string> feature) {
 	features.push_back(feature);
 }
 
+void DynamicFeatureCollection::readToMap(std::string fileName) {
+	std::ifstream childTagsFile(fileName.c_str());
+	std::string line;
+	bool rightChild = false;
+	bool leftChild = false;
+	//std::string computing = "Computing averaged";
+	while (std::getline(childTagsFile, line)) {
+		if (line == "right children:") {
+			rightChild = true;
+			leftChild = false;
+			continue;
+		}
+		else if (line == "left children:") {
+			leftChild = true;
+			rightChild = false;
+			continue;
+		}
+		else if (!rightChild && !leftChild) {
+			continue;
+		}
+		else if (line == "\n") {
+			std::cout << "got here!" << std::endl;
+			break;
+		}
+
+		if (rightChild && !leftChild) {
+			std::vector<std::string> x = split(line, ')');
+			for (int i = 0; i < x.size()-1; ++i) {
+				std::vector<std::string> y = split(x.at(i), ',');
+				std::vector<std::string> a;
+				if (y.at(0) == "(") {
+					a.push_back("");
+					a.push_back("");
+				}
+				else {
+					a = split(y.at(0), '(');
+				}
+				std::vector<std::string> z = split(y.at(1), ' ');
+				rightTags.insert(std::map<std::string, std::vector<std::string> >::value_type(a.at(1), std::vector<std::string>()));
+				for (int j = 2; j < z.size()-1; ++j) {
+					rightTags[a.at(1)].push_back(z.at(j));
+				}
+			}
+		}
+		else if (leftChild && !rightChild) {
+			std::vector<std::string> x = split(line, ')');
+			for (int i = 0; i < x.size()-1; ++i) {
+				std::vector<std::string> y = split(x.at(i), ',');
+				std::vector<std::string> a;
+				if (y.at(0) == "(") {
+					a.push_back("");
+					a.push_back("");
+				}
+				else {
+					a = split(y.at(0), '(');
+				}
+				std::vector<std::string> z = split(y.at(1), ' ');
+				leftTags.insert(std::map<std::string, std::vector<std::string> >::value_type(a.at(1), std::vector<std::string>()));
+				for (int j = 2; j < z.size()-1; ++j) {
+					leftTags[a.at(1)].push_back(z.at(j));
+				}
+			}
+		}
+	}
+
+	/*std::cout << "right children: " << std::endl;
+	for (std::map<std::string, std::vector<std::string> >::const_iterator it = rightTags.begin(); it != rightTags.end(); ++it) {
+		std::cout << "(" << it->first << ", " << "{ ";
+		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+			std::cout << *vec_it << " ";
+		}
+		std::cout << "}) ";
+	}
+	std::cout << std::endl;
+
+	std::cout << "left children: " << std::endl;
+	for (std::map<std::string, std::vector<std::string> >::const_iterator it = leftTags.begin(); it != leftTags.end(); ++it) {
+		std::cout << "(" << it->first << ", " << "{ ";
+		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+			std::cout << *vec_it << " ";
+		}
+		std::cout << "}) ";
+	}
+	std::cout << std::endl;*/
+	childTagsFile.close();
+}
+
+void DynamicFeatureCollection::writeToMap(std::string fileName) {
+	std::ofstream childTagsFile(fileName.c_str());
+	childTagsFile << "left children:" << std::endl;
+	for (std::map<std::string, std::vector<std::string> >::const_iterator it = leftTags.begin(); it != leftTags.end(); ++it) {
+		childTagsFile << "(" << it->first << ", " << "{ ";
+		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+			childTagsFile << *vec_it << " ";
+		}
+		childTagsFile << "}) ";
+	}
+	childTagsFile << "\n";
+
+	childTagsFile << "right children:" << std::endl;
+	for (std::map<std::string, std::vector<std::string> >::const_iterator it = rightTags.begin(); it != rightTags.end(); ++it) {
+		childTagsFile << "(" << it->first << ", " << "{ ";
+		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+			childTagsFile << *vec_it << " ";
+		}
+		childTagsFile << "}) ";
+	}
+	childTagsFile << "\n";
+}
+
+void DynamicFeatureCollection::writeToMap(CCoNLLOutput conllSentenceTrain) {
+	for (int i = 1; i < conllSentenceTrain.size(); i++) {
+		int childID = conllSentenceTrain.at(i).id;
+		std::string tag = conllSentenceTrain.at(childID).tag;
+		int parentID = conllSentenceTrain.at(i).head;
+		std::string parent = conllSentenceTrain.at(parentID).word;
+
+		//right child
+		if (childID > parentID) {
+			std::map<std::string, std::vector<std::string> >::iterator right_it = rightTags.find(parent);
+			if (right_it == rightTags.end()) {
+				rightTags.insert(std::map<std::string, std::vector<std::string> >::value_type(
+						parent, std::vector<std::string>()));
+			}
+			rightTags[parent].push_back(tag);
+		}
+		else if (childID < parentID) {
+			std::map<std::string, std::vector<std::string> >::iterator left_it = leftTags.find(parent);
+			if (left_it == leftTags.end()) {
+				leftTags.insert(std::map<std::string, std::vector<std::string> >::value_type(
+						parent, std::vector<std::string>()));
+			}
+			leftTags[parent].push_back(tag);
+		}
+		else {
+			// you shouldn't be here
+		}
+	}
+
+	/*std::cout << "left children: " << std::endl;
+	for (std::map<std::string, std::vector<std::string> >::const_iterator it = leftTags.begin(); it != leftTags.end(); ++it) {
+		std::cout << "(" << it->first << ", " << "{ ";
+		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+			std::cout << *vec_it << " ";
+		}
+		std::cout << "}) ";
+	}
+	std::cout << std::endl;
+
+	std::cout << "right children: " << std::endl;
+	for (std::map<std::string, std::vector<std::string> >::const_iterator it = rightTags.begin(); it != rightTags.end(); ++it) {
+		std::cout << "(" << it->first << ", " << "{ ";
+		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+			std::cout << *vec_it << " ";
+		}
+		std::cout << "}) ";
+	}
+	std::cout << std::endl;*/
+}
+
 void DynamicFeatureCollection::printFeatures() {
 	for (int f = 0; f < features.size(); f++) {
 		for (int g = 0; g < features.at(f).size(); g++) {
@@ -130,3 +296,4 @@ void DynamicFeatureCollection::printFeatures() {
 void DynamicFeatureCollection::clear() {
 	features.clear();
 }
+
