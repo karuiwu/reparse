@@ -26,7 +26,7 @@ typedef long SCORE_TYPE ;
 // JUNEKI: THIS IS THE SIZE OF THE BEAM:
 // The size of agenda
 //const unsigned AGENDA_SIZE = 64 ;
-const unsigned AGENDA_SIZE = 1 ;
+const unsigned AGENDA_SIZE = 32 ;
 
 
 
