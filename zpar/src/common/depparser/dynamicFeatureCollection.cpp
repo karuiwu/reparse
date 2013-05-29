@@ -8,21 +8,21 @@
 #include "dynamicFeatureCollection.h"
 
 // support functions
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
+std::vector<std::string> &split(const std::string &s, char delim,
+		std::vector<std::string> &elems) {
+	std::stringstream ss(s);
+	std::string item;
 
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
 }
 
-
 std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
+	std::vector<std::string> elems;
+	split(s, delim, elems);
+	return elems;
 }
 
 //inline feature vw_feature_from_string(vw& v, string fstr, unsigned long seed, float val)
@@ -40,13 +40,13 @@ DynamicFeatureCollection::~DynamicFeatureCollection() {
 	// TODO Auto-generated destructor stub
 }
 
-
 /**
  * Feature Zero: Base features
  * - POS tags on the stack and buffer
  */
-void DynamicFeatureCollection::makeFeatures(std::vector<int> stack, std::vector<int> buffer,
-		siblings_t children, std::vector<CCoNLLCPOS> tags) {//, parent_t parents) {
+void DynamicFeatureCollection::makeFeatures(std::vector<int> stack,
+		std::vector<int> buffer, siblings_t children,
+		std::vector<CCoNLLCPOS> tags) { //, parent_t parents) {
 	m_stack = stack;
 	m_buffer = buffer;
 	m_children = children;
@@ -59,7 +59,7 @@ void DynamicFeatureCollection::makeFeatures(std::vector<int> stack, std::vector<
 
 void DynamicFeatureCollection::posFeatures() {
 	std::vector<std::string> tagFeatures;
-	int j = m_stack.size()-ngram;
+	int j = m_stack.size() - ngram;
 	if (j < 0) {
 		j = 0;
 	}
@@ -86,19 +86,18 @@ void DynamicFeatureCollection::arcFeatures() {
 		int item = m_stack.at(k);
 		siblings_t::iterator it = m_children.find(item);
 		if (it != m_children.end()) {
-		  for (int c = 0; c < it->second.size(); c++) {
-			  convert << item;//add number to the stream
-			  std::string parent = convert.str();
-			  convert.str("");
-			  convert.clear();
-			  convert << it->second.at(c);
-			  std::string child = convert.str();
-			  convert.str("");
-			  convert.clear();
-			  arcs.back().push_back("(" + child + ", " + parent + ")");
-		  }
-		}
-		else {
+			for (int c = 0; c < it->second.size(); c++) {
+				convert << item; //add number to the stream
+				std::string parent = convert.str();
+				convert.str("");
+				convert.clear();
+				convert << it->second.at(c);
+				std::string child = convert.str();
+				convert.str("");
+				convert.clear();
+				arcs.back().push_back("(" + child + ", " + parent + ")");
+			}
+		} else {
 			arcs.back().push_back("###");
 		}
 	}
@@ -112,8 +111,8 @@ void DynamicFeatureCollection::arcFeatures() {
 	}
 
 	features.push_back(std::vector<std::string>());
-	for (int k=0; k < arcFeatures.size(); ++k) {
-		for (int j=0; j < arcFeatures.at(k).size(); ++j) {
+	for (int k = 0; k < arcFeatures.size(); ++k) {
+		for (int j = 0; j < arcFeatures.at(k).size(); ++j) {
 			features.back().push_back(arcFeatures.at(k).at(j));
 		}
 	}
@@ -128,105 +127,140 @@ void DynamicFeatureCollection::readToMap(std::string fileName) {
 	std::string line;
 	bool rightChild = false;
 	bool leftChild = false;
-	bool tagCount = false;
+	bool tagCountFlag = false;
 	//std::string computing = "Computing averaged";
 	while (std::getline(childTagsFile, line)) {
+
 		if (line == "right children:") {
-			rightChild = true;
 			leftChild = false;
-			tagCount = false;
+			rightChild = true;
+			tagCountFlag = false;
 			continue;
-		}
-		else if (line == "left children:") {
+		} else if (line == "left children:") {
 			leftChild = true;
 			rightChild = false;
-			tagCount = false;
+			tagCountFlag = false;
 			continue;
-		}
-		else if (line == "tag count:"){
+		} else if (line == "tag counts:") {
 			leftChild = false;
 			rightChild = false;
-			tagCount = true;
-		}
-		else if (!rightChild && !leftChild) {
+			tagCountFlag = true;
 			continue;
-		}
-		else if (line == "\n") {
+		} else if (!rightChild && !leftChild && !tagCountFlag) {
+			continue;
+		} else if (line == "\n") {
 			std::cout << "got here!" << std::endl;
 			break;
 		}
 
 		if (rightChild && !leftChild) {
 			std::vector<std::string> x = split(line, ')');
-			for (int i = 0; i < x.size()-1; ++i) {
+			for (int i = 0; i < x.size() - 1; ++i) {
 				std::vector<std::string> y = split(x.at(i), ',');
 				std::vector<std::string> a;
 				if (y.at(0) == "(") {
 					a.push_back("");
 					a.push_back("");
-				}
-				else {
+				} else {
 					a = split(y.at(0), '(');
 				}
 				std::vector<std::string> z = split(y.at(1), ' ');
-				rightTags.insert(std::map<std::string, std::vector<std::string> >::value_type(a.at(1), std::vector<std::string>()));
-				for (int j = 2; j < z.size()-1; ++j) {
+				rightTags.insert(
+						std::map<std::string, std::vector<std::string> >::value_type(
+								a.at(1), std::vector<std::string>()));
+				for (int j = 2; j < z.size() - 1; ++j) {
 					rightTags[a.at(1)].push_back(z.at(j));
 				}
 			}
-		}
-		else if (leftChild && !rightChild) {
+		} else if (leftChild && !rightChild) {
 			std::vector<std::string> x = split(line, ')');
-			for (int i = 0; i < x.size()-1; ++i) {
+			for (int i = 0; i < x.size() - 1; ++i) {
 				std::vector<std::string> y = split(x.at(i), ',');
 				std::vector<std::string> a;
 				if (y.at(0) == "(") {
 					a.push_back("");
 					a.push_back("");
-				}
-				else {
+				} else {
 					a = split(y.at(0), '(');
 				}
 				std::vector<std::string> z = split(y.at(1), ' ');
-				leftTags.insert(std::map<std::string, std::vector<std::string> >::value_type(a.at(1), std::vector<std::string>()));
-				for (int j = 2; j < z.size()-1; ++j) {
+				leftTags.insert(
+						std::map<std::string, std::vector<std::string> >::value_type(
+								a.at(1), std::vector<std::string>()));
+				for (int j = 2; j < z.size() - 1; ++j) {
 					leftTags[a.at(1)].push_back(z.at(j));
 				}
 			}
+		} else if (!leftChild && !rightChild && tagCountFlag) {
+			// We read in the tagCount map.
+			std::vector<std::string> x = split(line, ')');
+			for (int i = 0; i < x.size() - 1; ++i) {
+				std::vector<std::string> y = split(x.at(i), ',');
+				std::vector<std::string> a;
+				if (y.at(0) == "(") {
+					a.push_back("");
+					a.push_back("");
+				} else {
+					a = split(y.at(0), '(');
+				}
+				std::vector<std::string> z = split(y.at(1), ' ');
+
+//				std::cout << z.size();
+//				for(int j = 0; j < z.size(); j++){
+//					std::cout << z[j];
+//				}
+//				std::cout << "|" << std::endl;
+
+				tagCount.insert(
+						std::map<std::string,
+								std::vector<std::pair<std::string, int> > >::value_type(
+								a.at(1),
+								std::vector<std::pair<std::string, int> >()));
+				for (int j = 2; j < z.size() - 1; ++j) {
+					//TODO: For me, the maps come out as empty. So I don't know for sure if I'm reading it in correctly.
+					// Check with Katherine if this code is right.
+					std::string pairToSplit = z.at(j);
+					std::vector<std::string> pairSplitted = split(pairToSplit,
+							'|');
+					std::pair<std::string, int> pairToPush = std::pair<
+							std::string, int>(pairSplitted[0], pairSplitted[1]);
+
+					tagCount[a.at(1)].push_back(pairToPush);
+				}
+			}
 		}
-//		else if(!leftChild && !rightChild && tagCount){
-//
-//		}
 	}
 
 	/*std::cout << "right children: " << std::endl;
-	for (std::map<std::string, std::vector<std::string> >::const_iterator it = rightTags.begin(); it != rightTags.end(); ++it) {
-		std::cout << "(" << it->first << ", " << "{ ";
-		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
-			std::cout << *vec_it << " ";
-		}
-		std::cout << "}) ";
-	}
-	std::cout << std::endl;
+	 for (std::map<std::string, std::vector<std::string> >::const_iterator it = rightTags.begin(); it != rightTags.end(); ++it) {
+	 std::cout << "(" << it->first << ", " << "{ ";
+	 for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+	 std::cout << *vec_it << " ";
+	 }
+	 std::cout << "}) ";
+	 }
+	 std::cout << std::endl;
 
-	std::cout << "left children: " << std::endl;
-	for (std::map<std::string, std::vector<std::string> >::const_iterator it = leftTags.begin(); it != leftTags.end(); ++it) {
-		std::cout << "(" << it->first << ", " << "{ ";
-		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
-			std::cout << *vec_it << " ";
-		}
-		std::cout << "}) ";
-	}
-	std::cout << std::endl;*/
+	 std::cout << "left children: " << std::endl;
+	 for (std::map<std::string, std::vector<std::string> >::const_iterator it = leftTags.begin(); it != leftTags.end(); ++it) {
+	 std::cout << "(" << it->first << ", " << "{ ";
+	 for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+	 std::cout << *vec_it << " ";
+	 }
+	 std::cout << "}) ";
+	 }
+	 std::cout << std::endl;*/
 	childTagsFile.close();
 }
 
 void DynamicFeatureCollection::writeToMap(std::string fileName) {
 	std::ofstream childTagsFile(fileName.c_str());
 	childTagsFile << "left children:" << std::endl;
-	for (std::map<std::string, std::vector<std::string> >::const_iterator it = leftTags.begin(); it != leftTags.end(); ++it) {
+	for (std::map<std::string, std::vector<std::string> >::const_iterator it =
+			leftTags.begin(); it != leftTags.end(); ++it) {
 		childTagsFile << "(" << it->first << ", " << "{ ";
-		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+		for (std::vector<std::string>::const_iterator vec_it =
+				it->second.begin(); vec_it != it->second.end(); ++vec_it) {
 			childTagsFile << *vec_it << " ";
 		}
 		childTagsFile << "}) ";
@@ -234,26 +268,29 @@ void DynamicFeatureCollection::writeToMap(std::string fileName) {
 	childTagsFile << "\n";
 
 	childTagsFile << "right children:" << std::endl;
-	for (std::map<std::string, std::vector<std::string> >::const_iterator it = rightTags.begin(); it != rightTags.end(); ++it) {
+	for (std::map<std::string, std::vector<std::string> >::const_iterator it =
+			rightTags.begin(); it != rightTags.end(); ++it) {
 		childTagsFile << "(" << it->first << ", " << "{ ";
-		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+		for (std::vector<std::string>::const_iterator vec_it =
+				it->second.begin(); vec_it != it->second.end(); ++vec_it) {
 			childTagsFile << *vec_it << " ";
 		}
 		childTagsFile << "}) ";
 	}
 	childTagsFile << "\n";
 
-
-//	childTagsFile << "tag counts:" <<std::endl;
-//	for(std::map<std::string, std::vector<std::pair<std::string, int> > >::const_iterator it = tagCount.begin(); it != tagCount.end(); ++it){
-//		childTagsFile << "(" << it->first << ", " << "{ ";
-//		for (std::vector<std::pair<std::string, int> >::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it){
+	childTagsFile << "tag counts:" << std::endl;
+	for (std::map<std::string, std::vector<std::pair<std::string, int> > >::const_iterator it =
+			tagCount.begin(); it != tagCount.end(); ++it) {
+		childTagsFile << "(" << it->first << ", " << "{ ";
+		for (std::vector<std::pair<std::string, int> >::const_iterator vec_it =
+				it->second.begin(); vec_it != it->second.end(); ++vec_it) {
 //			childTagsFile << vec_it->first << "|" << vec_it->second << " ";
-//		}
-//		childTagsFile << "}) ";
-//	}
-//	childTagsFile << "\n";
-
+			childTagsFile << "|" << " ";
+		}
+		childTagsFile << "}) ";
+	}
+	childTagsFile << "\n";
 
 }
 
@@ -266,22 +303,24 @@ void DynamicFeatureCollection::writeToMap(CCoNLLOutput conllSentenceTrain) {
 
 		//right child
 		if (childID > parentID) {
-			std::map<std::string, std::vector<std::string> >::iterator right_it = rightTags.find(parent);
+			std::map<std::string, std::vector<std::string> >::iterator right_it =
+					rightTags.find(parent);
 			if (right_it == rightTags.end()) {
-				rightTags.insert(std::map<std::string, std::vector<std::string> >::value_type(
-						parent, std::vector<std::string>()));
+				rightTags.insert(
+						std::map<std::string, std::vector<std::string> >::value_type(
+								parent, std::vector<std::string>()));
 			}
 			rightTags[parent].push_back(tag);
-		}
-		else if (childID < parentID) {
-			std::map<std::string, std::vector<std::string> >::iterator left_it = leftTags.find(parent);
+		} else if (childID < parentID) {
+			std::map<std::string, std::vector<std::string> >::iterator left_it =
+					leftTags.find(parent);
 			if (left_it == leftTags.end()) {
-				leftTags.insert(std::map<std::string, std::vector<std::string> >::value_type(
-						parent, std::vector<std::string>()));
+				leftTags.insert(
+						std::map<std::string, std::vector<std::string> >::value_type(
+								parent, std::vector<std::string>()));
 			}
 			leftTags[parent].push_back(tag);
-		}
-		else {
+		} else {
 			// you shouldn't be here
 		}
 
@@ -293,8 +332,8 @@ void DynamicFeatureCollection::writeToMap(CCoNLLOutput conllSentenceTrain) {
 		// if we haven't found the appropriate tagCount vector entry:
 		if (it == tagCount.end()) {
 
-
-			std::vector<std::pair<std::string, int> > vectorOfPairs = std::vector<std::pair<std::string, int> >();
+			std::vector<std::pair<std::string, int> > vectorOfPairs =
+					std::vector<std::pair<std::string, int> >();
 			tagCount.insert(
 					std::map<std::string,
 							std::vector<std::pair<std::string, int> > >::value_type(
@@ -320,41 +359,36 @@ void DynamicFeatureCollection::writeToMap(CCoNLLOutput conllSentenceTrain) {
 		}
 	}
 
-
-
-
-
-
 	/*std::cout << "left children: " << std::endl;
-	for (std::map<std::string, std::vector<std::string> >::const_iterator it = leftTags.begin(); it != leftTags.end(); ++it) {
-		std::cout << "(" << it->first << ", " << "{ ";
-		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
-			std::cout << *vec_it << " ";
-		}
-		std::cout << "}) ";
-	}
-	std::cout << std::endl;
+	 for (std::map<std::string, std::vector<std::string> >::const_iterator it = leftTags.begin(); it != leftTags.end(); ++it) {
+	 std::cout << "(" << it->first << ", " << "{ ";
+	 for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+	 std::cout << *vec_it << " ";
+	 }
+	 std::cout << "}) ";
+	 }
+	 std::cout << std::endl;
 
-	std::cout << "right children: " << std::endl;
-	for (std::map<std::string, std::vector<std::string> >::const_iterator it = rightTags.begin(); it != rightTags.end(); ++it) {
-		std::cout << "(" << it->first << ", " << "{ ";
-		for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
-			std::cout << *vec_it << " ";
-		}
-		std::cout << "}) ";
-	}
-	std::cout << std::endl;*/
+	 std::cout << "right children: " << std::endl;
+	 for (std::map<std::string, std::vector<std::string> >::const_iterator it = rightTags.begin(); it != rightTags.end(); ++it) {
+	 std::cout << "(" << it->first << ", " << "{ ";
+	 for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
+	 std::cout << *vec_it << " ";
+	 }
+	 std::cout << "}) ";
+	 }
+	 std::cout << std::endl;*/
 }
 
 void DynamicFeatureCollection::printFeatures() {
 	for (int f = 0; f < features.size(); f++) {
 		for (int g = 0; g < features.at(f).size(); g++) {
 			std::cout << features.at(f).at(g);
-			if (f < features.at(f).size()-1) {
+			if (f < features.at(f).size() - 1) {
 				std::cout << " ";
 			}
 		}
-		if (f < features.size()-1) {
+		if (f < features.size() - 1) {
 			std::cout << "\t";
 		}
 	}
