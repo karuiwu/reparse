@@ -90,7 +90,7 @@ CXX = g++
 CXXFLAGS = -W $(INCLUDES) $(DEBUG) -g #-O3
 
 LD=$(CXX)
-LDFLAGS =
+LDFLAGS = 
 
 #================================================================
 #
