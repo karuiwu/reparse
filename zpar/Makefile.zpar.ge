@@ -110,14 +110,14 @@ $(OBJECT_DIR)/feature.collection.o: $(SRC_GENERIC_DEPPARSER)/dynamicFeatureColle
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/dynamicFeatureCollection.cpp -o $(OBJECT_DIR)/feature.collection.o
 
 # the main executable
-$(DIST_GENERIC_DEPPARSER)/depparser: $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(SRC_GENERIC_DEPPARSER)/main.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/main.cpp -o $(OBJECT_GENERIC_DEPPARSER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/depparser $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/main.o $(OBJECTS)
+$(DIST_GENERIC_DEPPARSER)/depparser: $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(SRC_GENERIC_DEPPARSER)/main.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS) libvw.a
+	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/main.cpp -o $(OBJECT_GENERIC_DEPPARSER)/main.o 
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/depparser $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/main.o $(OBJECTS) -l vw -l allreduce -l boost_program_options -l z -l pthread
 
 # the trainer for depparser
-$(DIST_GENERIC_DEPPARSER)/train: $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(SRC_GENERIC_DEPPARSER)/train.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
+$(DIST_GENERIC_DEPPARSER)/train: $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(SRC_GENERIC_DEPPARSER)/train.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS) libvw.a
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/train.cpp -o $(OBJECT_GENERIC_DEPPARSER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/train $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/train.o $(OBJECTS)
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/train $(OBJECT_DIR)/dynamic.oracle.o $(OBJECT_DIR)/dependencies.collection.o $(OBJECT_DIR)/feature.collection.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/train.o $(OBJECTS) -l vw -l allreduce -l $(BOOST_PROGRAM_OPTIONS) -l z -l pthread
 
 #===================================================================
 

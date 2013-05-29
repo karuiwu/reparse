@@ -17,6 +17,8 @@
 #include <string>
 
 #include "linguistics/conll.h"
+#include "vowpalwabbit/vw.h"
+#include "vowpalwabbit/parser.h"
 
 enum { ARCFEATURES = 0 };
 
