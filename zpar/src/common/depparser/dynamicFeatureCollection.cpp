@@ -123,17 +123,25 @@ void DynamicFeatureCollection::readToMap(std::string fileName) {
 	std::string line;
 	bool rightChild = false;
 	bool leftChild = false;
+	bool tagCount = false;
 	//std::string computing = "Computing averaged";
 	while (std::getline(childTagsFile, line)) {
 		if (line == "right children:") {
 			rightChild = true;
 			leftChild = false;
+			tagCount = false;
 			continue;
 		}
 		else if (line == "left children:") {
 			leftChild = true;
 			rightChild = false;
+			tagCount = false;
 			continue;
+		}
+		else if (line == "tag count:"){
+			leftChild = false;
+			rightChild = false;
+			tagCount = true;
 		}
 		else if (!rightChild && !leftChild) {
 			continue;
@@ -181,6 +189,9 @@ void DynamicFeatureCollection::readToMap(std::string fileName) {
 				}
 			}
 		}
+//		else if(!leftChild && !rightChild && tagCount){
+//
+//		}
 	}
 
 	/*std::cout << "right children: " << std::endl;
@@ -226,6 +237,19 @@ void DynamicFeatureCollection::writeToMap(std::string fileName) {
 		childTagsFile << "}) ";
 	}
 	childTagsFile << "\n";
+
+
+//	childTagsFile << "tag counts:" <<std::endl;
+//	for(std::map<std::string, std::vector<std::pair<std::string, int> > >::const_iterator it = tagCount.begin(); it != tagCount.end(); ++it){
+//		childTagsFile << "(" << it->first << ", " << "{ ";
+//		for (std::vector<std::pair<std::string, int> >::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it){
+//			childTagsFile << vec_it->first << "|" << vec_it->second << " ";
+//		}
+//		childTagsFile << "}) ";
+//	}
+//	childTagsFile << "\n";
+
+
 }
 
 void DynamicFeatureCollection::writeToMap(CCoNLLOutput conllSentenceTrain) {
@@ -255,7 +279,46 @@ void DynamicFeatureCollection::writeToMap(CCoNLLOutput conllSentenceTrain) {
 		else {
 			// you shouldn't be here
 		}
+
+		// here we will populate tag counts.
+		std::string word = conllSentenceTrain.at(i).word;
+
+		std::map<std::string, std::vector<std::pair<std::string, int> > >::iterator it =
+				tagCount.find(word);
+		// if we haven't found the appropriate tagCount vector entry:
+		if (it == tagCount.end()) {
+
+
+			std::vector<std::pair<std::string, int> > vectorOfPairs = std::vector<std::pair<std::string, int> >();
+			tagCount.insert(
+					std::map<std::string,
+							std::vector<std::pair<std::string, int> > >::value_type(
+							word, vectorOfPairs));
+		}
+		std::vector<std::pair<std::string, int> > counts = tagCount[word];
+
+		bool found = false;
+		for (int j = 0; j < counts.size(); j++) {
+			std::pair<std::string, int> pairs = counts[j];
+			std::string individualTag = pairs.first;
+
+			if (individualTag.compare(tag) == 0) {
+				pairs.second++;
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			std::pair<std::string, int> newPair = std::pair<std::string, int>(
+					tag, 1);
+			counts.push_back(newPair);
+		}
 	}
+
+
+
+
+
 
 	/*std::cout << "left children: " << std::endl;
 	for (std::map<std::string, std::vector<std::string> >::const_iterator it = leftTags.begin(); it != leftTags.end(); ++it) {
