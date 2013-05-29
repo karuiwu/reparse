@@ -43,6 +43,7 @@ public:
 
 	std::map<std::string, std::vector<std::string> > leftTags;
 	std::map<std::string, std::vector<std::string> > rightTags;
+	std::map<std::string, std::vector<std::pair<std::string, int> > >tagCount;
 
 	std::vector<int> m_stack;
 	std::vector<int> m_buffer;
