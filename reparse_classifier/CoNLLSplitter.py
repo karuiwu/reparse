@@ -14,13 +14,14 @@ def delete_files(folder):
 if __name__=="__main__":
     gold_filename = sys.argv[1]
     num_sets = int(sys.argv[2])
+    limit = 20000
     """
     percentage_ratio = 0.1
     if len(sys.argv) > 3:
         percentage_ratio = float(sys.argv[3])
     """
     
-    data_folder = "data/"
+    data_folder = "data/parser/"
     dev_folder = data_folder + "dev/"
     train_folder = data_folder + "train/"
     if not os.path.exists(data_folder):
@@ -35,7 +36,7 @@ if __name__=="__main__":
 
     gold_file = open(gold_filename)
     gold_file_contents = gold_file.read()
-    sentences = list(set(gold_file_contents.split("\n\n")))
+    sentences = list(set(gold_file_contents.split("\n\n")[:limit]))
     used_sentences = []
     unverified_sets = []
 
