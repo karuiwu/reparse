@@ -25,12 +25,12 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-inline feature vw_feature_from_string(vw& v, string fstr, unsigned long seed, float val)
-{
-  uint32_t foo = VW::hash_feature(v, fstr, seed);
-  feature f = { val, foo};
-  return f;
-}
+//inline feature vw_feature_from_string(vw& v, string fstr, unsigned long seed, float val)
+//{
+//  uint32_t foo = VW::hash_feature(v, fstr, seed);
+//  feature f = { val, foo};
+//  return f;
+//}
 
 DynamicFeatureCollection::DynamicFeatureCollection() {
 	ngram = 3;

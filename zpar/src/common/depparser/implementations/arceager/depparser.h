@@ -72,10 +72,10 @@ private:
    CCoNLLInput conllSentence;
    CCoNLLOutput conllSentenceTrain;
 
-   std::map <std::string, std::vector<std::string> > leftTags;
-   std::map <std::string, std::vector<std::string> > rightTags;
-
-   std::map <std::string< std::pair<std::string, int> > tagCount;
+//   std::map <std::string, std::vector<std::string> > leftTags;
+//   std::map <std::string, std::vector<std::string> > rightTags;
+//
+//   std::map <std::string, std::vector<std::pair<std::string, int> > > tagCount;
 
    //end
 
