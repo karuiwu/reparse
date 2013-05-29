@@ -18,6 +18,9 @@
 
 #include "linguistics/conll.h"
 
+#include "../../libs/vowpalwabbit/parser.h"
+#include "../../libs/vowpalwabbit/vw.h"
+
 enum { ARCFEATURES = 0 };
 
 typedef std::map<int, std::vector<int> > siblings_t;
