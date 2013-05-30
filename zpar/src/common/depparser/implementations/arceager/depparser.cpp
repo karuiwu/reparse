@@ -772,17 +772,18 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 					}
 
 					if (!pCandidate.Stack.empty()
-							&& pCandidate.Stack.back() == DEPENDENCY_LINK_NO_HEAD) {
+							&& pCandidate.Stack.back()
+									== DEPENDENCY_LINK_NO_HEAD) {
 						oracle->noReduce = true;
 					}
-					std::vector<int> actions = oracle->nextAction(pCandidate.Stack,
-							buffer);
+					std::vector<int> actions = oracle->nextAction(
+							pCandidate.Stack, buffer);
 					int action;
-	#ifdef LABELED
+#ifdef LABELED
 					action = action::getUnlabeledAction(m_Beam->item(i)->action);
-	#else
+#else
 					action = m_Beam->item(i)->action & INT_MAX;
-	#endif
+#endif
 
 					if (DEBUG) {
 						std::cout << "Possible actions: ";
@@ -806,8 +807,8 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 								it != children.end(); it++) {
 							std::cout << "(" << it->first << ", " << "{ ";
 							for (std::vector<int>::const_iterator vec_it =
-									it->second.begin(); vec_it != it->second.end();
-									vec_it++) {
+									it->second.begin();
+									vec_it != it->second.end(); vec_it++) {
 								std::cout << *vec_it << " ";
 							}
 							std::cout << "}) ";
