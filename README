@@ -14,3 +14,36 @@ python CoNLLSplitter.py train.dep.parse [num_sets]
 MegaM:
 Training: ./megam.opt [multiclass, binary] data/classifier/train/0 > weights
 Predicting: ./megam.opt -predict weights [multiclass, binary] data/classifier/dev/0 | head -5
+
+
+
+
+Libraries used to compile our modified zPar:
+You will need to install 
+- Boost ( http://www.boost.org/ )
+- Vorpal Wabbit ( https://github.com/JohnLangford/vowpal_wabbit )
+And in order to link to the project sucessfully, the makefile will look for needed library files by calling:
+-l vw  	     	     	      (libvw.a from Vorpal Wabbit)
+-l allreduce 	   	      (liballreduce.a from Vorpal Wabbit)
+-l boost_program_options      (libboost_program_options.a from Boost)
+-l z 			      (libz.a from your system)
+
+As a possibly helpful tip, if your boost libraries are installed in the directory /usr/local/lib, you can run the command:
+$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+To help the linker link the correct libraries. 
+(tip taken from this link: http://superuser.com/questions/581624/shared-library-libvw-so-0-is-missing)
+
+
+In order to compile zPar in the zpar/ directory, just run:
+make generic.depparser
+
+And to run the parser, you will need to:
+train:
+dist/generic.depparser/train [input Conll training data file] model 1
+test:
+dist/generic.depparser/depparser -c [input Conll test data file] [output file] model
+
+
+ 
+
+
