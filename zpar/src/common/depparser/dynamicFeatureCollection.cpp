@@ -34,10 +34,12 @@ inline feature vw_feature_from_string(vw& v, string fstr, unsigned long seed, fl
 
 DynamicFeatureCollection::DynamicFeatureCollection() {
 	ngram = 3;
+	featuresFile.open("features.txt");
+	currentSentenceNum = -1;
 
-	using namespace std;
+	//vw* model = VW::initialize("--hash all -q st --noconstant -i train -f train2.vw");
 
-	vw* model = VW::initialize("--hash all -q st --noconstant -i train -f train2.vw");
+	/*vw* model = VW::initialize("--hash all -q st --noconstant -i train -f train2.vw");
 
 	example *vec2 = VW::read_example(*model, (char*)"|s p^the_man w^the w^man |t p^un_homme w^un w^homme");
 	model->learn(vec2);
@@ -80,11 +82,37 @@ DynamicFeatureCollection::DynamicFeatureCollection() {
 	}
 
 	VW::finish_example(*model2, vec2);
-	VW::finish(*model2);
+	VW::finish(*model2);*/
 }
 
 DynamicFeatureCollection::~DynamicFeatureCollection() {
 	// TODO Auto-generated destructor stub
+}
+
+void DynamicFeatureCollection::trainModel() {
+	if (featuresFile.is_open()) {
+		featuresFile.close();
+	}
+	vw* model = VW::initialize("-f feature.model");
+
+	ezexample ex(model, false);   // we're doing csoaa_ldf so we need multiline examples
+	for (int i = 0; i < currentSentenceNum+1; ++i) {
+		for (int j = 0; j < features.at(i).size(); ++j) {
+			ex.addns(namespaces.at(i).at(j));
+			for (int k = 0; k < features.at(i).at(j).size(); ++k) {
+				//std::cout << "VWf " << features.at(i).at(j).at(k) << std::endl;
+				ex.addf(features.at(i).at(j).at(k));
+				//std::cout << "success" << std::endl;
+			}
+		}
+		//std::cout << "VWr " << classification.at(i) << std::endl;
+		ex.set_label(classification.at(i));
+		ex.train();
+		ex.clear_features();
+	}
+	ex.finish();
+
+	VW::finish(*model);
 }
 
 /**
@@ -99,6 +127,10 @@ void DynamicFeatureCollection::makeFeatures(std::vector<int> stack,
 	m_children = children;
 	m_tags = tags;
 	//m_parents = parents;
+
+	namespaces.push_back(std::vector<char>());
+	features.push_back(std::vector<std::vector<std::string> >());
+	currentSentenceNum++;
 
 	posFeatures();
 	arcFeatures();
@@ -121,7 +153,8 @@ void DynamicFeatureCollection::posFeatures() {
 		tagFeatures.push_back("###");
 	}
 
-	features.push_back(tagFeatures);
+	namespaces.at(currentSentenceNum).push_back('p');
+	features.at(currentSentenceNum).push_back(tagFeatures);
 }
 
 void DynamicFeatureCollection::arcFeatures() {
@@ -145,28 +178,29 @@ void DynamicFeatureCollection::arcFeatures() {
 				arcs.back().push_back("(" + child + ", " + parent + ")");
 			}
 		} else {
-			arcs.back().push_back("###");
+			//arcs.back().push_back("###");
 		}
 	}
 	while (arcFeatures.size() < ngram && !arcs.empty()) {
 		arcFeatures.push_back(arcs.back());
 		arcs.pop_back();
 	}
-	while (arcFeatures.size() < ngram) {
+	/*while (arcFeatures.size() < ngram) {
 		arcFeatures.push_back(std::vector<std::string>());
 		arcFeatures.back().push_back("###");
-	}
+	}*/
 
-	features.push_back(std::vector<std::string>());
+	namespaces.at(currentSentenceNum).push_back('a');
+	features.at(currentSentenceNum).push_back(std::vector<std::string>());
 	for (int k = 0; k < arcFeatures.size(); ++k) {
 		for (int j = 0; j < arcFeatures.at(k).size(); ++j) {
-			features.back().push_back(arcFeatures.at(k).at(j));
+			features.at(currentSentenceNum).back().push_back(arcFeatures.at(k).at(j));
 		}
 	}
 }
 
 void DynamicFeatureCollection::readInFeature(std::vector<std::string> feature) {
-	features.push_back(feature);
+	features.at(currentSentenceNum).push_back(feature);
 }
 
 void DynamicFeatureCollection::readToMap(std::string fileName) {
@@ -424,19 +458,27 @@ void DynamicFeatureCollection::writeToMap(CCoNLLOutput conllSentenceTrain) {
 	 std::cout << std::endl;*/
 }
 
+void DynamicFeatureCollection::writeClass(std::string result) {
+	classification.push_back(result);
+	featuresFile << result << " ";
+}
+
 void DynamicFeatureCollection::printFeatures() {
-	for (int f = 0; f < features.size(); f++) {
-		for (int g = 0; g < features.at(f).size(); g++) {
-			std::cout << features.at(f).at(g);
-			if (f < features.at(f).size() - 1) {
-				std::cout << " ";
+	for (int f = 0; f < features.at(currentSentenceNum).size(); f++) {
+		featuresFile << "|";
+		featuresFile << namespaces.at(currentSentenceNum).at(f);
+		featuresFile << " ";
+		for (int g = 0; g < features.at(currentSentenceNum).at(f).size(); g++) {
+			featuresFile << features.at(currentSentenceNum).at(f).at(g);
+			if (f < features.at(currentSentenceNum).at(f).size() - 1) {
+				featuresFile << " ";
 			}
 		}
-		if (f < features.size() - 1) {
-			std::cout << "\t";
-		}
+		/*if (f < features.at(currentSentenceNum).size() - 1) {
+			featuresFile << "\t";
+		}*/
 	}
-	std::cout << std::endl;
+	featuresFile << "\n";
 }
 
 void DynamicFeatureCollection::clear() {

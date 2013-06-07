@@ -8,6 +8,7 @@
 void DynamicOracle::readInSentence(CCoNLLInput conllData) {
 	int sentenceNum = conllSentences.size();
 	conllSentences.push_back(std::vector<std::vector<std::string> >());
+	counter.push_back(0);
 	std::stringstream convert;
 
 	for (int i=0; i < conllData.size(); i++) {
@@ -127,12 +128,9 @@ int DynamicOracle::costOfLeftArc(std::vector<int> stack, std::vector<int> buffer
       }
       std::vector<int> rightChildrenIDs = rightChildrenIDs_it->second;
       std::vector<int> rightChildrenInBuffer;
-      /*std::sort(buffer.begin(), buffer.end());
       std::sort(rightChildrenIDs.begin(), rightChildrenIDs.end());
-
-      std::set_difference(buffer.begin(), buffer.end(),
-    		  rightChildrenIDs.begin(), rightChildrenIDs.end(), rightChildrenInBuffer.begin());
-*/
+      std::set_intersection(buffer.begin(), buffer.end(),
+    		  rightChildrenIDs.begin(), rightChildrenIDs.end(), std::inserter(rightChildrenInBuffer, rightChildrenInBuffer.end()));
       cost += rightChildrenInBuffer.size();
     }
     if (DEBUG) {
@@ -180,13 +178,11 @@ int DynamicOracle::costOfRightArc(std::vector<int> stack, std::vector<int> buffe
       if (DEBUG) {
     	  std::cout << "Missing children" << std::endl;
       }
-      //std::vector<int> leftChildrenIDs = leftChildrenIDs_it->second;
+      std::vector<int> leftChildrenIDs = leftChildrenIDs_it->second;
       std::vector<int> leftChildrenInBuffer;
-      /*std::sort(buffer.begin(), buffer.end());
       std::sort(leftChildrenIDs.begin(), leftChildrenIDs.end());
-      std::vector<int>::iterator rightChildrenInBuffer_it = std::set_difference(buffer.begin(), buffer.end(),
-    		  leftChildrenIDs.begin(), leftChildrenIDs.end(), leftChildrenInBuffer.begin());
-*/
+      std::set_intersection(buffer.begin(), buffer.end(),
+    		  leftChildrenIDs.begin(), leftChildrenIDs.end(), std::inserter(leftChildrenInBuffer, leftChildrenInBuffer.end()));
       cost += leftChildrenInBuffer.size();
     }
     if (DEBUG) {
@@ -215,13 +211,11 @@ int DynamicOracle::costOfReduce(std::vector<int> stack, std::vector<int> buffer)
       if (DEBUG) {
     	  std::cout << "Missing children" << std::endl;
       }
-      //std::vector<int> rightChildrenIDs = rightChildrenIDs_it->second;
+      std::vector<int> rightChildrenIDs = rightChildrenIDs_it->second;
       std::vector<int> rightChildrenInBuffer;
-      /*std::sort(buffer.begin(), buffer.end());
       std::sort(rightChildrenIDs.begin(), rightChildrenIDs.end());
-      std::vector<int>::iterator rightChildrenInBuffer_it = std::set_difference(buffer.begin(), buffer.end(),
-    		  rightChildrenIDs.begin(), rightChildrenIDs.end(), rightChildrenInBuffer.begin());
-*/
+      std::set_intersection(buffer.begin(), buffer.end(),
+    		  rightChildrenIDs.begin(), rightChildrenIDs.end(), std::inserter(rightChildrenInBuffer, rightChildrenInBuffer.end()));
       cost += rightChildrenInBuffer.size();
     }
     if (DEBUG) {
@@ -267,13 +261,11 @@ int DynamicOracle::costOfShift(std::vector<int> stack, std::vector<int> buffer) 
       if (DEBUG) {
     	  std::cout << "Missing children" << std::endl;
       }
-      //std::vector<int> leftChildrenIDs = leftChildrenIDs_it->second;
+      std::vector<int> leftChildrenIDs = leftChildrenIDs_it->second;
       std::vector<int> leftChildrenInBuffer;
-      /*std::sort(buffer.begin(), buffer.end());
       std::sort(leftChildrenIDs.begin(), leftChildrenIDs.end());
-      std::vector<int>::iterator rightChildrenInBuffer_it = std::set_difference(buffer.begin(), buffer.end(),
-    		  leftChildrenIDs.begin(), leftChildrenIDs.end(), leftChildrenInBuffer.begin());
-*/
+      std::set_intersection(buffer.begin(), buffer.end(),
+    		  leftChildrenIDs.begin(), leftChildrenIDs.end(), std::inserter(leftChildrenInBuffer, leftChildrenInBuffer.end()));
       cost += leftChildrenInBuffer.size();
     }
     if (DEBUG) {
@@ -287,9 +279,16 @@ int DynamicOracle::costOfShift(std::vector<int> stack, std::vector<int> buffer) 
 bool DynamicOracle::isOracleAction(std::vector<int> oracleActions, int actionCode) {
   for (int i = 0; i < oracleActions.size(); i++) {
   	if (actionCode == oracleActions.at(i)) {
+		if (DEBUG) {
+		  std::cout << "Counter: " << counter.at(currentSentenceNum) << std::endl;
+		}
   		return true;
   	}
   }
 
+  if (DEBUG) {
+	  std::cout << "Counter: " << counter.at(currentSentenceNum) << std::endl;
+  }
+  counter.at(currentSentenceNum)++;
   return false;
 }

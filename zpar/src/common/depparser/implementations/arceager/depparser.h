@@ -133,6 +133,13 @@ public:
       //end
       std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
+   /**
+    * Edited by JK
+    */
+   void finishparsing() {
+	   featureCollection->trainModel();
+   }
+   //end
    depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
    void updateScores(const CDependencyParse &parse, const CDependencyParse &correct, int round=0);
 

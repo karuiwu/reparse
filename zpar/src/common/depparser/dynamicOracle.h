@@ -37,6 +37,7 @@ class DynamicOracle {
     DependenciesCollection dependencies;
 	int currentSentenceNum;
 	bool noReduce;
+	std::vector<int> counter;
 };
 
 #endif /* DYNAMICORACLE_H_ */

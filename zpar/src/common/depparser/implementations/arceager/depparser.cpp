@@ -767,8 +767,9 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				 */
 				if (!bTrain) {
 					std::vector<int> buffer;
-					if (pCandidate.NextWord < length - 1) {
-						buffer.push_back(pCandidate.NextWord);
+					//length-1 to account for the presence of ROOT
+					for (int j = pCandidate.NextWord; j < length-1; ++j) {
+						buffer.push_back(j);
 					}
 
 					if (!pCandidate.Stack.empty()
@@ -776,8 +777,8 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 									== DEPENDENCY_LINK_NO_HEAD) {
 						oracle->noReduce = true;
 					}
-					std::vector<int> actions = oracle->nextAction(
-							pCandidate.Stack, buffer);
+
+					std::vector<int> actions = oracle->nextAction(pCandidate.Stack, buffer);
 					int action;
 #ifdef LABELED
 					action = action::getUnlabeledAction(m_Beam->item(i)->action);
@@ -788,16 +789,45 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 					if (DEBUG) {
 						std::cout << "Possible actions: ";
 						for (int j = 0; j < actions.size(); j++) {
-							std::cout << actions.at(j) << " ";
+							std::string temp;
+							switch (j) {
+							case 1:
+								std::cout << "SHIFT" << " ";
+								break;
+							case 2:
+								std::cout << "REDUCE" << " ";
+								break;
+							case 3:
+								std::cout << "LEFT-ARC" << " ";
+								break;
+							case 4:
+								std::cout << "RIGHT-ARC" << " ";
+								break;
+							}
 						}
 						std::cout << std::endl;
-						std::cout << "Action: " << action << std::endl;
+						switch (action) {
+						case 1:
+							std::cout << "Action: " << "SHIFT" << std::endl;
+							break;
+						case 2:
+							std::cout << "Action: " << "REDUCE" << std::endl;
+							break;
+						case 3:
+							std::cout << "Action: " << "LEFT-ARC" << std::endl;
+							break;
+						case 4:
+							std::cout << "Action: " << "RIGHT-ARC" << std::endl;
+							break;
+						}
 					}
 
 					if (oracle->isOracleAction(actions, action)) {
-						std::cout << "1\t";
+						featureCollection->writeClass("1");
+						//std::cout << "1\t";
 					} else {
-						std::cout << "0\t";
+						featureCollection->writeClass("0");
+						//std::cout << "0\t";
 					}
 
 					if (DEBUG && false) {
@@ -830,7 +860,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 							m_lCacheCoNLLCPOS);
 
 					featureCollection->printFeatures();
-					featureCollection->clear();
+					//featureCollection->clear();
 					// Feature 0: POS Tags
 				}
 				//end
