@@ -861,6 +861,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 
 					featureCollection->printFeatures();
 					//featureCollection->clear();
+
 					// Feature 0: POS Tags
 				}
 				//end

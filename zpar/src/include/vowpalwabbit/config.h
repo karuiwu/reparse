@@ -2,10 +2,10 @@
 /* vowpalwabbit/config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* define if the Boost library is available */
-#define HAVE_BOOST 
+#define HAVE_BOOST /**/
 
 /* define if the Boost::PROGRAM_OPTIONS library is available */
-#define HAVE_BOOST_PROGRAM_OPTIONS 
+#define HAVE_BOOST_PROGRAM_OPTIONS /**/
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1

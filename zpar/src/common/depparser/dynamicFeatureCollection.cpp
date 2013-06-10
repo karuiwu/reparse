@@ -90,13 +90,18 @@ DynamicFeatureCollection::~DynamicFeatureCollection() {
 }
 
 void DynamicFeatureCollection::trainModel() {
-	if (featuresFile.is_open()) {
+
+
+	/*if (featuresFile.is_open()) {
 		featuresFile.close();
 	}
+	*/
+
 	vw* model = VW::initialize("-f feature.model");
 
 	ezexample ex(model, false);   // we're doing csoaa_ldf so we need multiline examples
 	for (int i = 0; i < currentSentenceNum+1; ++i) {
+    
 		for (int j = 0; j < features.at(i).size(); ++j) {
 			ex.addns(namespaces.at(i).at(j));
 			for (int k = 0; k < features.at(i).at(j).size(); ++k) {
@@ -109,10 +114,12 @@ void DynamicFeatureCollection::trainModel() {
 		ex.set_label(classification.at(i));
 		ex.train();
 		ex.clear_features();
+	
 	}
 	ex.finish();
 
 	VW::finish(*model);
+
 }
 
 /**
