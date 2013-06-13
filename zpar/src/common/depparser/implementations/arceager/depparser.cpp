@@ -695,6 +695,143 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			//tempPGeneratorPointer->saveCurrentStacksToPrevious();
 //			pGenerator->saveCurrentStacksToPrevious();
 
+			/**
+			 * Edited by JK
+			 */
+
+			// print stack
+			std::cout << "Stack: ";
+			std::vector<int, allocator<int> >::const_iterator stackIter =
+					pGenerator->Stack.begin();
+			while (stackIter != pGenerator->Stack.end()) {
+				std::cout << *stackIter << " ";
+				stackIter++;
+			}
+			std::cout << "\n";
+			// print stack word
+			stackIter = pGenerator->Stack.end();
+			int stackWord = -1;
+			if (!pGenerator->Stack.empty()) {
+				stackWord = *(stackIter - 1);
+
+				std::cout << "Stack word: ";
+				std::cout << stackWord;
+				std::cout << "\n";
+			}
+
+			// print next word
+			int nextWord = pGenerator->NextWord;
+			std::cout << "Next word: " << nextWord << "\n";
+
+			// print children
+			std::cout << "m_Children: \n";
+			std::map<int, std::vector<int> > childMap = pGenerator->m_Children;
+			std: map<int, std::vector<int> >::const_iterator mapIterator =
+					childMap.begin();
+			while (mapIterator != childMap.end()) {
+				std::pair<int, std::vector<int> > iter = *mapIterator;
+				std::cout << iter.first << ": ";
+				std::vector<int> vec = (*mapIterator).second;
+				for (std::vector<int>::iterator vecIter = vec.begin();
+						vecIter != vec.end(); vecIter++) {
+					std::cout << *vecIter << " ";
+				}
+
+				std::cout << "\n";
+				mapIterator++;
+			}
+			std::cout << "\n";
+
+			std::cout << "\n";
+
+			bool topOfStack_isParentOf_topOfBuffer = false;
+			bool topOfStack_hasRightChildOnBuffer = false;
+
+			//if top of stack has children in the buffer
+			std::map<int, std::vector<int> >::const_iterator stackWordLookup =
+					pGenerator->m_Children.find(stackWord);
+			if (stackWord != -1
+					&& stackWordLookup != pGenerator->m_Children.end()) {
+				std::pair<int, std::vector<int> > topStackChildren =
+						*(stackWordLookup);
+
+				for (std::vector<int>::const_iterator topStackChildrenIter =
+						topStackChildren.second.begin();
+						topStackChildrenIter != topStackChildren.second.end();
+						topStackChildrenIter++) {
+
+					if (*topStackChildrenIter == nextWord) {
+						topOfStack_isParentOf_topOfBuffer = true;
+						topOfStack_hasRightChildOnBuffer = true;
+						break;
+					}
+
+					if (*topStackChildrenIter >= nextWord) {
+						topOfStack_hasRightChildOnBuffer = true;
+						// breaking is an optimization that relies on the vector to be monotonically increasing.
+						// This is currently true. And if it stays true, then we can safely break like this.
+						break;
+					}
+				}
+			}
+
+			bool topOfBuffer_hasLeftChildOnStack = false;
+
+			//if next word on buffer has children on the stack
+			std::map<int, std::vector<int> >::const_iterator bufferWordLookup =
+					pGenerator->m_Children.find(nextWord);
+			if (bufferWordLookup != pGenerator->m_Children.end()) {
+				std::pair<int, std::vector<int> > topBufferChildren =
+						*(bufferWordLookup);
+
+				for (std::vector<int>::const_iterator topBufferChildrenIter =
+						topBufferChildren.second.begin();
+						topBufferChildrenIter != topBufferChildren.second.end();
+						topBufferChildrenIter++) {
+					if (*topBufferChildrenIter <= stackWord) {
+						topOfBuffer_hasLeftChildOnStack = true;
+					}
+				}
+			}
+
+			bool topOfStack_hasParent = false;
+			bool topOfBuffer_hasParent = false;
+
+			// TODO make finding parents more efficient. The following loop is pretty bad.
+			mapIterator = childMap.begin();
+			while (mapIterator != childMap.end()) {
+				std::pair<int, std::vector<int> > iter = *mapIterator;
+				std::vector<int> vec = (*mapIterator).second;
+				for (std::vector<int>::iterator vecIter = vec.begin();
+						vecIter != vec.end(); vecIter++) {
+					if (*vecIter == stackWord) {
+						topOfStack_hasParent = true;
+					}
+					if (*vecIter == nextWord) {
+						topOfBuffer_hasParent = true;
+					}
+					if (topOfStack_hasParent && topOfBuffer_hasParent) {
+						break;
+					}
+				}
+				mapIterator++;
+			}
+
+			bool noLeftArc = topOfStack_hasParent
+					|| topOfStack_hasRightChildOnBuffer;
+
+			bool noRightArc = topOfBuffer_hasParent
+					|| topOfBuffer_hasLeftChildOnStack;
+
+			bool noReduce = topOfStack_hasRightChildOnBuffer;
+			bool mustReduce = topOfStack_hasParent
+					|| topOfBuffer_hasLeftChildOnStack;
+
+			bool noShift = topOfBuffer_hasLeftChildOnStack;
+			bool mustShift = topOfStack_isParentOf_topOfBuffer;
+
+			//end
+
 			// for the state items that already contain all words
 			m_Beam->clear();
 			packed_scores.reset();
@@ -720,7 +857,10 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 											m_lCache[pGenerator->size()].tag.code())
 									|| hasRightHead(
 											m_lCache[pGenerator->size()].tag.code())) // rules
-							) {
+							&&// JUNEKI: no shift
+							(!noShift)) {
+						shift(pGenerator, packed_scores);
+					} else if (mustShift) { // JUNEKI: must shift
 						shift(pGenerator, packed_scores);
 					}
 				}
@@ -734,24 +874,36 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 							(!m_weights->rules()
 									|| hasLeftHead(
 											m_lCache[pGenerator->size()].tag.code())) // rules
-							) {
+
+							&&// JUNEKI: no right arc
+							(!noRightArc)) {
 						arcright(pGenerator, packed_scores);
 					}
 				}
 				if ((!m_bCoNLL && !pGenerator->stackempty())
 						|| (m_bCoNLL && pGenerator->stacksize() > 1) // make sure that for conll the first item is not popped
 						) {
-					if (pGenerator->head(pGenerator->stacktop())
-							!= DEPENDENCY_LINK_NO_HEAD) {
+					if ((pGenerator->head(pGenerator->stacktop())
+							!= DEPENDENCY_LINK_NO_HEAD)
+
+					&& // JUNEKI: no reduce
+							(!noReduce)) {
 						reduce(pGenerator, packed_scores);
-					} else {
+					} else if (mustReduce) // JUNEKI: must reduce
+					{
+						reduce(pGenerator, packed_scores);
+					}
+
+					else {
 						if ((m_supertags == 0
 								|| m_supertags->canArcLeft(pGenerator->size(),
 										pGenerator->stacktop())) && // supertags
 								(!m_weights->rules()
 										|| hasRightHead(
 												m_lCache[pGenerator->stacktop()].tag.code())) // rules
-								) {
+
+								&&// JUNEKI: no arc left
+								(!noLeftArc)) {
 							arcleft(pGenerator, packed_scores);
 						}
 					}
@@ -768,7 +920,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				if (!bTrain) {
 					std::vector<int> buffer;
 					//length-1 to account for the presence of ROOT
-					for (int j = pCandidate.NextWord; j < length-1; ++j) {
+					for (int j = pCandidate.NextWord; j < length - 1; ++j) {
 						buffer.push_back(j);
 					}
 
@@ -778,7 +930,8 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 						oracle->noReduce = true;
 					}
 
-					std::vector<int> actions = oracle->nextAction(pCandidate.Stack, buffer);
+					std::vector<int> actions = oracle->nextAction(
+							pCandidate.Stack, buffer);
 					int action;
 #ifdef LABELED
 					action = action::getUnlabeledAction(m_Beam->item(i)->action);
