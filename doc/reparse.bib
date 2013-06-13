@@ -1,0 +1,49 @@
+This is a bibtex file.  It contains bibliography information.
+
+Any lines between citations are considered to be comments.
+
+Each citation begins with a label stating what type of reference it is, followed
+by the name that is used to cite that reference in the text.  Here, we say that
+the thing we're citing is an article, and we give it the tag ``noFreeLunch.''
+
+Note that some of the fields we fill in don't actually show up in the
+bibliography that gets produced; this is controlled by the bibliography style.
+We chose ``plain,'' which doesn't print things like the abstract and keywords.
+
+You can have as many references as you want in a bibtex file; only the ones that
+are actually cited in a paper will show up in that paper's references.
+Therefore, you can use the same bibtex file for lots of papers, and simply have
+all the references for all of them in one place.  This also means you don't have
+to keep track of what things you did or didn't cite in a given paper; latex and
+bibtex will automatically figure out what things you tried to cite, and include
+them if they exist, or give warnings if they don't.
+
+examples
+https://www.verbosus.com/bibtex-style-examples.html
+
+
+
+
+
+
+@book{textbook,
+	author={Russell, S. and Norvig, P.},
+	booktitle={Artificial Intelligence: A Modern Approach},
+	publisher={Prentice Hall},
+	year={2010},
+	edition={third},
+	series={Artificial Intelligence},
+	pages={128-9, 697-707},
+}
+
+@Article{goldberg,
+    author = {Yoav Golderg, Joakim Nivre},
+    title = {A Dynamic Oracle for Arc-Eager Dependency Parsing},
+    year = 2012,
+}
+
+
+
+
+
+

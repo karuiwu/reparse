@@ -1,4 +1,3 @@
-
 % BibTeX `acl' style file for BibTeX version 0.99c, LaTeX version 2.09
 % This version was made by modifying `aaai-named' format based on the master
 % file by Oren Patashnik (PATASHNIK@SCORE.STANFORD.EDU)

@@ -18,21 +18,28 @@
 \usepackage{times}
 \usepackage{url}
 \usepackage{latexsym}
+\usepackage{verbatim}
 %\setlength\titlebox{6.5cm}    % You can expand the title box if you
 % really have to
 
 \title{Title}
 
-\author{JJK \\
+\author{Katherine Wu \\
   Affiliation / Address line 1 \\
   Affiliation / Address line 2 \\
   Affiliation / Address line 3 \\
   {\tt email@domain} \\\And
-  Second Author \\
+  Juneki Hong \\
   Affiliation / Address line 1 \\
   Affiliation / Address line 2 \\
   Affiliation / Address line 3 \\
-  {\tt email@domain} \\}
+  {\tt email@domain} \\\And
+  Jason Eisner \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\
+  }
 
 \date{}
 
@@ -75,6 +82,12 @@
 
 
 \section{Oracle Training}
+In order to determine when the parser should use revision actions, an oracle was used to determine when the parser had entered an error state.
+
+\subsection{Parser State Features}
+
+
+
 
 
 \section{Experiments}
@@ -85,7 +98,7 @@ zPar is a dependency parser we used for our experiments. It had baseline results
 \section{Analysis}
 
 
-\section{Conclusion}
+\section{Discussion}
 
 
 
@@ -94,6 +107,13 @@ zPar is a dependency parser we used for our experiments. It had baseline results
 
 
 \newpage
+
+
+
+
+
+
+\begin{comment}
 
 
 \section{examples of latex things:}
@@ -169,6 +189,8 @@ they will be understandable when printed in black ink.
 sequentially in the form:  ``Figure 1. Caption of the Figure.'' ``Table 1.
 Caption of the Table.''  Type the captions of the figures and 
 tables below the body, using 11 point text.  
+\end{comment}
+
 
 
 
@@ -181,17 +203,20 @@ tables below the body, using 11 point text.
 \section*{Acknowledgments}
 
 Do not number the acknowledgment section. Do not include this section
-when submitting your paper for review.
-%\bibliographystyle{acl}
+when submitting your paper for review.\cite{textbook,goldberg}
+
+\bibliographystyle{acl}
 % you bib file should really go here 
 %\bibliography{acl2013}
+\bibliography{reparse}
 
-\begin{thebibliography}{}
 
-\bibitem[\protect\citename{Goldberg and Nivre} 2012]{Goldberg:12}
-Yoav Goldberg and Joakim Nivre.
-\newblock 2012.
-\newblock {\em A Dynamic Oracle for Arc-Eager Dependency Parsing}
+%\begin{thebibliography}{}
+
+%\bibitem[\protect\citename{Goldberg and Nivre} 2012]{Goldberg:12}
+%Yoav Goldberg and Joakim Nivre.
+%\newblock 2012.
+%\newblock {\em A Dynamic Oracle for Arc-Eager Dependency Parsing}
 
 %\bibitem[\protect\citename{Aho and Ullman}1972]{Aho:72}
 %Alfred~V. Aho and Jeffrey~D. Ullman.
@@ -205,6 +230,6 @@ Yoav Goldberg and Joakim Nivre.
 %\newblock {\em Algorithms on Strings, Trees and Sequences}.
 %\newblock Cambridge University Press, Cambridge, UK.
 
-\end{thebibliography}
+%\end{thebibliography}
 
 \end{document}
