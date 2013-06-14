@@ -47,6 +47,7 @@ protected:
 	std::vector<int> m_Stack;     // stack of words that are currently processed
 	std::vector<int> m_HeadStack;
 	int m_nNextWord;                         // index for the next word
+
 	int m_lHeads[MAX_SENTENCE_SIZE];         // the lexical head for each word
 	int m_lDepsL[MAX_SENTENCE_SIZE]; // the leftmost dependency for each word (just for cache, temporary info)
 	int m_lDepsR[MAX_SENTENCE_SIZE]; // the rightmost dependency for each word (just for cache, temporary info)
@@ -71,6 +72,10 @@ public:
 
 	std::vector<int> Stack;
 	int NextWord;
+
+	//Edited by J
+	int Heads[MAX_SENTENCE_SIZE];
+	int QueueStackReduceState[MAX_SENTENCE_SIZE];
 
 	void saveCurrentStacksToPrevious() {
 		previous_m_Stack = std::vector<int>(m_Stack);
@@ -255,6 +260,11 @@ public:
 			m_lDepTagL[i] = item.m_lDepTagL[i];
 			m_lDepTagR[i] = item.m_lDepTagR[i];
 			m_lSibling[i] = item.m_lSibling[i];
+
+			// Edited by J
+			QueueStackReduceState[i] = item.QueueStackReduceState[i];
+
+
 #ifdef LABELED
 			m_lLabels[i] = item.m_lLabels[i];
 #endif
@@ -277,6 +287,7 @@ public:
 //		std::cout << "ACTION: ARCLEFT\n";
 //		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
 		//end
+
 		assert(m_Stack.size() > 0);
 		assert(m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD);
 		static int left;
@@ -293,6 +304,9 @@ public:
 							std::vector<int>()));
 		}
 		m_Children[m_nNextWord].push_back(left);
+
+		// 2 means reduced or popped
+		QueueStackReduceState[left] = 2;
 		//end
 
 		m_Stack.pop_back();
@@ -373,7 +387,6 @@ public:
 //		std::cout << "ACTION: ARCRIGHT\n";
 //		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
 		//end
-
 		assert(m_Stack.size() > 0);
 		static int left;
 		left = m_Stack.back();
@@ -390,6 +403,9 @@ public:
 							std::vector<int>()));
 		}
 		m_Children[left].push_back(m_nNextWord);
+
+		// 1 means the word is now on the stack
+		QueueStackReduceState[m_nNextWord] = 1;
 		//end
 
 #ifdef LABELED
@@ -472,6 +488,9 @@ public:
 		/**
 		 * Edited by JK
 		 */
+		// 1 means that the word is now on the stack. I take off -1 because m_nNextWord was previously incremented ++.
+		QueueStackReduceState[m_nNextWord-1] = 1;
+
 //		std::cout << "m_Stack: ";
 //		for (std::vector<int>::const_iterator i = m_Stack.begin();
 //				i != m_Stack.end(); ++i)
@@ -493,6 +512,9 @@ public:
 		 * Edited by JK
 		 */
 //		std::cout << "ACTION: REDUCE\n";
+		// 2 means reduced or popped
+		QueueStackReduceState[m_Stack.back()] = 2;
+
 		// end
 
 		assert(m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD);
@@ -724,6 +746,12 @@ public:
 							m_lHeads[i]));
 #endif
 	}
+
+
+	int m_lHeads_lookup(int index)const{
+		return m_lHeads[index];
+	}
+
 
 };
 

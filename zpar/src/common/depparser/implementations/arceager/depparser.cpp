@@ -726,7 +726,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			// print children
 			std::cout << "m_Children: \n";
 			std::map<int, std::vector<int> > childMap = pGenerator->m_Children;
-			std: map<int, std::vector<int> >::const_iterator mapIterator =
+			std::map<int, std::vector<int> >::const_iterator mapIterator =
 					childMap.begin();
 			while (mapIterator != childMap.end()) {
 				std::pair<int, std::vector<int> > iter = *mapIterator;
@@ -740,7 +740,16 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				std::cout << "\n";
 				mapIterator++;
 			}
-			std::cout << "\n";
+
+//			if(j == 0){
+//			// print QueueStackReduceState
+//			std::cout << "QueueStackReduceState: ";
+//			for(int i=0 ; i < MAX_SENTENCE_SIZE/6; i++){
+//				cout << pGenerator->QueueStackReduceState[i] << " ";
+//			}
+//			std::cout << "\n";
+//
+//			}
 
 			std::cout << "\n";
 
@@ -760,16 +769,16 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 						topStackChildrenIter != topStackChildren.second.end();
 						topStackChildrenIter++) {
 
+					int child = *topStackChildrenIter;
+
+					if (pGenerator->QueueStackReduceState[child] == 0) {
+						topOfStack_hasRightChildOnBuffer = true;
+					}
 					if (*topStackChildrenIter == nextWord) {
 						topOfStack_isParentOf_topOfBuffer = true;
-						topOfStack_hasRightChildOnBuffer = true;
-						break;
 					}
-
-					if (*topStackChildrenIter >= nextWord) {
-						topOfStack_hasRightChildOnBuffer = true;
-						// breaking is an optimization that relies on the vector to be monotonically increasing.
-						// This is currently true. And if it stays true, then we can safely break like this.
+					if (topOfStack_hasRightChildOnBuffer
+							&& topOfStack_isParentOf_topOfBuffer) {
 						break;
 					}
 				}
@@ -788,8 +797,11 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 						topBufferChildren.second.begin();
 						topBufferChildrenIter != topBufferChildren.second.end();
 						topBufferChildrenIter++) {
-					if (*topBufferChildrenIter <= stackWord) {
+
+					int child = *topBufferChildrenIter;
+					if (pGenerator->QueueStackReduceState[child] == 1) {
 						topOfBuffer_hasLeftChildOnStack = true;
+						break;
 					}
 				}
 			}
@@ -797,25 +809,38 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			bool topOfStack_hasParent = false;
 			bool topOfBuffer_hasParent = false;
 
-			// TODO make finding parents more efficient. The following loop is pretty bad.
-			mapIterator = childMap.begin();
-			while (mapIterator != childMap.end()) {
-				std::pair<int, std::vector<int> > iter = *mapIterator;
-				std::vector<int> vec = (*mapIterator).second;
-				for (std::vector<int>::iterator vecIter = vec.begin();
-						vecIter != vec.end(); vecIter++) {
-					if (*vecIter == stackWord) {
-						topOfStack_hasParent = true;
-					}
-					if (*vecIter == nextWord) {
-						topOfBuffer_hasParent = true;
-					}
-					if (topOfStack_hasParent && topOfBuffer_hasParent) {
-						break;
-					}
-				}
-				mapIterator++;
+			// Parent lookups. Works in constant time.
+			if (pGenerator->m_lHeads_lookup(stackWord) != -1
+					&& pGenerator->m_lHeads_lookup(stackWord) != 0) {
+				topOfStack_hasParent = true;
 			}
+			if (pGenerator->m_lHeads_lookup(nextWord) != -1
+					&& pGenerator->m_lHeads_lookup(nextWord) != 0) {
+				topOfBuffer_hasParent = true;
+			}
+
+			// TODO make finding parents more efficient. The following loop is pretty bad.
+//			cout << "m_lHeads_lookup(stackWord): " << pGenerator->m_lHeads_lookup(stackWord)<< "\n";
+//			cout << "m_lHeads_lookup(nextWord): " << pGenerator->m_lHeads_lookup(nextWord)<< "\n";
+
+//			mapIterator = childMap.begin();
+//			while (mapIterator != childMap.end()) {
+//				std::pair<int, std::vector<int> > iter = *mapIterator;
+//				std::vector<int> vec = (*mapIterator).second;
+//				for (std::vector<int>::iterator vecIter = vec.begin();
+//						vecIter != vec.end(); vecIter++) {
+//					if (*vecIter == stackWord) {
+//						topOfStack_hasParent = true;
+//					}
+//					if (*vecIter == nextWord) {
+//						topOfBuffer_hasParent = true;
+//					}
+//					if (topOfStack_hasParent && topOfBuffer_hasParent) {
+//						break;
+//					}
+//				}
+//				mapIterator++;
+//			}
 
 			bool noLeftArc = topOfStack_hasParent
 					|| topOfStack_hasRightChildOnBuffer;
