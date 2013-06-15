@@ -753,94 +753,18 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 
 			std::cout << "\n";
 
-			bool topOfStack_isParentOf_topOfBuffer = false;
-			bool topOfStack_hasRightChildOnBuffer = false;
-
 			//if top of stack has children in the buffer
-			std::map<int, std::vector<int> >::const_iterator stackWordLookup =
-					pGenerator->m_Children.find(stackWord);
-			if (stackWord != -1
-					&& stackWordLookup != pGenerator->m_Children.end()) {
-				std::pair<int, std::vector<int> > topStackChildren =
-						*(stackWordLookup);
-
-				for (std::vector<int>::const_iterator topStackChildrenIter =
-						topStackChildren.second.begin();
-						topStackChildrenIter != topStackChildren.second.end();
-						topStackChildrenIter++) {
-
-					int child = *topStackChildrenIter;
-
-					if (pGenerator->QueueStackReduceState[child] == 0) {
-						topOfStack_hasRightChildOnBuffer = true;
-					}
-					if (*topStackChildrenIter == nextWord) {
-						topOfStack_isParentOf_topOfBuffer = true;
-					}
-					if (topOfStack_hasRightChildOnBuffer
-							&& topOfStack_isParentOf_topOfBuffer) {
-						break;
-					}
-				}
-			}
-
-			bool topOfBuffer_hasLeftChildOnStack = false;
+			bool topOfStack_isParentOf_topOfBuffer = pGenerator->isParent(
+					stackWord, nextWord);
+			bool topOfStack_hasRightChildOnBuffer =
+					pGenerator->childOnBufferCheck(stackWord);
 
 			//if next word on buffer has children on the stack
-			std::map<int, std::vector<int> >::const_iterator bufferWordLookup =
-					pGenerator->m_Children.find(nextWord);
-			if (bufferWordLookup != pGenerator->m_Children.end()) {
-				std::pair<int, std::vector<int> > topBufferChildren =
-						*(bufferWordLookup);
+			bool topOfBuffer_hasLeftChildOnStack =
+					pGenerator->childOnStackCheck(nextWord);
 
-				for (std::vector<int>::const_iterator topBufferChildrenIter =
-						topBufferChildren.second.begin();
-						topBufferChildrenIter != topBufferChildren.second.end();
-						topBufferChildrenIter++) {
-
-					int child = *topBufferChildrenIter;
-					if (pGenerator->QueueStackReduceState[child] == 1) {
-						topOfBuffer_hasLeftChildOnStack = true;
-						break;
-					}
-				}
-			}
-
-			bool topOfStack_hasParent = false;
-			bool topOfBuffer_hasParent = false;
-
-			// Parent lookups. Works in constant time.
-			if (pGenerator->m_lHeads_lookup(stackWord) != -1
-					&& pGenerator->m_lHeads_lookup(stackWord) != 0) {
-				topOfStack_hasParent = true;
-			}
-			if (pGenerator->m_lHeads_lookup(nextWord) != -1
-					&& pGenerator->m_lHeads_lookup(nextWord) != 0) {
-				topOfBuffer_hasParent = true;
-			}
-
-			// TODO make finding parents more efficient. The following loop is pretty bad.
-//			cout << "m_lHeads_lookup(stackWord): " << pGenerator->m_lHeads_lookup(stackWord)<< "\n";
-//			cout << "m_lHeads_lookup(nextWord): " << pGenerator->m_lHeads_lookup(nextWord)<< "\n";
-
-//			mapIterator = childMap.begin();
-//			while (mapIterator != childMap.end()) {
-//				std::pair<int, std::vector<int> > iter = *mapIterator;
-//				std::vector<int> vec = (*mapIterator).second;
-//				for (std::vector<int>::iterator vecIter = vec.begin();
-//						vecIter != vec.end(); vecIter++) {
-//					if (*vecIter == stackWord) {
-//						topOfStack_hasParent = true;
-//					}
-//					if (*vecIter == nextWord) {
-//						topOfBuffer_hasParent = true;
-//					}
-//					if (topOfStack_hasParent && topOfBuffer_hasParent) {
-//						break;
-//					}
-//				}
-//				mapIterator++;
-//			}
+			bool topOfStack_hasParent = pGenerator->hasParent(stackWord);
+			bool topOfBuffer_hasParent = pGenerator->hasParent(nextWord);
 
 			bool noLeftArc = topOfStack_hasParent
 					|| topOfStack_hasRightChildOnBuffer;

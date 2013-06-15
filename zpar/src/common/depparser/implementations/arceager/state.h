@@ -264,7 +264,6 @@ public:
 			// Edited by J
 			QueueStackReduceState[i] = item.QueueStackReduceState[i];
 
-
 #ifdef LABELED
 			m_lLabels[i] = item.m_lLabels[i];
 #endif
@@ -287,7 +286,6 @@ public:
 //		std::cout << "ACTION: ARCLEFT\n";
 //		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
 		//end
-
 		assert(m_Stack.size() > 0);
 		assert(m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD);
 		static int left;
@@ -489,7 +487,7 @@ public:
 		 * Edited by JK
 		 */
 		// 1 means that the word is now on the stack. I take off -1 because m_nNextWord was previously incremented ++.
-		QueueStackReduceState[m_nNextWord-1] = 1;
+		QueueStackReduceState[m_nNextWord - 1] = 1;
 
 //		std::cout << "m_Stack: ";
 //		for (std::vector<int>::const_iterator i = m_Stack.begin();
@@ -747,11 +745,74 @@ public:
 #endif
 	}
 
-
-	int m_lHeads_lookup(int index)const{
+	/** Edited by J
+	 *
+	 */
+	int m_lHeads_lookup(int index) const {
 		return m_lHeads[index];
 	}
 
+	bool hasParent(int index) const {
+		return m_lHeads_lookup(index) != -1 && m_lHeads_lookup(index) != 0;
+	}
+
+	//locationCode: 0 = buffer. 1 = stack. 2 = reduced
+	bool childCheck(int index, int locationCode) const {
+		std::map<int, std::vector<int> >::const_iterator bufferWordLookup =
+				m_Children.find(index);
+
+		if (bufferWordLookup == m_Children.end()) {
+			return false;
+		}
+
+		std::pair<int, std::vector<int> > topBufferChildren =
+				*(bufferWordLookup);
+		for (std::vector<int>::const_iterator topBufferChildrenIter =
+				topBufferChildren.second.begin();
+				topBufferChildrenIter != topBufferChildren.second.end();
+				topBufferChildrenIter++) {
+
+			int child = *topBufferChildrenIter;
+			if (QueueStackReduceState[child] == locationCode) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool childOnBufferCheck(int index) const {
+		return childCheck(index, 0);
+	}
+
+	bool childOnStackCheck(int index) const {
+		return childCheck(index, 1);
+	}
+
+	bool childReducedCheck(int index) const {
+		return childCheck(index, 2);
+	}
+
+	bool isParent(int parentIndex, int childIndex) const {
+
+		std::map<int, std::vector<int> >::const_iterator stackWordLookup =
+				m_Children.find(parentIndex);
+		if (parentIndex != -1 && stackWordLookup != m_Children.end()) {
+			std::pair<int, std::vector<int> > ChildrenList = *(stackWordLookup);
+
+			for (std::vector<int>::const_iterator ChildrenListIter =
+					ChildrenList.second.begin();
+					ChildrenListIter != ChildrenList.second.end();
+					ChildrenListIter++) {
+
+				if (*ChildrenListIter == childIndex) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+//end
 
 };
 
