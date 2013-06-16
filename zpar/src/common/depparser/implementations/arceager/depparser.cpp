@@ -741,6 +741,16 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				mapIterator++;
 			}
 
+//			int tempParent = 1;
+//			int tempChild = 0;
+//			std::map<int, std::vector<int> >::const_iterator it = pGenerator->m_Children.find(tempParent);
+//			if (it == pGenerator->m_Children.end()) {
+//				pGenerator->m_Children.insert(
+//						std::map<int, std::vector<int> >::value_type(
+//								tempChild, std::vector<int>()));
+//			}
+//			pGenerator->m_Children[tempChild].push_back(tempParent);
+
 //			if(j == 0){
 //			// print QueueStackReduceState
 //			std::cout << "QueueStackReduceState: ";
@@ -751,18 +761,21 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 //
 //			}
 
-			std::cout << "\n";
+//			std::cout << "\n";
 
-			//if top of stack has children in the buffer
+			// These boolean values check to see if we can do certain actions during a parse.
+			// This allows us to implement generalized arc eager dependency parsing of tree inputs.
+
 			bool topOfStack_isParentOf_topOfBuffer = pGenerator->isParent(
 					stackWord, nextWord);
+			bool topOfBuffer_isParentOf_topOfStack = pGenerator->isParent(
+					nextWord, stackWord);
+
 			bool topOfStack_hasRightChildOnBuffer =
 					pGenerator->childOnBufferCheck(stackWord);
-
 			//if next word on buffer has children on the stack
 			bool topOfBuffer_hasLeftChildOnStack =
 					pGenerator->childOnStackCheck(nextWord);
-
 			bool topOfStack_hasParent = pGenerator->hasParent(stackWord);
 			bool topOfBuffer_hasParent = pGenerator->hasParent(nextWord);
 
@@ -777,7 +790,18 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 					|| topOfBuffer_hasLeftChildOnStack;
 
 			bool noShift = topOfBuffer_hasLeftChildOnStack;
-			bool mustShift = topOfStack_isParentOf_topOfBuffer;
+//			bool mustShift = topOfStack_isParentOf_topOfBuffer;
+
+			cout << "topOfStack_isParentOf_topOfBuffer "
+					<< topOfStack_isParentOf_topOfBuffer << "\n";
+			cout << "topOfBuffer_isParentOf_topOfStack "
+					<< topOfBuffer_isParentOf_topOfStack << "\n";
+			cout << "noLeftArc: " << noLeftArc << "\n";
+			cout << "noRightArc: " << noRightArc << "\n";
+			cout << "noReduce: " << noReduce << "\n";
+			cout << "mustReduce: " << mustReduce << "\n";
+			cout << "noShift: " << noShift << "\n";
+			cout << "\n";
 
 			//end
 
@@ -792,6 +816,23 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				else
 					poproot(pGenerator, packed_scores);
 			}
+			// Edited by J
+			// Here, we check to see if we already have arcs that have been made that we need to take again.
+			else if (topOfStack_isParentOf_topOfBuffer) {
+				arcright(pGenerator, packed_scores);
+			}
+
+			else if (topOfBuffer_isParentOf_topOfStack) {
+
+				arcleft(pGenerator, packed_scores);
+
+
+//				cout << "got here" << "\n";
+//				exit(0);
+
+			}
+			//end
+
 			// for the state items that still need more words
 			else {
 				if (!pGenerator->afterreduce()) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.
@@ -809,9 +850,10 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 							&&// JUNEKI: no shift
 							(!noShift)) {
 						shift(pGenerator, packed_scores);
-					} else if (mustShift) { // JUNEKI: must shift
-						shift(pGenerator, packed_scores);
 					}
+//					else if (mustShift) { // JUNEKI: must shift
+//						shift(pGenerator, packed_scores);
+//					}
 				}
 				if (!pGenerator->stackempty()) {
 					if ((pGenerator->size() < length - 1

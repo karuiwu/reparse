@@ -88,6 +88,13 @@ public:
 	CStateItem(const std::vector<CTaggedWord<CTag, TAG_SEPARATOR> >*cache = 0) :
 			m_lCache(cache) {
 		clear();
+
+		// Edited by J
+		// Just a test to see if I can mess with m_Children before parsing time
+//			m_Children[2].push_back(1);
+
+		//end
+
 	}
 	~CStateItem() {
 	}
@@ -230,6 +237,19 @@ public:
 		 * Edited by JK
 		 */
 		m_Children.clear();
+
+
+//		int tempParent = 1;
+//		int tempChild = 2;
+//
+//		std::map<int, std::vector<int> >::iterator it = m_Children.find(
+//				tempParent);
+//		if (it == m_Children.end()) {
+//			m_Children.insert(
+//					std::map<int, std::vector<int> >::value_type(tempParent,
+//							std::vector<int>()));
+//		}
+//		m_Children[tempParent].push_back(tempChild);
 
 		ClearNext();
 	}
