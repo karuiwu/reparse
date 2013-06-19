@@ -699,57 +699,67 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			 * Edited by JK
 			 */
 
-			// print stack
-			std::cout << "Stack: ";
 			std::vector<int, allocator<int> >::const_iterator stackIter =
 					pGenerator->Stack.begin();
-			while (stackIter != pGenerator->Stack.end()) {
-				std::cout << *stackIter << " ";
-				stackIter++;
+
+			if (!bTrain) {
+				std::cout << "Stack: ";
+				while (stackIter != pGenerator->Stack.end()) {
+					std::cout << *stackIter << " ";
+					stackIter++;
+				}
+				std::cout << "\n";
 			}
-			std::cout << "\n";
-			// print stack word
+
 			stackIter = pGenerator->Stack.end();
 			int stackWord = -1;
 			if (!pGenerator->Stack.empty()) {
 				stackWord = *(stackIter - 1);
 
-				std::cout << "Stack word: ";
-				std::cout << stackWord;
-				std::cout << "\n";
+				if (!bTrain) {
+					std::cout << "Stack word: ";
+					std::cout << stackWord;
+					std::cout << "\n";
+				}
 			}
 
-			// print next word
 			int nextWord = pGenerator->NextWord;
-			std::cout << "Next word: " << nextWord << "\n";
 
-			// print children
-			std::cout << "m_Children: \n";
-			std::map<int, std::vector<int> > childMap = pGenerator->m_Children;
-			std::map<int, std::vector<int> >::const_iterator mapIterator =
-					childMap.begin();
-			while (mapIterator != childMap.end()) {
-				std::pair<int, std::vector<int> > iter = *mapIterator;
-				std::cout << iter.first << ": ";
-				std::vector<int> vec = (*mapIterator).second;
-				for (std::vector<int>::iterator vecIter = vec.begin();
-						vecIter != vec.end(); vecIter++) {
-					std::cout << *vecIter << " ";
+			if (!bTrain) {
+				std::cout << "Next word: " << nextWord << "\n";
+				std::cout << "m_Children: \n";
+
+				std::map<int, std::vector<int> > childMap =
+						pGenerator->m_Children;
+				std::map<int, std::vector<int> >::const_iterator mapIterator =
+						childMap.begin();
+				while (mapIterator != childMap.end()) {
+					std::pair<int, std::vector<int> > iter = *mapIterator;
+
+					std::cout << iter.first << ": ";
+					std::vector<int> vec = (*mapIterator).second;
+					for (std::vector<int>::iterator vecIter = vec.begin();
+							vecIter != vec.end(); vecIter++) {
+						std::cout << *vecIter << " ";
+					}
+
+					std::cout << "\n";
+					mapIterator++;
 				}
 
-				std::cout << "\n";
-				mapIterator++;
 			}
 
-//			int tempParent = 1;
-//			int tempChild = 0;
-//			std::map<int, std::vector<int> >::const_iterator it = pGenerator->m_Children.find(tempParent);
-//			if (it == pGenerator->m_Children.end()) {
-//				pGenerator->m_Children.insert(
-//						std::map<int, std::vector<int> >::value_type(
-//								tempChild, std::vector<int>()));
+//			if (!bTrain) {
+//				int tempParent = 7;
+//				int tempChild = 6;
+//				std::map<int, std::vector<int> >::const_iterator it =
+//						pGenerator->m_Children.find(tempParent);
+//				if (it == pGenerator->m_Children.end()) {
+//					//I used tempPGeneratorPointer instead of pGenerator because pGenerator was const and that was giving me a lot of issues.
+//					tempPGeneratorPointer->mChildrenInsert(tempParent,
+//							tempChild);
+//				}
 //			}
-//			pGenerator->m_Children[tempChild].push_back(tempParent);
 
 //			if(j == 0){
 //			// print QueueStackReduceState
@@ -792,16 +802,18 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			bool noShift = topOfBuffer_hasLeftChildOnStack;
 //			bool mustShift = topOfStack_isParentOf_topOfBuffer;
 
-			cout << "topOfStack_isParentOf_topOfBuffer "
-					<< topOfStack_isParentOf_topOfBuffer << "\n";
-			cout << "topOfBuffer_isParentOf_topOfStack "
-					<< topOfBuffer_isParentOf_topOfStack << "\n";
-			cout << "noLeftArc: " << noLeftArc << "\n";
-			cout << "noRightArc: " << noRightArc << "\n";
-			cout << "noReduce: " << noReduce << "\n";
-			cout << "mustReduce: " << mustReduce << "\n";
-			cout << "noShift: " << noShift << "\n";
-			cout << "\n";
+			if (!bTrain) {
+				cout << "topOfStack_isParentOf_topOfBuffer "
+						<< topOfStack_isParentOf_topOfBuffer << "\n";
+				cout << "topOfBuffer_isParentOf_topOfStack "
+						<< topOfBuffer_isParentOf_topOfStack << "\n";
+				cout << "noLeftArc: " << noLeftArc << "\n";
+				cout << "noRightArc: " << noRightArc << "\n";
+				cout << "noReduce: " << noReduce << "\n";
+				cout << "mustReduce: " << mustReduce << "\n";
+				cout << "noShift: " << noShift << "\n";
+//			cout << "\n";
+			}
 
 			//end
 
@@ -823,13 +835,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			}
 
 			else if (topOfBuffer_isParentOf_topOfStack) {
-
 				arcleft(pGenerator, packed_scores);
-
-
-//				cout << "got here" << "\n";
-//				exit(0);
-
 			}
 			//end
 

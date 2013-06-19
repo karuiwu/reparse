@@ -41,6 +41,8 @@ public:
 		OFF_STACK = 0, ON_STACK_SHIFT, ON_STACK_ARCRIGHT
 	};
 
+	bool PRINTACTION = false;
+
 	//CStateItem* previousCStateItem;
 
 protected:
@@ -238,7 +240,6 @@ public:
 		 */
 		m_Children.clear();
 
-
 //		int tempParent = 1;
 //		int tempChild = 2;
 //
@@ -303,8 +304,12 @@ public:
 		/**
 		 * Edited by JK
 		 */
-//		std::cout << "ACTION: ARCLEFT\n";
-//		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
+		if (PRINTACTION) {
+			std::cout << "ACTION: ARCLEFT\n";
+//			std::cout << "m_nNextWord: " << m_nNextWord << std::endl << std::endl;
+			cout << "\n";
+		}
+
 		//end
 		assert(m_Stack.size() > 0);
 		assert(m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD);
@@ -402,8 +407,11 @@ public:
 		/**
 		 * Edited by JK
 		 */
-//		std::cout << "ACTION: ARCRIGHT\n";
-//		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
+		if (PRINTACTION) {
+			std::cout << "ACTION: ARCRIGHT\n";
+//			std::cout << "m_nNextWord: " << m_nNextWord << std::endl << std::endl;
+			cout << "\n";
+		}
 		//end
 		assert(m_Stack.size() > 0);
 		static int left;
@@ -494,8 +502,11 @@ public:
 		/**
 		 * Edited by JK
 		 */
-//		std::cout << "ACTION: SHIFT\n";
-//		std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
+		if (PRINTACTION) {
+			std::cout << "ACTION: SHIFT\n";
+//			std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
+			cout << "\n";
+		}
 		//end
 		m_Stack.push_back(m_nNextWord);
 		m_HeadStack.push_back(m_nNextWord); // look at this next
@@ -529,7 +540,10 @@ public:
 		/**
 		 * Edited by JK
 		 */
-//		std::cout << "ACTION: REDUCE\n";
+
+		if (PRINTACTION) {
+			std::cout << "ACTION: REDUCE\n\n";
+		}
 		// 2 means reduced or popped
 		QueueStackReduceState[m_Stack.back()] = 2;
 
@@ -830,6 +844,13 @@ public:
 			}
 		}
 		return false;
+	}
+
+	void mChildrenInsert(int parent, int child) {
+		m_Children.insert(
+				std::map<int, std::vector<int> >::value_type(parent,
+						std::vector<int>()));
+		m_Children[parent].push_back(child);
 	}
 
 //end
