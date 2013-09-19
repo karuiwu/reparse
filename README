@@ -21,17 +21,18 @@ Predicting: ./megam.opt -predict weights [multiclass, binary] data/classifier/de
 Libraries used to compile our modified zPar:
 You will need to install 
 - Boost ( http://www.boost.org/ )
-- Vorpal Wabbit ( https://github.com/JohnLangford/vowpal_wabbit )
-And in order to link to the project sucessfully, the makefile will look for needed library files by calling:
--l vw  	     	     	      (libvw.a from Vorpal Wabbit)
--l allreduce 	   	      (liballreduce.a from Vorpal Wabbit)
--l boost_program_options      (libboost_program_options.a from Boost)
--l z 			      (libz.a from your system)
+- Vowpal Wabbit ( https://github.com/JohnLangford/vowpal_wabbit )
+And in order to link to the project sucessfully, the Zpar's makefile has been modified to call: -lvw in order to link to Vowpal Wabbit
 
-As a possibly helpful tip, if your boost libraries are installed in the directory /usr/local/lib, you can run the command:
-$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-To help the linker link the correct libraries. 
-(tip taken from this link: http://superuser.com/questions/581624/shared-library-libvw-so-0-is-missing)
+Installing Boost and Vowpal Wabbit:
+On linux systems such as debian, both of these packages can be installed by calling:
+ > sudo apt-get install libboost-all-dev vowpal-wabbit libvw0 libvw-dev
+
+Additional Note: 
+For some reason, some of vowpal wabbit's files are not included in the apt-get package install. We were able to get it all working by downloading the vowpal wabbit source from the github repository and moving the correct file location (in our case it was /usr/include/vowpalwabbit)
+
+
+
 
 
 In order to compile zPar in the zpar/ directory, just run:
