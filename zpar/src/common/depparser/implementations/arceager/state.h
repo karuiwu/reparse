@@ -2,6 +2,82 @@
 #ifndef _ENGLISH_DEPENDENCY_PARSER_STATEITEM
 #define _ENGLISH_DEPENDENCY_PARSER_STATEITEM
 
+/** Head Automaton class. Represents head automaton that can be used while parsing to extract richer features during a parse.
+ * By Juneki
+ */
+class State {
+	double cost;
+	bool leftState;
+	bool rightState;
+	bool flipped;
+	bool halted;
+
+//Main operation functions
+public:
+	/** We take another child as input and update our state.
+	 *
+	 */
+	State* transition(State* childNode) {
+		if (!flipped) {
+			leftState = true;
+		} else {
+			rightState = true;
+		}
+		return this;
+	}
+	/** Called when there are no more right children.
+	 *
+	 */
+	State* halt() {
+		halted = true;
+		return this;
+	}
+	/** Changes the automaton to begin taking right children.
+	 *
+	 */
+	State* flip() {
+		flipped = true;
+		return this;
+	}
+
+private:
+	void clearState() {
+		cost = 0;
+		leftState = false;
+		rightState = false;
+		flipped = false;
+		halted = false;
+	}
+
+// constructors and destructor
+public:
+	State() {
+		clearState();
+	}
+	~State() {
+	}
+	State(State& item) {
+		cost = item.cost;
+		leftState = item.leftState;
+		rightState = item.rightState;
+		flipped = item.flipped;
+		halted = item.halted;
+	}
+
+public:
+	//Produces an integer that represents the current state we are in.
+	int hash() const {
+		return leftState + (10 * rightState) + (100 * flipped) + (1000 * halted);
+//		return 0;
+	}
+
+	// print and debug functions
+	void print() {
+		cerr << "[" << leftState << "|" << rightState << "]";
+	}
+
+};
+
 /*===============================================================
  *
  * CStateItem - the search state item, representing a partial
@@ -41,7 +117,9 @@ public:
 		OFF_STACK = 0, ON_STACK_SHIFT, ON_STACK_ARCRIGHT
 	};
 
+	//Edited by J
 	bool PRINTACTION = false;
+	//end
 
 	//CStateItem* previousCStateItem;
 
@@ -76,8 +154,15 @@ public:
 	int NextWord;
 
 	//Edited by J
-	int Heads[MAX_SENTENCE_SIZE];
+
+	// Keeps track of the states of all the tokens in the sentence.
+	// Each token on the sentence will have an assigned number designating whether it is on the stack or has been reduced off.
 	int QueueStackReduceState[MAX_SENTENCE_SIZE];
+
+	// Contains all of the head automata for every node in a sentence.
+	State headAutomata[MAX_SENTENCE_SIZE];
+
+	//End
 
 	void saveCurrentStacksToPrevious() {
 		previous_m_Stack = std::vector<int>(m_Stack);
@@ -90,13 +175,6 @@ public:
 	CStateItem(const std::vector<CTaggedWord<CTag, TAG_SEPARATOR> >*cache = 0) :
 			m_lCache(cache) {
 		clear();
-
-		// Edited by J
-		// Just a test to see if I can mess with m_Children before parsing time
-//			m_Children[2].push_back(1);
-
-		//end
-
 	}
 	~CStateItem() {
 	}
@@ -265,6 +343,7 @@ public:
 
 		m_HeadStack = item.m_HeadStack;
 		m_nNextWord = item.m_nNextWord;
+
 		/**
 		 * Edited by JK
 		 */
@@ -300,17 +379,10 @@ public:
 #else
 	void ArcLeft() {
 #endif
-
-		/**
-		 * Edited by JK
-		 */
-		if (PRINTACTION) {
-			std::cout << "ACTION: ARCLEFT\n";
-//			std::cout << "m_nNextWord: " << m_nNextWord << std::endl << std::endl;
-			cout << "\n";
-		}
-
+		//Edited by J
+		printAction(1, PRINTACTION);
 		//end
+
 		assert(m_Stack.size() > 0);
 		assert(m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD);
 		static int left;
@@ -330,6 +402,11 @@ public:
 
 		// 2 means reduced or popped
 		QueueStackReduceState[left] = 2;
+
+		//head automata operations. The stack node cannot take any more right children. The queue node takes a left child.
+		headAutomata[left].halt();
+		headAutomata[m_nNextWord].transition(&headAutomata[left]);
+
 		//end
 
 		m_Stack.pop_back();
@@ -359,24 +436,10 @@ public:
 		/**
 		 * Edited by JK
 		 */
-//		std::cout << "m_Stack: ";
-//		for (std::vector<int>::const_iterator i = m_Stack.begin();
-//				i != m_Stack.end(); ++i)
-//			std::cout << *i << ' ';
-//		std::cout << std::endl;
-//
-//		std::cout << "m_HeadStack: ";
-//		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
-//				i != m_HeadStack.end(); ++i)
-//			std::cout << *i << ' ';
-//		std::cout << std::endl;
-//
-//		std::cout << "m_lHeads: ";
-//		for (int i = 0; i < MAX_SENTENCE_SIZE/2; i++) {
-//			std::cout << m_lHeads[i] << " ";
-//		}
-//		std::cout << std::endl;
-//
+		printStacks(PRINTACTION);
+		printHeadAutomatonStates(PRINTACTION);
+		printEndLine(PRINTACTION);
+
 //		int nextWordChild = -1;
 //		for(int i = 0; i<MAX_SENTENCE_SIZE; i++){
 //			if (m_lHeads[i] == m_nNextWord){
@@ -403,16 +466,10 @@ public:
 #else
 	void ArcRight() {
 #endif
-
-		/**
-		 * Edited by JK
-		 */
-		if (PRINTACTION) {
-			std::cout << "ACTION: ARCRIGHT\n";
-//			std::cout << "m_nNextWord: " << m_nNextWord << std::endl << std::endl;
-			cout << "\n";
-		}
+		//Edited by J
+		printAction(2, PRINTACTION);
 		//end
+
 		assert(m_Stack.size() > 0);
 		static int left;
 		left = m_Stack.back();
@@ -432,6 +489,10 @@ public:
 
 		// 1 means the word is now on the stack
 		QueueStackReduceState[m_nNextWord] = 1;
+
+		//head automata operations. Arc Right. The queue node cannot take any more left children. The stack node takes a right child.
+		headAutomata[m_nNextWord].flip();
+		headAutomata[left].transition(&headAutomata[m_nNextWord]);
 		//end
 
 #ifdef LABELED
@@ -458,23 +519,10 @@ public:
 		/**
 		 * Edited by JK
 		 */
-//		std::cout << "m_Stack: ";
-//		for (std::vector<int>::const_iterator i = m_Stack.begin();
-//				i != m_Stack.end(); ++i)
-//			std::cout << *i << ' ';
-//		std::cout << std::endl;
-//
-//		std::cout << "m_HeadStack: ";
-//		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
-//				i != m_HeadStack.end(); ++i)
-//			std::cout << *i << ' ';
-//		std::cout << std::endl;
-//		std::cout << "m_lHeads: ";
-//		for (int i = 0; i < MAX_SENTENCE_SIZE/2; i++) {
-//			std::cout << m_lHeads[i] << " ";
-//		}
-//		std::cout << std::endl;
-//
+		printStacks(PRINTACTION);
+		printHeadAutomatonStates(PRINTACTION);
+		printEndLine(PRINTACTION);
+
 //		int nextWordChild = -1;
 //		for(int i = 0; i<MAX_SENTENCE_SIZE; i++){
 //			if (m_lHeads[i] == m_nNextWord){
@@ -498,16 +546,10 @@ public:
 
 	// the shift action does pushing
 	void Shift() {
-
-		/**
-		 * Edited by JK
-		 */
-		if (PRINTACTION) {
-			std::cout << "ACTION: SHIFT\n";
-//			std::cout << "m_nNextWord: " << m_nNextWord << std::endl;
-			cout << "\n";
-		}
+		//Edited by J
+		printAction(3, PRINTACTION);
 		//end
+
 		m_Stack.push_back(m_nNextWord);
 		m_HeadStack.push_back(m_nNextWord); // look at this next
 		m_nNextWord++;
@@ -519,34 +561,20 @@ public:
 		 */
 		// 1 means that the word is now on the stack. I take off -1 because m_nNextWord was previously incremented ++.
 		QueueStackReduceState[m_nNextWord - 1] = 1;
+		//head automata. Shift operation. The right hand side will not take any more left children
+		headAutomata[m_nNextWord].flip();
 
-//		std::cout << "m_Stack: ";
-//		for (std::vector<int>::const_iterator i = m_Stack.begin();
-//				i != m_Stack.end(); ++i)
-//			std::cout << *i << ' ';
-//		std::cout << std::endl;
-//
-//		std::cout << "m_HeadStack: ";
-//		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
-//				i != m_HeadStack.end(); ++i)
-//			std::cout << *i << ' ';
-//		std::cout << std::endl << std::endl;
+		printStacks(PRINTACTION);
+		printHeadAutomatonStates(PRINTACTION);
+		printEndLine(PRINTACTION);
 		//end
 	}
 
 	// the reduce action does popping
 	void Reduce() {
 
-		/**
-		 * Edited by JK
-		 */
-
-		if (PRINTACTION) {
-			std::cout << "ACTION: REDUCE\n\n";
-		}
-		// 2 means reduced or popped
-		QueueStackReduceState[m_Stack.back()] = 2;
-
+		//Edited by J
+		printAction(4, PRINTACTION);
 		// end
 
 		assert(m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD);
@@ -556,17 +584,15 @@ public:
 		/**
 		 * Edited by JK
 		 */
-//		std::cout << "m_Stack: ";
-//		for (std::vector<int>::const_iterator i = m_Stack.begin();
-//				i != m_Stack.end(); ++i)
-//			std::cout << *i << ' ';
-//		std::cout << std::endl;
-//
-//		std::cout << "m_HeadStack: ";
-//		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
-//				i != m_HeadStack.end(); ++i)
-//			std::cout << *i << ' ';
-//		std::cout << std::endl << std::endl;
+		// 2 means reduced or popped
+		QueueStackReduceState[m_Stack.back()] = 2;
+		//head automata. Reduce operation. The stack node will not take any more right children.
+		headAutomata[m_Stack.back()].halt();
+
+		printStacks(PRINTACTION);
+		printHeadAutomatonStates(PRINTACTION);
+		printEndLine(PRINTACTION);
+
 		//end
 	}
 
@@ -847,10 +873,214 @@ public:
 	}
 
 	void mChildrenInsert(int parent, int child) {
-		m_Children.insert(
-				std::map<int, std::vector<int> >::value_type(parent,
-						std::vector<int>()));
-		m_Children[parent].push_back(child);
+		std::map<int, std::vector<int> >::const_iterator childLookup =
+				m_Children.find(parent);
+
+		// If we haven't found the parent in our map.
+		if (childLookup == m_Children.end()) {
+			std::vector<int> newChildList;
+			newChildList.push_back(child);
+			m_Children.insert(
+					std::pair<int, std::vector<int> >(parent, newChildList));
+			// m_Children.insert(std::map<int, std::vector<int> >::value_type(parent,std::vector<int>()));m_Children[parent].push_back(child);
+
+		}
+		// else, if we have found the parent in our map
+		else {
+
+			std::vector<int> childrenList = childLookup->second;
+			// iterate over the children, checking if we already have the arc.
+			for (std::vector<int>::const_iterator childIter =
+					childrenList.begin(); childIter != childrenList.end();
+					childIter++) {
+
+				// arc already exists
+				if (child == *(childIter)) {
+					return;
+				}
+			}
+//			childrenList.second.push_back(child);
+			m_Children[parent].push_back(child);
+		}
+	}
+
+	void printVector(std::vector<int> v) {
+		for (std::vector<int>::const_iterator iter = v.begin(); iter != v.end();
+				iter++) {
+			std::cout << *(iter) << " ";
+		}
+		std::cout << "\n";
+	}
+
+	void removeArc(int parent, int child) {
+		std::map<int, std::vector<int> >::const_iterator childLookup =
+				m_Children.find(parent);
+
+		// if the parent exists in our child map
+		if (childLookup != m_Children.end()) {
+			std::pair<int, std::vector<int> > childrenList = *(childLookup);
+
+			// we look through the children and look to see if it matches the child.
+			for (std::vector<int>::iterator childrenListLookup =
+					childrenList.second.begin();
+					childrenListLookup != childrenList.second.end();
+					childrenListLookup++) {
+				if (child == *(childrenListLookup)) {
+
+//					std::cout << "TEST\n";
+//					std::cout << childrenList.first << "!!!!\n";
+//					printVector(childrenList.second);
+//					std::cout << "---\n";
+
+					childrenList.second.erase(childrenListLookup);
+
+//					printVector(childrenList.second);
+//					std::cout << "---\n";
+
+					return;
+				}
+			}
+
+		}
+	}
+
+	// will make an arc between parent and child.
+	void makeArc(int parent, int child) {
+
+		//TODO delete all of the crossing arcs to maintain projectivity
+		// iterate over each parent-child mapping
+		std::map<int, std::vector<int> >::iterator childMapIter;
+		for (childMapIter = m_Children.begin();
+				childMapIter != m_Children.end(); childMapIter++) {
+
+			// take the parent first.
+			int tempParent = childMapIter->first;
+			std::vector<int> childVector = childMapIter->second;
+
+			bool parentBefore = tempParent < parent && tempParent < child;
+			bool parentAfter = tempParent > parent && tempParent > child;
+			bool parentMiddle = !(parentBefore || parentAfter
+					|| tempParent == parent || tempParent == child);
+
+			std::vector<int>::iterator childVectorIter;
+			// iterate over all the children of the parent.
+			for (childVectorIter = (*childMapIter).second.begin();
+					childVectorIter != (*childMapIter).second.end();) {
+				int tempChild = *childVectorIter;
+				bool childBefore = tempChild < parent && tempChild < child;
+				bool childAfter = tempChild > parent && tempChild > child;
+				bool childMiddle = !(childBefore || childAfter
+						|| tempChild == parent || tempChild == child);
+
+				// make the check to see if the arc needs to be deleted.
+				bool deleteCondition = (tempChild == child);
+				bool deleteCondition_crossing1 = ((parentBefore && childMiddle)
+						|| (parentAfter && childMiddle));
+				bool deleteCondition_crossing2 = (parentMiddle && childBefore)
+						|| (parentMiddle && childAfter);
+
+				//TODO handle how not to add the 33 -> 34 edge
+
+//				bool deleteCondition3 = tempChild == child; // we cannot have more than 1 incoming arrow
+
+				//delete the arc
+				if (deleteCondition || deleteCondition_crossing1
+						|| deleteCondition_crossing2) {
+//					printVector(childVector);
+
+//					cout << "we want to delete this: " << tempParent << " -> "
+//							<< *(childVectorIter) << "\n";
+
+					childVectorIter = childMapIter->second.erase(
+							childVectorIter);
+
+//					printVector(childVector);
+
+				} else {
+					++childVectorIter;
+				}
+			}
+		}
+		mChildrenInsert(parent, child);
+	}
+
+	/** Prints out the action that the parser is taking. Helps to see what is going on.
+	 *
+	 */
+	void printAction(int code, bool flag = true) {
+
+		if (!flag) {
+			return;
+		}
+
+		switch (code) {
+		case 1:
+			cerr << "ARC LEFT" << "\n";
+			break;
+		case 2:
+			cerr << "ARC RIGHT" << "\n";
+			break;
+		case 3:
+			cerr << "SHIFT" << "\n";
+			break;
+		case 4:
+			cerr << "REDUCE" << "\n";
+			break;
+		}
+	}
+
+	/** Prints out the state of some of the stacks of this parser. Just to help see whats going on.
+	 *
+	 */
+	void printStacks(bool flag = true) {
+		if (!flag) {
+			return;
+		}
+
+		//MAX_SENTENCE_SIZE
+		cerr << "[ ";
+		for (std::vector<int>::const_iterator i = m_Stack.begin();
+				i != m_Stack.end(); ++i)
+			cerr << *i << ' ';
+		cerr << "| ";
+		cerr << m_nNextWord << " ...  ] \n";
+
+		cerr << "m_HeadStack: ";
+		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
+				i != m_HeadStack.end(); ++i)
+			cerr << *i << ' ';
+		cerr << std::endl;
+
+		cerr << "m_lHeads: ";
+		for (int i = 0; i < 10; i++) {
+			cerr << m_lHeads[i] << " ";
+		}
+		cerr << std::endl;
+	}
+
+	void printHeadAutomatonStates(bool flag = true) {
+		if (!flag) {
+			return;
+		}
+
+		for (int i = 0; i < 10; i++) {
+			State s = headAutomata[i];
+			s.print();
+			cerr << ",";
+		}
+		cerr << "\n";
+	}
+
+	void printEndLine(bool flag = true) {
+		if (!flag) {
+			return;
+		}
+		cerr << "---\n\n";
+	}
+
+	// Link Automata inline access operations.
+	inline const State* automataLookup(int const index) const {
+		return &headAutomata[index];
 	}
 
 //end

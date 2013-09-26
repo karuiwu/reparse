@@ -62,6 +62,13 @@ inline void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 	n2_index = n0_index + 2 < m_lCache.size() ? n0_index + 2 : -1;
 	n3_index = n0_index + 3 < m_lCache.size() ? n0_index + 3 : -1;
 
+
+	// Juneki: Link Automata feature. Just the state of the automata at the top of the stack and queue.
+	const State* st_index_automata = item->automataLookup(st_index);
+	const State* n0_index_automata = item->automataLookup(n0_index);
+	//end
+
+
 	const CTaggedWord<CTag, TAG_SEPARATOR> &st_word_tag =
 			st_index == -1 ? g_emptyTaggedWord : m_lCache[st_index];
 	const CTaggedWord<CTag, TAG_SEPARATOR> &sth_word_tag =
@@ -340,6 +347,16 @@ inline void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 		cast_weights->m_mapN0tlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round );
 	}
 
+
+	// Edited by J
+	// See if I can add some of my own features to the parser
+//	const State* st_index_automata = item->automataLookup(st_index);
+//	const State* n0_index_automata = item->automataLookup(n0_index);
+	cast_weights->automataMap.getOrUpdateScore( retval, st_index_automata->hash() ,action , m_nScoreIndex, amount, round);
+	cast_weights->automataMap.getOrUpdateScore( retval, n0_index_automata->hash(), action, m_nScoreIndex, amount, round);
+
+
+
 	if (m_bCoNLL) {
 
 		static unsigned i;
@@ -367,7 +384,27 @@ inline void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 				for (i=0; i<m_lCacheCoNLLFeats[n1_index].size(); ++i)
 				cast_weights->m_mapN1f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n1_index][i], action, m_nScoreIndex, amount, round);
 			} // if (n1_index!=-1)
+
+			// Edited by J
+			// See if I can add the n2_index as a feature for the parser
+//		if (n2_index != -1) {
+//			if (!m_lCacheCoNLLLemma[n2_index].empty())
+//				cast_weights->m_mapN2l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n2_index], action, m_nScoreIndex, amount, round);
+//				if (m_lCacheCoNLLCPOS[n2_index] != CCoNLLCPOS()) cast_weights->m_mapN2c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n2_index], action, m_nScoreIndex, amount, round);
+//				for (i=0; i<m_lCacheCoNLLFeats[n2_index].size(); ++i)
+//				cast_weights->m_mapN2f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n2_index][i], action, m_nScoreIndex, amount, round);
+//			}
+
+//		if(n3_index != -1){
+//			if(!m_lCacheCoNLLLemma[n3_index].empty())
+//				cast_weights->m_mapN3l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n3_index], action, m_nScoreIndex, amount, round);
+//				if (m_lCacheCoNLLCPOS[n3_index] != CCoNLLCPOS()) cast_weights->m_mapN3c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n3_index], action, m_nScoreIndex, amount, round);
+//				for (i=0; i<m_lCacheCoNLLFeats[n3_index].size(); ++i)
+//				cast_weights->m_mapN2f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n3_index][i], action, m_nScoreIndex, amount, round);
+//			}
+
 		}
+
 	}
 
 	/*---------------------------------------------------------------
@@ -401,7 +438,7 @@ void CDepParser::updateScores(const CDependencyParse & parsed,
 
 /*---------------------------------------------------------------
  *
- * updateScoreForState - update a single positive or negative outout
+ * updateScoreForState - update a single positive or negative output
  *
  *--------------------------------------------------------------*/
 
@@ -702,64 +739,68 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			std::vector<int, allocator<int> >::const_iterator stackIter =
 					pGenerator->Stack.begin();
 
-			if (!bTrain) {
-				std::cout << "Stack: ";
-				while (stackIter != pGenerator->Stack.end()) {
-					std::cout << *stackIter << " ";
-					stackIter++;
-				}
-				std::cout << "\n";
-			}
+//			if (!bTrain) {
+//				std::cout << "Stack: ";
+//				while (stackIter != pGenerator->Stack.end()) {
+//					std::cout << *stackIter << " ";
+//					stackIter++;
+//				}
+//				std::cout << "\n";
+//			}
 
 			stackIter = pGenerator->Stack.end();
 			int stackWord = -1;
 			if (!pGenerator->Stack.empty()) {
 				stackWord = *(stackIter - 1);
 
-				if (!bTrain) {
-					std::cout << "Stack word: ";
-					std::cout << stackWord;
-					std::cout << "\n";
-				}
+//				if (!bTrain) {
+//					std::cout << "Stack word: ";
+//					std::cout << stackWord;
+//					std::cout << "\n";
+//				}
 			}
 
 			int nextWord = pGenerator->NextWord;
 
-			if (!bTrain) {
-				std::cout << "Next word: " << nextWord << "\n";
-				std::cout << "m_Children: \n";
-
-				std::map<int, std::vector<int> > childMap =
-						pGenerator->m_Children;
-				std::map<int, std::vector<int> >::const_iterator mapIterator =
-						childMap.begin();
-				while (mapIterator != childMap.end()) {
-					std::pair<int, std::vector<int> > iter = *mapIterator;
-
-					std::cout << iter.first << ": ";
-					std::vector<int> vec = (*mapIterator).second;
-					for (std::vector<int>::iterator vecIter = vec.begin();
-							vecIter != vec.end(); vecIter++) {
-						std::cout << *vecIter << " ";
-					}
-
-					std::cout << "\n";
-					mapIterator++;
-				}
-
-			}
-
 //			if (!bTrain) {
-//				int tempParent = 7;
-//				int tempChild = 6;
-//				std::map<int, std::vector<int> >::const_iterator it =
-//						pGenerator->m_Children.find(tempParent);
-//				if (it == pGenerator->m_Children.end()) {
-//					//I used tempPGeneratorPointer instead of pGenerator because pGenerator was const and that was giving me a lot of issues.
-//					tempPGeneratorPointer->mChildrenInsert(tempParent,
-//							tempChild);
+//				std::cout << "Next word: " << nextWord << "\n";
+//				std::cout << "m_Children: \n";
+//
+//				std::map<int, std::vector<int> > childMap =
+//						pGenerator->m_Children;
+//				std::map<int, std::vector<int> >::const_iterator mapIterator =
+//						childMap.begin();
+//				while (mapIterator != childMap.end()) {
+//					std::pair<int, std::vector<int> > iter = *mapIterator;
+//
+//					std::cout << iter.first << ": ";
+//					std::vector<int> vec = (*mapIterator).second;
+//					for (std::vector<int>::iterator vecIter = vec.begin();
+//							vecIter != vec.end(); vecIter++) {
+//						std::cout << *vecIter << " ";
+//					}
+//
+//					std::cout << "\n";
+//					mapIterator++;
 //				}
 //			}
+
+			if (!bTrain) {
+//				int parent = 2;
+//				int child = 1;
+//				std::map<int, std::vector<int> >::const_iterator it =
+//						pGenerator->m_Children.find(parent);
+//				if (it == pGenerator->m_Children.end()) {
+//					//I used tempPGeneratorPointer instead of pGenerator because pGenerator was const and that was giving me a lot of issues.
+//					tempPGeneratorPointer->mChildrenInsert(stackWord*100, nextWord*100);
+//					tempPGeneratorPointer->mChildrenInsert((stackWord-1)*100, (nextWord-1)*100);
+//				}
+//
+//				tempPGeneratorPointer->removeArc(parent, child);
+//				tempPGeneratorPointer->makeArc(parent,child);
+
+//				tempPGeneratorPointer->makeArc(33,35);
+			}
 
 //			if(j == 0){
 //			// print QueueStackReduceState
@@ -823,10 +864,49 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			getOrUpdateStackScore(pGenerator, packed_scores, action::NO_ACTION);
 			if (pGenerator->size() == length) {
 				assert(pGenerator->stacksize() != 0);
-				if (pGenerator->stacksize() > 1)
+				if (pGenerator->stacksize() > 1) {
 					reduce(pGenerator, packed_scores);
-				else
+				} else {
+
+					// Edited by J
+					// I want to play with the parse at the end right before we finish
+					if (!bTrain) {
+//						cout << "playing with the parse at the end\n";
+
+//						tempPGeneratorPointer->mChildrenInsert(32,34);
+
+						// J, 9/11/13: This line was left uncommented. I was forming arcs and seeing if that would affect the parser
+						//tempPGeneratorPointer->makeArc(33, 36);
+
+						std::cout << "m_Children: \n";
+
+						std::map<int, std::vector<int> > childMap =
+								pGenerator->m_Children;
+						std::map<int, std::vector<int> >::const_iterator mapIterator =
+								childMap.begin();
+						while (mapIterator != childMap.end()) {
+							std::pair<int, std::vector<int> > iter =
+									*mapIterator;
+
+							std::cout << iter.first << ": ";
+							std::vector<int> vec = (*mapIterator).second;
+							for (std::vector<int>::iterator vecIter =
+									vec.begin(); vecIter != vec.end();
+									vecIter++) {
+								std::cout << *vecIter << " ";
+							}
+
+							std::cout << "\n";
+							mapIterator++;
+						}
+
+					}
+
+					//end
+
 					poproot(pGenerator, packed_scores);
+
+				}
 			}
 			// Edited by J
 			// Here, we check to see if we already have arcs that have been made that we need to take again.

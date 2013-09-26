@@ -65,12 +65,17 @@ public:
 #include <stdio.h>
 
 using namespace std;
+
+
 typedef uint32_t fid;
+
+
 
 struct vw_namespace {
   char namespace_letter;
 public: vw_namespace(const char c) : namespace_letter(c) {}
 };
+
 
 
 class ezexample {
@@ -99,7 +104,9 @@ class ezexample {
     return new_ec;
   }
 
+
  public:
+
 
   // REAL FUNCTIONALITY
   ezexample(vw*this_vw, bool multiline=false) {
@@ -300,6 +307,11 @@ class ezexample {
   inline ezexample& operator--() { remns(); return *this; }
 
   inline float      operator()() { return predict(); }
+
+
 };
+
+
+
 
 #endif /* DYNAMICFEATURECOLLECTION_H_ */

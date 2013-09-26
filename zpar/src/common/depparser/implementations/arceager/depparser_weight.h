@@ -105,7 +105,9 @@
 \
    left(m_mapN1l)right\
    left(m_mapN1c)right\
-   left(m_mapN1f)right
+   left(m_mapN1f)right\
+\
+	left(automataMap)right //edited by J
 
 namespace TARGET_LANGUAGE {
 
@@ -138,6 +140,15 @@ typedef CPackedScoreMap<CTuple2< CTag, CSetOfTags<CDependencyLabel> >, SCORE_TYP
 typedef CPackedScoreMap<CLemma, SCORE_TYPE, action::MAX> CLemmaMap;
 typedef CPackedScoreMap<CCoNLLCPOS, SCORE_TYPE, action::MAX> CCoNLLCPOSMap;
 typedef CPackedScoreMap<CCoNLLFeats, SCORE_TYPE, action::MAX> CCoNLLFeatsMap;
+
+
+//TODO Juneki: Make a map storing scores for Link Automata
+
+// Make a map storing booleans
+typedef CPackedScoreMap<int, SCORE_TYPE, action::MAX> automataHashMap;
+
+
+
 
 /*===============================================================
  *
@@ -255,6 +266,20 @@ public:
    CCoNLLCPOSMap m_mapN1c;
    CCoNLLFeatsMap m_mapN1f;
 
+
+   // Edited by J: added n_mapN2l, n_mapN2c, n_mapN2f;
+   CLemmaMap m_mapN2l;
+   CCoNLLCPOSMap m_mapN2c;
+   CCoNLLFeatsMap m_mapN2f;
+
+   CLemmaMap m_mapN3l;
+   CCoNLLCPOSMap m_mapN3c;
+   CCoNLLFeatsMap m_mapN3f;
+
+   automataHashMap automataMap;
+
+
+
 public:
 
    CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
@@ -364,6 +389,22 @@ public:
                                                m_mapN1l("Next+1Lemma", DEP_TABLE_SIZE),
                                                m_mapN1c("Next+1CPOS", DEP_TABLE_SIZE),
                                                m_mapN1f("Next+1Feats", DEP_TABLE_SIZE)
+
+
+												// Edited by J: added n_mapN2l, n_mapN2c, n_mapN2f;
+												, m_mapN2l("Next+2Lemma", DEP_TABLE_SIZE),
+												m_mapN2c("Next+2CPOS", DEP_TABLE_SIZE),
+												m_mapN2f("Next+2Feats", DEP_TABLE_SIZE)
+
+												, m_mapN3l("Next+2Lemma", DEP_TABLE_SIZE),
+												m_mapN3c("Next+2CPOS", DEP_TABLE_SIZE),
+												m_mapN3f("Next+2Feats", DEP_TABLE_SIZE)
+
+												, automataMap("automataMap", DEP_TABLE_SIZE)
+
+
+
+
    { loadScores(); }
 
    virtual ~CWeight() {
