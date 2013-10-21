@@ -651,6 +651,14 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 //			//CTaggedWord is the same as the pair. We have word and tag. Same thing.
 //		}
 
+		//Edited by J
+		correctState.linkAutomata[index].clearState();
+		pCandidate.linkAutomata[index].clearState();
+		//end
+
+
+
+
 		// filter std::cout training examples with rules
 		if (bTrain && m_weights->rules()) {
 			// the root

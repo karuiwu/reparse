@@ -71,21 +71,60 @@
 
 \section{Previous Work}
 
+Deterministic approaches to dependency parsing have been \cite{Nivre03anefficient}.
+
 
 \section{Arc Eager Dependency Parsing}
 
 
 
-
 \section{Revision Actions}
+
+We introduce a set of revision actions as additional choices an Arc Eager Dependency Parser could make. Revision operators will generally modify or remove existing arcs, and then backtrack by shifting words back on to the buffer to reparse the result. This is done with the expectation that parsing through a sentence a second time should be faster using the remaining arcs as chunked off partial parses. 
+
+After the other revision operators are made we UNSHIFT. We move the partial parses back on to the buffer. 
+
+
+
+
+\subsection{Generalized Arc Eager Dependency Parsing}
+The Unshift revision action will move a set of words back on to the Parsing Buffer but it may also leave behind partial parses. 
+%That is, arcs may be Unshifted back on to the buffer. 
+Arc Eager Dependency Parsing by default assumes no previous arcs to exist on the buffer, and so additional parsing rules and constraints must be introduced in order to perform Generalized Arc Eager Dependency Parsing on tree inputs.
+
+\begin{itemize}
+
+\item If the top of the stack is the parent of the top of the buffer, then the RIGHT-ARC is \textbf{forced} to be made.
+
+\item If the top of the buffer is the parent of the top of the stack, then the LEFT-ARC is \textbf{forced} to be made.
+
+\item If the top of the buffer has a parent or if the top of the buffer has a left child on the stack, then a RIGHT-ARC \textbf{cannot} be made.
+
+\item If the top of the stack has a parent or if the top of the stack has a right child on the buffer, then a LEFT-ARC \textbf{cannot} be made.
+
+\item If the top of the stack has a parent or if the top of the buffer has a left child on the stack, then a REDUCE \textbf{must} be made.
+
+\item If the top of the buffer has a left child on the stack then, a SHIFT \textbf{cannot} be made.
+
+\end{itemize}
+
+
 
 
 
 \section{Oracle Training}
-In order to determine when the parser should use revision actions, an oracle was used to determine when the parser had entered an error state.
+In order to determine when the parser should use revision actions, an oracle was trained and used to determine when the parser had entered an error state.
 
 \subsection{Parser State Features}
+Features were extracted from the parser state to train the oracle. 
 
+\begin{itemize}
+
+\item POS N-Gram. The POS tags of the top N tokens on the stack and the top token on the buffer were taken.
+
+
+
+\end{itemize}
 
 
 
@@ -203,7 +242,7 @@ tables below the body, using 11 point text.
 \section*{Acknowledgments}
 
 Do not number the acknowledgment section. Do not include this section
-when submitting your paper for review.\cite{textbook,goldberg}
+when submitting your paper for review.\cite{goldberg}
 
 \bibliographystyle{acl}
 % you bib file should really go here 

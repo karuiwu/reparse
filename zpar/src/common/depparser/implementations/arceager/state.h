@@ -99,6 +99,27 @@ public:
 	CStateItem(const std::vector<CTaggedWord<CTag, TAG_SEPARATOR> >*cache = 0) :
 			m_lCache(cache) {
 		clear();
+
+		// Edited by J
+
+		// I want to give the automata for each token in the sentence to receive the respective POS tag. In integer form.
+//		if (m_lCache != 0) {
+//			for (int i = 0; i < m_lCache->size() && i < 10; i++) {
+//				CTaggedWord<CTag, TAG_SEPARATOR> taggedWord = m_lCache->at(i);
+//				const CTag &tag = taggedWord.tag;
+//				std::string tagString = tag.str();
+//
+//				int sum = 0;
+//				int offset = 1;
+//				for (int j = 0; j < tagString.size() && j < 3; j++) {
+//					int temp = tagString[j];
+//					sum += temp * offset;
+//					offset *= 100;
+//				}
+//				linkAutomata[i].setPOStag(sum);
+//			}
+//		}
+
 	}
 	~CStateItem() {
 	}
@@ -1012,6 +1033,10 @@ public:
 	void printLinkAutomatonStates(bool flag = true) {
 		if (!flag) {
 			return;
+		}
+
+		for (int i = 0; i < MAX_SENTENCE_SIZE; i++) {
+			linkAutomata[i].uniqueID = i;
 		}
 
 		for (int i = 0; i < 10 && i < m_lCache->size(); i++) {
