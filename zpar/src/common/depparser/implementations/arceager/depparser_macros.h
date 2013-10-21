@@ -23,9 +23,8 @@ typedef long SCORE_TYPE ;
 #define SR_SUPERTAG 1
 
 
-// JUNEKI: THIS IS THE SIZE OF THE BEAM:
+// JUNEKI: THIS IS THE SIZE OF THE BEAM. IT STARTED OUT AS 64.
 // The size of agenda
-//const unsigned AGENDA_SIZE = 64 ;
 const unsigned AGENDA_SIZE = 1;
 
 

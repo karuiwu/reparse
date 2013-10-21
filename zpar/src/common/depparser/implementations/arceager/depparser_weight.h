@@ -12,6 +12,8 @@
 
 #include "depparser_weight_base.h"
 
+//#include "automataState.h"
+
 #define iterate_templates(left, right) \
    left(m_mapSTw)right\
    left(m_mapSTt)right\
@@ -107,7 +109,11 @@
    left(m_mapN1c)right\
    left(m_mapN1f)right\
 \
-	left(automataMap)right //edited by J
+   left(automata_mapST)right\
+   left(automata_mapN0)right
+   //edited by J
+
+
 
 namespace TARGET_LANGUAGE {
 
@@ -276,7 +282,8 @@ public:
    CCoNLLCPOSMap m_mapN3c;
    CCoNLLFeatsMap m_mapN3f;
 
-   automataHashMap automataMap;
+   automataHashMap automata_mapST;
+   automataHashMap automata_mapN0;
 
 
 
@@ -400,7 +407,9 @@ public:
 												m_mapN3c("Next+2CPOS", DEP_TABLE_SIZE),
 												m_mapN3f("Next+2Feats", DEP_TABLE_SIZE)
 
-												, automataMap("automataMap", DEP_TABLE_SIZE)
+												, automata_mapST("StackLinkAutomata", DEP_TABLE_SIZE)
+												, automata_mapN0("BufferLinkAutomata", DEP_TABLE_SIZE)
+
 
 
 

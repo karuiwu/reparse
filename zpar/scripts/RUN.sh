@@ -41,7 +41,7 @@ fi
 if [ "$?" = 0 ]; then
     touch $parsingOutput
     rm -f $parsingOutput
-    dist/generic.depparser/depparser -c $testingInput $parsingOutput $model > tempOutput
+    dist/generic.depparser/depparser -c $testingInput $parsingOutput $model 
 else
     exit
 fi

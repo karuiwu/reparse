@@ -2,81 +2,7 @@
 #ifndef _ENGLISH_DEPENDENCY_PARSER_STATEITEM
 #define _ENGLISH_DEPENDENCY_PARSER_STATEITEM
 
-/** Head Automaton class. Represents head automaton that can be used while parsing to extract richer features during a parse.
- * By Juneki
- */
-class State {
-	double cost;
-	bool leftState;
-	bool rightState;
-	bool flipped;
-	bool halted;
-
-//Main operation functions
-public:
-	/** We take another child as input and update our state.
-	 *
-	 */
-	State* transition(State* childNode) {
-		if (!flipped) {
-			leftState = true;
-		} else {
-			rightState = true;
-		}
-		return this;
-	}
-	/** Called when there are no more right children.
-	 *
-	 */
-	State* halt() {
-		halted = true;
-		return this;
-	}
-	/** Changes the automaton to begin taking right children.
-	 *
-	 */
-	State* flip() {
-		flipped = true;
-		return this;
-	}
-
-private:
-	void clearState() {
-		cost = 0;
-		leftState = false;
-		rightState = false;
-		flipped = false;
-		halted = false;
-	}
-
-// constructors and destructor
-public:
-	State() {
-		clearState();
-	}
-	~State() {
-	}
-	State(State& item) {
-		cost = item.cost;
-		leftState = item.leftState;
-		rightState = item.rightState;
-		flipped = item.flipped;
-		halted = item.halted;
-	}
-
-public:
-	//Produces an integer that represents the current state we are in.
-	int hash() const {
-		return leftState + (10 * rightState) + (100 * flipped) + (1000 * halted);
-//		return 0;
-	}
-
-	// print and debug functions
-	void print() {
-		cerr << "[" << leftState << "|" << rightState << "]";
-	}
-
-};
+#include "automataState.h"
 
 /*===============================================================
  *
@@ -121,8 +47,6 @@ public:
 	bool PRINTACTION = false;
 	//end
 
-	//CStateItem* previousCStateItem;
-
 protected:
 	std::vector<int> m_Stack;     // stack of words that are currently processed
 	std::vector<int> m_HeadStack;
@@ -160,7 +84,7 @@ public:
 	int QueueStackReduceState[MAX_SENTENCE_SIZE];
 
 	// Contains all of the head automata for every node in a sentence.
-	State headAutomata[MAX_SENTENCE_SIZE];
+	State linkAutomata[MAX_SENTENCE_SIZE];
 
 	//End
 
@@ -210,6 +134,13 @@ public:
 			return false;
 		if (m_Stack.size() > 0 && m_Stack.back() != item.m_Stack.back())
 			return false;
+
+		//Edited by J
+//		if(linkAutomata[m_nNextWord].hash() != item.linkAutomata[m_nNextWord].hash()){
+//			return false;
+//		}
+		//end
+
 		// I think that the stacks don't have to be compared
 		// might be proved by translating tree to stack
 		assert(m_Stack == item.m_Stack);
@@ -317,18 +248,8 @@ public:
 		 * Edited by JK
 		 */
 		m_Children.clear();
-
-//		int tempParent = 1;
-//		int tempChild = 2;
-//
-//		std::map<int, std::vector<int> >::iterator it = m_Children.find(
-//				tempParent);
-//		if (it == m_Children.end()) {
-//			m_Children.insert(
-//					std::map<int, std::vector<int> >::value_type(tempParent,
-//							std::vector<int>()));
-//		}
-//		m_Children[tempParent].push_back(tempChild);
+		linkAutomata[m_nNextWord].clearState();
+		//end
 
 		ClearNext();
 	}
@@ -363,6 +284,7 @@ public:
 
 			// Edited by J
 			QueueStackReduceState[i] = item.QueueStackReduceState[i];
+			linkAutomata[i] = item.linkAutomata[i];
 
 #ifdef LABELED
 			m_lLabels[i] = item.m_lLabels[i];
@@ -381,6 +303,7 @@ public:
 #endif
 		//Edited by J
 		printAction(1, PRINTACTION);
+		printStacks(PRINTACTION);
 		//end
 
 		assert(m_Stack.size() > 0);
@@ -404,8 +327,13 @@ public:
 		QueueStackReduceState[left] = 2;
 
 		//head automata operations. The stack node cannot take any more right children. The queue node takes a left child.
-		headAutomata[left].halt();
-		headAutomata[m_nNextWord].transition(&headAutomata[left]);
+		setAutomataPOS(m_nNextWord);
+		linkAutomata[left].clearHistory();
+		linkAutomata[m_nNextWord].clearHistory();
+
+		linkAutomata[left].halt();
+		linkAutomata[left].takeParent(&linkAutomata[m_nNextWord]);
+		linkAutomata[m_nNextWord].transition(&linkAutomata[left]);
 
 		//end
 
@@ -437,7 +365,7 @@ public:
 		 * Edited by JK
 		 */
 		printStacks(PRINTACTION);
-		printHeadAutomatonStates(PRINTACTION);
+		printLinkAutomatonStates(PRINTACTION);
 		printEndLine(PRINTACTION);
 
 //		int nextWordChild = -1;
@@ -468,6 +396,7 @@ public:
 #endif
 		//Edited by J
 		printAction(2, PRINTACTION);
+		printStacks(PRINTACTION);
 		//end
 
 		assert(m_Stack.size() > 0);
@@ -491,25 +420,25 @@ public:
 		QueueStackReduceState[m_nNextWord] = 1;
 
 		//head automata operations. Arc Right. The queue node cannot take any more left children. The stack node takes a right child.
-		headAutomata[m_nNextWord].flip();
-		headAutomata[left].transition(&headAutomata[m_nNextWord]);
+		setAutomataPOS(m_nNextWord);
+		linkAutomata[left].clearHistory();
+		linkAutomata[m_nNextWord].clearHistory();
+
+		linkAutomata[left].transition(&linkAutomata[m_nNextWord]);
+		linkAutomata[m_nNextWord].takeParent(&linkAutomata[left]);
+//		linkAutomata[m_nNextWord].flip();
 		//end
 
 #ifdef LABELED
 		m_lLabels[m_nNextWord] = lab;
 		m_lDepTagR[left].add(lab);
-
-		// JUNEKI: Just poking around dependency labels objects.
-//		CSetOfTags<CDependencyLabel> depTagLabel_right = m_lDepTagR[m_nNextWord];
-//		std::cout << "RIGHT: " << depTagLabel_right << std::endl;
-//		std::cout << std::endl;
-
 #endif
 		m_lSibling[m_nNextWord] = m_lDepsR[left];
 		m_lDepsR[left] = m_nNextWord;
 		m_lDepNumR[left]++;
 		m_nNextWord++;
 		ClearNext();
+
 #ifdef LABELED
 		m_nLastAction=action::encodeAction(action::ARC_RIGHT, lab);
 #else
@@ -520,7 +449,7 @@ public:
 		 * Edited by JK
 		 */
 		printStacks(PRINTACTION);
-		printHeadAutomatonStates(PRINTACTION);
+		printLinkAutomatonStates(PRINTACTION);
 		printEndLine(PRINTACTION);
 
 //		int nextWordChild = -1;
@@ -548,6 +477,19 @@ public:
 	void Shift() {
 		//Edited by J
 		printAction(3, PRINTACTION);
+		printStacks(PRINTACTION);
+
+		// 1 means that the word is now on the stack.
+		QueueStackReduceState[m_nNextWord] = 1;
+		//head automata. Shift operation. The right hand side will not take any more left children
+		setAutomataPOS(m_nNextWord);
+		if(!m_Stack.empty()){
+			linkAutomata[m_Stack.back()].clearHistory();
+		}
+		linkAutomata[m_nNextWord].clearHistory();
+
+		linkAutomata[m_nNextWord].flip();
+
 		//end
 
 		m_Stack.push_back(m_nNextWord);
@@ -559,13 +501,8 @@ public:
 		/**
 		 * Edited by JK
 		 */
-		// 1 means that the word is now on the stack. I take off -1 because m_nNextWord was previously incremented ++.
-		QueueStackReduceState[m_nNextWord - 1] = 1;
-		//head automata. Shift operation. The right hand side will not take any more left children
-		headAutomata[m_nNextWord].flip();
-
 		printStacks(PRINTACTION);
-		printHeadAutomatonStates(PRINTACTION);
+		printLinkAutomatonStates(PRINTACTION);
 		printEndLine(PRINTACTION);
 		//end
 	}
@@ -575,6 +512,7 @@ public:
 
 		//Edited by J
 		printAction(4, PRINTACTION);
+		printStacks(PRINTACTION);
 		// end
 
 		assert(m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD);
@@ -587,10 +525,15 @@ public:
 		// 2 means reduced or popped
 		QueueStackReduceState[m_Stack.back()] = 2;
 		//head automata. Reduce operation. The stack node will not take any more right children.
-		headAutomata[m_Stack.back()].halt();
+		if(!m_Stack.empty()){
+			linkAutomata[m_Stack.back()].clearHistory();
+		}
+		linkAutomata[m_nNextWord].clearHistory();
+
+		linkAutomata[m_Stack.back()].halt();
 
 		printStacks(PRINTACTION);
-		printHeadAutomatonStates(PRINTACTION);
+		printLinkAutomatonStates(PRINTACTION);
 		printEndLine(PRINTACTION);
 
 		//end
@@ -618,6 +561,11 @@ public:
 		m_lDepNumR[m_nNextWord] = 0;
 		m_lDepTagR[m_nNextWord].clear();
 		m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD;
+
+		//Edited by J
+		linkAutomata[m_nNextWord].clearState();
+		//end
+
 #ifdef LABELED
 		m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
 #endif
@@ -795,6 +743,7 @@ public:
 	void GenerateTree(const CTwoStringVector &input,
 			CDependencyParse &output) const {
 		output.clear();
+
 		for (int i = 0; i < size(); ++i)
 #ifdef LABELED
 			output.push_back( CLabeledDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] , CDependencyLabel(m_lLabels[i]).str() ) );
@@ -1045,28 +994,34 @@ public:
 		cerr << "| ";
 		cerr << m_nNextWord << " ...  ] \n";
 
-		cerr << "m_HeadStack: ";
-		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
-				i != m_HeadStack.end(); ++i)
-			cerr << *i << ' ';
-		cerr << std::endl;
+//		cerr << "m_HeadStack: ";
+//		for (std::vector<int>::const_iterator i = m_HeadStack.begin();
+//				i != m_HeadStack.end(); ++i)
+//			cerr << *i << ' ';
+//		cerr << std::endl;
+//
+//		cerr << "m_lHeads: ";
+//		for (int i = 0; i < 10; i++) {
+//			cerr << m_lHeads[i] << " ";
+//		}
+//		cerr << std::endl;
 
-		cerr << "m_lHeads: ";
-		for (int i = 0; i < 10; i++) {
-			cerr << m_lHeads[i] << " ";
-		}
 		cerr << std::endl;
 	}
 
-	void printHeadAutomatonStates(bool flag = true) {
+	void printLinkAutomatonStates(bool flag = true) {
 		if (!flag) {
 			return;
 		}
 
-		for (int i = 0; i < 10; i++) {
-			State s = headAutomata[i];
+		for (int i = 0; i < 10 && i < m_lCache->size(); i++) {
+			State s = linkAutomata[i];
 			s.print();
+			cerr << "<" << (m_lCache->at(i)).word.str() << "|"
+					<< (m_lCache->at(i)).tag.str() << ">";
 			cerr << ",";
+
+			cerr << "\n";
 		}
 		cerr << "\n";
 	}
@@ -1080,7 +1035,32 @@ public:
 
 	// Link Automata inline access operations.
 	inline const State* automataLookup(int const index) const {
-		return &headAutomata[index];
+		return &linkAutomata[index];
+	}
+
+	// Takes a POS tag at a given index and converts it into an int. We then give it to the the link automata.
+	void setAutomataPOS(int index) {
+		static map<string, int> POSmap;
+		static int POSmapIndexValue = 1;
+
+		CTaggedWord<CTag, TAG_SEPARATOR> taggedWord = m_lCache->at(index);
+		const CTag &tag = taggedWord.tag;
+		std::string tagString = tag.str();
+
+		map<string, int>::iterator it = POSmap.find(tagString);
+		if (it == POSmap.end()) {
+			POSmap[tagString] = POSmapIndexValue++;
+		}
+		int value = POSmap[tagString];
+
+//		int sum = 0;
+//		int offset = 1;
+//		for (int j = 0; j < tagString.size() && j < 3; j++) {
+//			int temp = tagString[j]-65;
+//			sum += temp * offset;
+//			offset *= 100;
+//		}
+		linkAutomata[index].POStag = value;
 	}
 
 //end
