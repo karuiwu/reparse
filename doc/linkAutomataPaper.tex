@@ -63,11 +63,15 @@
 \section{Introduction}
 
 %\item What dependency parsing is. Its a way to parse sentences to construct dependency trees.
-There is a weakness to dependency parsing, because the action of taking additional children is in effect stateless. In other words, only a comparison of the top word in the stack is made with the top word in the buffer before a parsing decision is made, and this could lead to incorrect parses such as where Verbs have taken multiple subjects. Although Dependency parsers come with children features to approximate a solution to this (such as having a feature for the first or last child for example), this is not the same as knowing exactly which children have been attatched. 
+There is a weakness to dependency parsing, because the action of taking additional children is in effect stateless. In other words, only a comparison of the top word in the stack is made with the top word in the buffer before a parsing decision is made, and this could lead to incorrect parses such as where Verbs have taken multiple subjects. 
+
+Although Dependency parsers come with children features to approximate a solution to this (such as having a feature for the first or last child for example), this is not the same as knowing exactly which children have been attached. 
 
 % having head automata be in particular states when certain children have and have not been accepted.
 
+We propose having Link Grammar Automata features that will accept connecting children and emit costs to do so.
 
+We modified Arc-Eager Dependency Parser Zpar (Zhang and Clark, 2011) to parse Link Grammars instead of Dependency Grammars, and implemented Link Grammar Automata features corresponding to each constituent of every sentence.
 
 
 
@@ -75,18 +79,24 @@ There is a weakness to dependency parsing, because the action of taking addition
 
 \section{Previous Work}
 
+http://www.link.cs.cmu.edu/link/papers/index.html
 
 
 \section{Link Grammars}
 A link grammmar can form undirected edge connections between two constituents. 
-It is projective, so that there are no crossing edges.
+We maintain projective parses, and a complete parse of a sentence will have no disconnected constituent.
 
+\section{Link Automaton}
+For each token of an input sentence, we will have an automaton that will change state as its constituent connects with other constituents in a parse. When a connection is formed, the automaton representing each constituents will accept each other and transition their states. Thus, a ``bad'' connection could be determined if the automatons had to take low probability or high cost transitions.
 
 \section{Link Grammar Parsing}
+We parse from left to right, using a stack and a buffer similar to Shift Reduce Parsing or Arc Eager Dependency Parsing (Although a bottom-up parse would also be possible, such as in CKY). In between the stack and buffer we can choose to do a CONNECT, SHIFT, or a REDUCE action. 
 
-We parse from left to right, using a stack and a buffer similar to Shift Reduce Parsing or Arc Eager Dependency Parsing. 
-Although a bottom-up parse would also be possible, such as in CKY.
 
+\section{Implementation}
+We first prototyped our ideas by implementing the Link Automata features in the Dependency Parser. Zpar would use a perceptron to learn which Arc Eager action it should take for a given parsing state, and we added the Link Automatas for another available feature. (This in itself improved the performance of the parser by a small amount ...)
+
+We then next changed Zpar to perform Link Grammar actions instead of Arc Eager actions. The perceptron training was no longer learning between taking the actions of ARC-LEFT, ARC-RIGHT, SHIFT, and REDUCE, but rather just the action CONNECT, SHIFT, and REDUCE.
 
 
 
@@ -96,6 +106,14 @@ Although a bottom-up parse would also be possible, such as in CKY.
 
 \section{Experiments}
 
+We used an annotated Link Grammar dataset, and we found a link grammar parser for our baseline. We then used our transition based Link Grammar Parser, and then we charted the performances.
+
+Charts comparing performances on the length of the sentences. 
+
+If the baseline uses training, we can have charts comparing accuracy vs size of the training data.
+
+We can have recall and precision curves based on the annotated gold parses.
+
 
 \section{Analysis}
 
@@ -103,6 +121,9 @@ Although a bottom-up parse would also be possible, such as in CKY.
 \section{Discussion}
 
 
+
+\section{Future Work}
+We want to use our Link Grammar Parser and the Link Grammar Automaton as ``uncertainty'' features for revision actions. A low probability Link Automaton action, for example, would make the parser feel uncertain about its progress and it may choose to backtrack.
 
 
 
