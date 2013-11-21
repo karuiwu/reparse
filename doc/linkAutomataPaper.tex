@@ -31,7 +31,7 @@
 \newcommand{\NoteJH}[1]{\NoteSigned{JH}{YellowGreen}{#1}}    
 \newcommand{\NoteKW}[1]{\NoteSigned{KW}{Pink}{#1}}    
 
-\title{Transition-Based Link Grammar Parsing}
+\title{Transition-Based Parsing for Link (and Dependency) Grammar}
 
 \author{Katherine Wu \\
   Affiliation / Address line 1 \\
@@ -59,8 +59,21 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-
-
+  Link grammar \cite{!!!} is a generalization of dependency grammar
+  that allows undirected edges and cycles, so that a parse can capture
+  more linguistic relationships.  Past parsing algorithms for link
+  grammar are ``graph-based'' and use dynamic programming.  We present
+  the first transition-based parser for link grammar, which uses
+  left-to-right beam search.  We then show that just like dynamic
+  programming systems, our transition system extends naturally to a
+  spectrum of formalisms that includes dependency grammar and split
+  head automaton grammar.  This extension generalizes and illuminates
+  the arc-eager transition system for dependency grammar.  Finally, we
+  discuss how our system could be extended to allow non-projective
+  arcs.  We have implemented our algorithms as a modification of ZPar
+  \cite{!!!}, resulting in a speedup over the CMU Link Grammar Parser
+  (for link parsing) and improved generalization (for dependency
+  parsing).\NoteJE{details...}
 \end{abstract}
 
 \section{Introduction}
@@ -73,29 +86,30 @@ been previously noted \cite{eisner-2000} that link grammars can be
 formalized in a similar way.  Here we propose a variant of that
 formalism, which we perceive as having the following advantages over
 more common treatments of dependency grammar: (1) It defines a state
-at each word to capture the sufficient statistics for higher-order
-feature computation.  This state plays the role of a nonterminal in a
-context-free grammar, licensing conditional independence assumptions.
-These assumptions are necessary both for dynamic programming parsing
-algorithms that compute optimal substructures to identify the best
-projective parse, and also for transition-based parsing methods that
-use a graph-structured stack to share structure among the hypotheses
-in a large beam \cite{!!!}.  (2) In our formulation, the states are
-able to capture features that are needed to license unbounded movement
-in dependency grammars (e.g., gap passing).  Furthermore, if switching
-to link grammar, we can capture the long-distance {\em lexical}
-relationships involved in unbounded movement.  (3) We can more simply
-explain and parameterize the arc-eager transition-based parsing system
-for dependency parsing, by treating it as a special case of our link
-automaton system.  (4) Dependency parsers enforce several constraints
-that jointly ensure that the output is a tree.  We can relax any or
-all of those constraints to get various types of link grammar parsers
-that may be more linguistically descriptive.  Our formalism still
-defines a score for each parse.  We motivate these alternative
-annotation schemes based on linguistic examples.  We show how to
-modify objectives for graph-based parsing as well as transition
-systems for transition-based parsing, so that they respect different
-sets of constraints.  (See notes in Google Doc about makefile flags.)
+at each word [as link grammar does] to capture the sufficient
+statistics for higher-order feature computation.  This state plays the
+role of a nonterminal in a context-free grammar, licensing conditional
+independence assumptions.  These assumptions are necessary both for
+dynamic programming parsing algorithms that compute optimal
+substructures to identify the best projective parse, and also for
+transition-based parsing methods that use a graph-structured stack to
+share structure among the hypotheses in a large beam \cite{!!!}.  (2)
+In our formulation, the states are able to capture features that are
+needed to license unbounded movement in dependency grammars (e.g., gap
+passing).  Furthermore, if switching to link grammar, we can capture
+the long-distance {\em lexical} relationships involved in unbounded
+movement.  (3) We can more simply explain and parameterize the
+arc-eager transition-based parsing system for dependency parsing, by
+treating it as a special case of our link automaton system.  (4)
+Dependency parsers enforce several constraints that jointly ensure
+that the output is a tree.  We can relax any or all of those
+constraints to get various types of link grammar parsers that may be
+more linguistically descriptive.  Our formalism still defines a score
+for each parse.  We motivate these alternative annotation schemes
+based on linguistic examples.  We show how to modify objectives for
+graph-based parsing as well as transition systems for transition-based
+parsing, so that they respect different sets of constraints.  (See
+notes in Google Doc about makefile flags.)
 
 %\item What dependency parsing is. Its a way to parse sentences to construct dependency trees.
 There is a weakness to dependency parsing, because the action of taking additional children is in effect stateless. In other words, only a comparison of the top word in the stack is made with the top word in the buffer before a parsing decision is made, and this could lead to incorrect parses such as where Verbs have taken multiple subjects. 
@@ -116,6 +130,7 @@ We modified Arc-Eager Dependency Parser Zpar (Zhang and Clark, 2011) to parse Li
 
 http://www.link.cs.cmu.edu/link/papers/index.html
 
+Regular Approximation of Link Grammar
 
 \section{Link Grammars}
 A link grammmar can form undirected edge connections between two constituents. 
