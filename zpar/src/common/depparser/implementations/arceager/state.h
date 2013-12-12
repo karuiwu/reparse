@@ -4,6 +4,9 @@
 
 #include "automataState.h"
 
+namespace TARGET_LANGUAGE {
+namespace depparser {
+
 /*===============================================================
  *
  * CStateItem - the search state item, representing a partial
@@ -42,10 +45,6 @@ public:
 	enum STACK_STATUS {
 		OFF_STACK = 0, ON_STACK_SHIFT, ON_STACK_ARCRIGHT
 	};
-
-	//Edited by J
-	bool PRINTACTION = false;
-	//end
 
 protected:
 	std::vector<int> m_Stack;     // stack of words that are currently processed
@@ -273,6 +272,7 @@ public:
 		//end
 
 		ClearNext();
+
 	}
 
 	void operator =(const CStateItem &item) {
@@ -290,6 +290,8 @@ public:
 		 * Edited by JK
 		 */
 		m_Children = item.m_Children;
+		//end
+
 		m_nLastAction = item.m_nLastAction;
 		m_lCache = item.m_lCache;
 		score = item.score;
@@ -318,14 +320,26 @@ public:
 public:
 	// the arc left action links the current stack top to the next word with popping
 #ifdef LABELED
-	void ArcLeft(unsigned long lab) {
+
+#ifdef LINKS
+	void ConnectLeft(unsigned long lab) {
+#else
+		void ArcLeft(unsigned long lab) {
+#endif
+
+#else
+
+#ifdef LINKS
+	void ConnectLeft()
 #else
 	void ArcLeft() {
 #endif
-		//Edited by J
-		printAction(1, PRINTACTION);
-		printStacks(PRINTACTION);
-		//end
+#endif
+
+#ifdef PRINTACTIONS_JUNEKI
+		printAction(1);
+		printStacks();
+#endif
 
 		assert(m_Stack.size() > 0);
 		assert(m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD);
@@ -377,48 +391,52 @@ public:
 		m_lDepsL[m_nNextWord] = left;
 		m_lDepNumL[m_nNextWord]++;
 #ifdef LABELED
+
+#ifdef LINKS
+		m_nLastAction=action::encodeAction(action::CONNECT_LEFT,lab);
+#else
 		m_nLastAction=action::encodeAction(action::ARC_LEFT, lab);
+#endif
+
+#else
+
+#ifdef LINKS
+		m_nLastAction = action::encodeAction(action::CONNECT_LEFT);
 #else
 		m_nLastAction = action::encodeAction(action::ARC_LEFT);
 #endif
+#endif
 
-		/**
-		 * Edited by JK
-		 */
-		printStacks(PRINTACTION);
-		printLinkAutomatonStates(PRINTACTION);
-		printEndLine(PRINTACTION);
+#ifdef PRINTACTIONS_JUNEKI
+		printStacks();
+		printLinkAutomatonStates();
+		printEndLine();
+#endif
 
-//		int nextWordChild = -1;
-//		for(int i = 0; i<MAX_SENTENCE_SIZE; i++){
-//			if (m_lHeads[i] == m_nNextWord){
-//				nextWordChild = i;
-//			}
-//		}
-//#ifdef LABELED
-//		std::cout << std::endl;
-//		std::cout << "m_lLabels: ";
-//		for(int i = 0; i<MAX_SENTENCE_SIZE/2; i++){
-//			std::cout << m_lLabels[i] << m_lDepTagL[i] << " ";
-//		}
-//		std::cout << std::endl;
-//#endif
-//		std::cout << "(" <<"child: " << nextWordChild << "," << "parent: " <<m_lHeads[m_nNextWord]<< ")";
-//		std::cout << std::endl;
-//		std::cout << std::endl;
-		//end
 	}
 
 	// the arc right action links the next word to the current stack top with pushing
 #ifdef LABELED
-	void ArcRight(unsigned long lab) {
+
+#ifdef LINKS
+	void ConnectRight(unsigned long lab) {
+#else
+		void ArcRight(unsigned long lab) {
+#endif
+
+#else
+
+#ifdef LINKS
+	void ConnectRight() {
 #else
 	void ArcRight() {
 #endif
-		//Edited by J
-		printAction(2, PRINTACTION);
-		printStacks(PRINTACTION);
-		//end
+#endif
+
+#ifdef PRINTACTIONS_JUNEKI
+		printAction(2);
+		printStacks();
+#endif
 
 		assert(m_Stack.size() > 0);
 		static int left;
@@ -461,56 +479,47 @@ public:
 		ClearNext();
 
 #ifdef LABELED
+
+#ifdef LINKS
+		m_nLastAction=action::encodeAction(action::CONNECT_RIGHT, lab);
+#else
 		m_nLastAction=action::encodeAction(action::ARC_RIGHT, lab);
+#endif
+
+#else
+
+#ifdef LINKS
+		m_nLastAction = action::encodeAction(action::CONNECT_RIGHT);
 #else
 		m_nLastAction = action::encodeAction(action::ARC_RIGHT);
 #endif
+#endif
 
-		/**
-		 * Edited by JK
-		 */
-		printStacks(PRINTACTION);
-		printLinkAutomatonStates(PRINTACTION);
-		printEndLine(PRINTACTION);
+#ifdef PRINTACTIONS_JUNEKI
+		printStacks();
+		printLinkAutomatonStates();
+		printEndLine();
+#endif
 
-//		int nextWordChild = -1;
-//		for(int i = 0; i<MAX_SENTENCE_SIZE; i++){
-//			if (m_lHeads[i] == m_nNextWord){
-//				nextWordChild = i;
-//			}
-//		}
-//#ifdef LABELED
-//		std::cout << std::endl;
-//		std::cout << "m_lLabels: ";
-//		for(int i = 0; i<MAX_SENTENCE_SIZE/2; i++){
-//			std::cout << m_lLabels[i] << m_lDepTagR[i] << " ";
-//		}
-//		std::cout << std::endl;
-//#endif
-//		std::cout << "(" <<"child: " << nextWordChild << "," << "parent: " <<m_lHeads[m_nNextWord]<< ")";
-//
-//		std::cout << std::endl;
-//		std::cout << std::endl;
-		//end
 	}
 
 	// the shift action does pushing
 	void Shift() {
 		//Edited by J
-		printAction(3, PRINTACTION);
-		printStacks(PRINTACTION);
+#ifdef PRINTACTIONS_JUNEKI
+		printAction(3);
+		printStacks();
+#endif
 
 		// 1 means that the word is now on the stack.
 		QueueStackReduceState[m_nNextWord] = 1;
 		//head automata. Shift operation. The right hand side will not take any more left children
 		setAutomataPOS(m_nNextWord);
-		if(!m_Stack.empty()){
+		if (!m_Stack.empty()) {
 			linkAutomata[m_Stack.back()].clearHistory();
 		}
 		linkAutomata[m_nNextWord].clearHistory();
-
 		linkAutomata[m_nNextWord].flip();
-
 		//end
 
 		m_Stack.push_back(m_nNextWord);
@@ -519,22 +528,21 @@ public:
 		ClearNext();
 		m_nLastAction = action::encodeAction(action::SHIFT);
 
-		/**
-		 * Edited by JK
-		 */
-		printStacks(PRINTACTION);
-		printLinkAutomatonStates(PRINTACTION);
-		printEndLine(PRINTACTION);
-		//end
+#ifdef PRINTACTIONS_JUNEKI
+		printStacks();
+		printLinkAutomatonStates();
+		printEndLine();
+#endif
+
 	}
 
 	// the reduce action does popping
 	void Reduce() {
 
-		//Edited by J
-		printAction(4, PRINTACTION);
-		printStacks(PRINTACTION);
-		// end
+#ifdef PRINTACTIONS_JUNEKI
+		printAction(4);
+		printStacks();
+#endif
 
 		assert(m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD);
 		m_Stack.pop_back();
@@ -546,17 +554,18 @@ public:
 		// 2 means reduced or popped
 		QueueStackReduceState[m_Stack.back()] = 2;
 		//head automata. Reduce operation. The stack node will not take any more right children.
-		if(!m_Stack.empty()){
+		if (!m_Stack.empty()) {
 			linkAutomata[m_Stack.back()].clearHistory();
 		}
 		linkAutomata[m_nNextWord].clearHistory();
 
 		linkAutomata[m_Stack.back()].halt();
 
-		printStacks(PRINTACTION);
-		printLinkAutomatonStates(PRINTACTION);
-		printEndLine(PRINTACTION);
-
+#ifdef PRINTACTIONS_JUNEKI
+		printStacks();
+		printLinkAutomatonStates();
+		printEndLine();
+#endif
 		//end
 	}
 
@@ -608,18 +617,39 @@ public:
 		case action::REDUCE:
 			Reduce();
 			return;
+
+#ifdef LINKS
+			case action::CONNECT_LEFT:
+#ifdef LABELED
+			ConnectLeft(action::getLabel(ac));
+#else
+			ConnectLeft();
+#endif
+
+#else
 		case action::ARC_LEFT:
 #ifdef LABELED
 			ArcLeft(action::getLabel(ac));
 #else
 			ArcLeft();
 #endif
+#endif
 			return;
+
+#ifdef LINKS
+			case action::CONNECT_RIGHT:
+#ifdef LABELED
+			ConnectRight(action::getLabel(ac));
+#else
+			ConnectRight();
+#endif
+#else
 		case action::ARC_RIGHT:
 #ifdef LABELED
 			ArcRight(action::getLabel(ac));
 #else
 			ArcRight();
+#endif
 #endif
 			return;
 		case action::POP_ROOT:
@@ -661,9 +691,20 @@ public:
 				if (top == m_Stack.back()) {
 #ifdef LABELED
 					assert(m_lCacheLabel[top].str() == tree[top].label);
+
+#ifdef LINKS
+					ConnectLeft(m_lCacheLabel[top].code());
+#else
 					ArcLeft(m_lCacheLabel[top].code()); // link it to the next word
+#endif
+
+#else
+
+#ifdef LINKS
+					ConnectLeft();
 #else
 					ArcLeft();                       // link it to the next word
+#endif
 #endif
 					return false;
 				} else {
@@ -683,12 +724,24 @@ public:
 			assert(m_Stack.size() > 0);
 			top = m_Stack.back();
 			if (tree[m_nNextWord].head == top) { // the next word deps on stack top
+
+#ifdef LINKS
 #ifdef LABELED
-					assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
-					ArcRight(m_lCacheLabel[m_nNextWord].code());
+				assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
+				ConnectRight(m_lCacheLabel[m_nNextWord].code());
+#else
+				ConnectRight();
+#endif
+
+#else
+
+#ifdef LABELED
+				assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
+				ArcRight(m_lCacheLabel[m_nNextWord].code());
 #else            
 				ArcRight();
 #endif            
+#endif
 				return true;
 			} else {                           // must depend on non-immediate h
 				Reduce();
@@ -713,10 +766,22 @@ public:
 			assert(m_Stack.size() > item->m_Stack.size());
 			top = m_Stack.back();
 			if (item->m_lHeads[top] == m_nNextWord)
+
+#ifdef LINKS
+
+#ifdef LABELED
+				return action::encodeAction(action::CONNECT_LEFT,item->m_lLabels[top]);
+#else
+				return action::CONNECT_LEFT;
+#endif
+
+#else
+
 #ifdef LABELED
 				return action::encodeAction(action::ARC_LEFT, item->m_lLabels[top]);
 #else
 				return action::ARC_LEFT;
+#endif
 #endif
 			else if (item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD)
 				return action::encodeAction(action::REDUCE);
@@ -730,10 +795,20 @@ public:
 				top = m_lHeads[top];
 			if (item->head(top) == m_nNextWord) { // if a local head deps on nextword first
 				if (top == m_Stack.back()) {
+
+#ifdef LINKS
+#ifdef LABELED
+					return action::encodeAction(action::CONNECT_LEFT, item->m_lLabels[top]);
+#else
+					return action::CONNECT_LEFT;
+#endif
+
+#else
 #ifdef LABELED
 					return action::encodeAction(action::ARC_LEFT, item->m_lLabels[top]);
 #else
 					return action::ARC_LEFT;
+#endif
 #endif
 				} else {
 					return action::encodeAction(action::REDUCE);
@@ -750,10 +825,21 @@ public:
 			assert(m_Stack.size() > 0);
 			top = m_Stack.back();
 			if (item->head(m_nNextWord) == top) { // the next word deps on stack top
+
+#ifdef LINKS
 #ifdef LABELED
-					return action::encodeAction(action::ARC_RIGHT, item->m_lLabels[m_nNextWord]);
+				return action::encodeAction(action::CONNECT_RIGHT, item->m_lLabels[m_nNextWord]);
+#else
+				return action::CONNECT_RIGHT;
+
+#endif
+#else
+
+#ifdef LABELED
+				return action::encodeAction(action::ARC_RIGHT, item->m_lLabels[m_nNextWord]);
 #else
 				return action::ARC_RIGHT;
+#endif
 #endif
 			} else {                           // must depend on non-immediate h
 				return action::encodeAction(action::REDUCE);
@@ -1035,11 +1121,11 @@ public:
 			return;
 		}
 
-		for (int i = 0; i < MAX_SENTENCE_SIZE; i++) {
-			linkAutomata[i].uniqueID = i;
-		}
+//		for (int i = 0; i < MAX_SENTENCE_SIZE; i++) {
+//			linkAutomata[i].uniqueID = i;
+//		}
 
-		for (int i = 0; i < 10 && i < m_lCache->size(); i++) {
+		for (unsigned int i = 0; i < 10 && i < m_lCache->size(); i++) {
 			State s = linkAutomata[i];
 			s.print();
 			cerr << "<" << (m_lCache->at(i)).word.str() << "|"
@@ -1091,5 +1177,10 @@ public:
 //end
 
 };
+
+}
+// namespace depparser
+}
+// namespace target language
 
 #endif

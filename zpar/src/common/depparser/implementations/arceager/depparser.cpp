@@ -14,6 +14,7 @@
 
 using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
+//using namespace TARGET_LANGUAGE::depparser;
 
 const CWord g_emptyWord("");
 const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord;
@@ -47,7 +48,8 @@ inline void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 	const int &strd_index = st_index == -1 ? -1 : item->rightdep(st_index); // rightmost dep st
 	const int &stl2d_index = stld_index == -1 ? -1 : item->sibling(stld_index); // left 2ndmost dep of stack
 	const int &str2d_index = strd_index == -1 ? -1 : item->sibling(strd_index); // right 2ndmost dep st
-	const int &n0_index = item->size() == m_lCache.size() ? -1 : item->size(); // next
+	const int &n0_index =
+			(unsigned) item->size() == m_lCache.size() ? -1 : item->size(); // next
 	assert(n0_index < static_cast<int>(m_lCache.size())); // the next index shouldn't exceed sentence
 	const int &n0ld_index = n0_index == -1 ? -1 : item->leftdep(n0_index); // leftmost dep of next
 	const int &n0l2d_index = n0ld_index == -1 ? -1 : item->sibling(n0ld_index); // leftmost dep of next
@@ -58,9 +60,9 @@ inline void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 	static int n1_index;
 	static int n2_index;
 	static int n3_index;
-	n1_index = n0_index + 1 < m_lCache.size() ? n0_index + 1 : -1;
-	n2_index = n0_index + 2 < m_lCache.size() ? n0_index + 2 : -1;
-	n3_index = n0_index + 3 < m_lCache.size() ? n0_index + 3 : -1;
+	n1_index = (unsigned) (n0_index + 1) < m_lCache.size() ? n0_index + 1 : -1;
+	n2_index = (unsigned) (n0_index + 2) < m_lCache.size() ? n0_index + 2 : -1;
+	n3_index = (unsigned) (n0_index + 3) < m_lCache.size() ? n0_index + 3 : -1;
 
 	const CTaggedWord<CTag, TAG_SEPARATOR> &st_word_tag =
 			st_index == -1 ? g_emptyTaggedWord : m_lCache[st_index];
@@ -179,7 +181,7 @@ inline void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 	static CTuple2<CWord, CSetOfTags<CDependencyLabel> > word_tagset;
 	static CTuple2<CTag, CSetOfTags<CDependencyLabel> > tag_tagset;
 
-	// single
+//	// single
 	if (st_index != -1) {
 		cast_weights->m_mapSTw.getOrUpdateScore( retval, st_word, action, m_nScoreIndex, amount, round);
 		cast_weights->m_mapSTt.getOrUpdateScore( retval, st_tag, action, m_nScoreIndex, amount, round );
@@ -345,21 +347,32 @@ inline void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 
 	if (st_index != -1) {
 		const State* st_index_automata = item->automataLookup(st_index);
-		for (int i = 0; i < st_index_automata->history.size(); i++){
-			StateHistory h = st_index_automata->history[i];
-			int hash = h.actionState;
-			cast_weights->automata_mapST.getOrUpdateScore( retval, hash, action, m_nScoreIndex, amount, round);
-		}
-//		cast_weights->automata_mapST.getOrUpdateScore( retval, st_index_automata->hash(), action, m_nScoreIndex, amount, round);
+
+//		for (int i = 0; i < st_index_automata->history.size(); i++) {
+//			StateHistory h = st_index_automata->history[i];
+//			int hash = h.actionState;
+//			int cost = h.cost;
+//			cast_weights->automata_mapST.getOrUpdateScore( retval, hash, action, m_nScoreIndex, amount, round);
+//		}
+
+		cast_weights->automata_mapST.getOrUpdateScore( retval, *st_index_automata, action, m_nScoreIndex, amount, round);
+//		st_index_automata->print();
+//		std::cout << "\n";
+
 	}
 	if (n0_index != -1) {
 		const State* n0_index_automata = item->automataLookup(n0_index);
-		for( int i = 0; i < n0_index_automata->history.size(); i++){
-			StateHistory h = n0_index_automata->history[i];
-			int hash = h.actionState;
-			cast_weights->automata_mapN0.getOrUpdateScore( retval, hash, action, m_nScoreIndex, amount, round);
-		}
-//		cast_weights->automata_mapN0.getOrUpdateScore( retval, n0_index_automata->hash(), action, m_nScoreIndex, amount, round);
+//		for (int i = 0; i < n0_index_automata->history.size(); i++) {
+//			StateHistory h = n0_index_automata->history[i];
+//			int hash = h.actionState;
+//			int cost = h.cost;
+//			cast_weights->automata_mapN0.getOrUpdateScore( retval, hash, action, m_nScoreIndex, amount, round);
+//		}
+
+		cast_weights->automata_mapN0.getOrUpdateScore( retval, *n0_index_automata, action, m_nScoreIndex, amount, round);
+//		n0_index_automata->print();
+//		std::cout << "\n";
+
 	}
 
 	//end
@@ -414,13 +427,13 @@ inline void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 
 	}
 
-/*---------------------------------------------------------------
- *
- * getGlobalScore - get the score of a parse tree
- *
- * Inputs: parse graph
- *
- *---------------------------------------------------------------*/
+	/*---------------------------------------------------------------
+	 *
+	 * getGlobalScore - get the score of a parse tree
+	 *
+	 * Inputs: parse graph
+	 *
+	 *---------------------------------------------------------------*/
 
 SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
 	THROW("depparser.cpp: getGlobalScore unsupported");
@@ -512,6 +525,7 @@ inline void CDepParser::reduce(const CStateItem *item,
 	m_Beam->insertItem(&scoredaction);
 }
 
+#ifdef DEPENDENCIES
 /*---------------------------------------------------------------
  *
  * arcleft - helping function
@@ -565,6 +579,64 @@ inline void CDepParser::arcright(const CStateItem *item,
 #endif
 }
 
+#endif
+
+#ifdef LINKS
+/*---------------------------------------------------------------
+ *
+ * connectleft
+ *
+ *--------------------------------------------------------------*/
+
+inline void CDepParser::connectleft(const CStateItem *item,
+		const CPackedScoreType<SCORE_TYPE, action::MAX> &scores) {
+	static action::CScoredAction scoredaction;
+	static unsigned label;
+#ifdef LABELED
+	for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
+		if ( !m_weights->rules() || canAssignLabel(m_lCache, item->size(), item->stacktop(), label) ) {
+			scoredaction.action = action::encodeAction(action::CONNECT_LEFT, label);
+			scoredaction.score = item->score + scores[scoredaction.action];
+			//+scores[action::ARC_LEFT];
+			m_Beam->insertItem(&scoredaction);
+
+		}
+	}
+#else
+	scoredaction.action = action::CONNECT_LEFT;
+	scoredaction.score = item->score + scores[scoredaction.action];
+	m_Beam->insertItem(&scoredaction);
+#endif
+}
+
+/*---------------------------------------------------------------
+ *
+ * connectright
+ *
+ *--------------------------------------------------------------*/
+
+inline void CDepParser::connectright(const CStateItem *item,
+		const CPackedScoreType<SCORE_TYPE, action::MAX> &scores) {
+	static action::CScoredAction scoredaction;
+	static unsigned label;
+#ifdef LABELED
+	for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
+		if ( !m_weights->rules() || canAssignLabel(m_lCache, item->stacktop(), item->size(), label) ) {
+			scoredaction.action = action::encodeAction(action::CONNECT_RIGHT, label);
+			scoredaction.score = item->score + scores[scoredaction.action];
+			//+scores[action::ARC_RIGHT];
+			m_Beam->insertItem(&scoredaction);
+		}
+	}
+#else
+	scoredaction.action = action::CONNECT_RIGHT;
+	scoredaction.score = item->score + scores[scoredaction.action];
+	m_Beam->insertItem(&scoredaction);
+#endif
+}
+
+#endif
+
 /*---------------------------------------------------------------
  *
  *   - help function
@@ -610,12 +682,11 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	/**
 	 * Edited by JK
 	 */
-	if (bTrain) {
-		//skips the ROOT
-		featureCollection->writeToMap(conllSentenceTrain);
-	}
+//	if (bTrain) {
+//		//skips the ROOT
+//		featureCollection->writeToMap(conllSentenceTrain);
+//	}
 	//end
-
 #ifdef DEBUG
 	clock_t total_start_time = clock();
 #endif
@@ -623,8 +694,6 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	const int length = sentence.size();
 
 	const CStateItem *pGenerator;
-//	CStateItem *pGenerator;
-
 	static CStateItem pCandidate(&m_lCache);
 
 	// used only for training
@@ -633,7 +702,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	static CStateItem correctState(&m_lCache);
 	static CPackedScoreType<SCORE_TYPE, action::MAX> packed_scores;
 
-	ASSERT(length < MAX_SENTENCE_SIZE,
+	ASSERT((unsigned )length < MAX_SENTENCE_SIZE,
 			"The size of the sentence is larger than the system configuration.");
 
 	TRACE("Initialising the decoding process...") ;
@@ -641,32 +710,23 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	bContradictsRules = false;
 	m_lCache.clear();
 	for (index = 0; index < length; ++index) {
-
 		m_lCache.push_back(
 				CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first,
 						sentence[index].second));
 
-//		for (int i = 0; i < m_lCache.size(); i++) {
-//			CTaggedWord<CTag, TAG_SEPARATOR> temp = m_lCache[i];
-//			//CTaggedWord is the same as the pair. We have word and tag. Same thing.
-//		}
-
-		//Edited by J
-		correctState.linkAutomata[index].clearState();
-		pCandidate.linkAutomata[index].clearState();
-		//end
-
-
-
-
 		// filter std::cout training examples with rules
 		if (bTrain && m_weights->rules()) {
+
+#ifdef SINGLE_ROOT
 			// the root
 			if (correct[index].head == DEPENDENCY_LINK_NO_HEAD
 					&& canBeRoot(m_lCache[index].tag.code()) == false) {
 				TRACE("Rule contradiction: " << m_lCache[index].tag.code() << " can be root.");
 				bContradictsRules = true;
 			}
+#endif
+
+#ifdef SINGLE_PARENT
 			// head left
 			if (correct[index].head < index
 					&& hasLeftHead(m_lCache[index].tag.code()) == false) {
@@ -679,15 +739,17 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				TRACE("Rule contradiction: " << m_lCache[index].tag.code() << " has right head.");
 				bContradictsRules = true;
 			}
+#endif
+
 		}
 	}
 
 	/**
 	 * Edited by JK
 	 */
-	if (!bTrain) {
-		oracle->readInSentence(conllSentence);
-	}
+//	if (!bTrain) {
+//		oracle->readInSentence(conllSentence);
+//	}
 	//end
 
 	// initialise agenda
@@ -700,7 +762,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 
 	// verifying supertags
 	if (m_supertags) {
-		ASSERT(m_supertags->getSentenceSize() == length,
+		ASSERT(m_supertags->getSentenceSize() == (unsigned )length,
 				"Sentence size does not match supertags size");
 	}
 
@@ -738,28 +800,19 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			return;
 		}
 
-		CStateItem* tempPGeneratorPointer = m_Agenda->generatorStart();
-//		pGenerator = m_Agenda->generatorStart();
-		pGenerator = tempPGeneratorPointer;
-
+		pGenerator = m_Agenda->generatorStart();
 		// iterate generators
 		for (int j = 0; j < m_Agenda->generatorSize(); ++j) {
-			// Every time we iterate through generators, we can save the previous state of the stack.
-			//tempPGeneratorPointer->saveCurrentStacksToPrevious();
-//			pGenerator->saveCurrentStacksToPrevious();
-
 			/**
 			 * Edited by JK
 			 */
-
 			std::vector<int, allocator<int> >::const_iterator stackIter =
-					pGenerator->Stack.begin();
-
-			stackIter = pGenerator->Stack.end();
+					pGenerator->Stack.end();
 			int stackWord = -1;
 			if (!pGenerator->Stack.empty()) {
 				stackWord = *(stackIter - 1);
 			}
+
 
 			int nextWord = pGenerator->NextWord;
 
@@ -851,13 +904,24 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			}
 			// Edited by J
 			// Here, we check to see if we already have arcs that have been made that we need to take again.
-//			else if (topOfStack_isParentOf_topOfBuffer) {
-//				arcright(pGenerator, packed_scores);
-//			}
-//
-//			else if (topOfBuffer_isParentOf_topOfStack) {
-//				arcleft(pGenerator, packed_scores);
-//			}
+			else if (topOfStack_isParentOf_topOfBuffer) {
+#ifdef DEPENDENCIES
+				arcright(pGenerator, packed_scores);
+#endif
+#ifdef LINKS
+				connectright(pGenerator, packed_scores);
+#endif
+			}
+
+			else if (topOfBuffer_isParentOf_topOfStack) {
+#ifdef DEPENDENCIES
+				arcleft(pGenerator, packed_scores);
+#endif
+#ifdef LINKS
+				connectleft(pGenerator, packed_scores);
+#endif
+
+			}
 			//end
 
 			// for the state items that still need more words
@@ -895,7 +959,13 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 
 							&&// JUNEKI: no right arc
 							(!noRightArc)) {
+#ifdef DEPENDENCIES
 						arcright(pGenerator, packed_scores);
+#endif
+#ifdef LINKS
+						connectright(pGenerator, packed_scores);
+#endif
+
 					}
 				}
 				if ((!m_bCoNLL && !pGenerator->stackempty())
@@ -920,15 +990,24 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 
 								&&// JUNEKI: no arc left
 								(!noLeftArc)) {
+#ifdef DEPENDENCIES
 							arcleft(pGenerator, packed_scores);
+#endif
+#ifdef LINKS
+							connectleft(pGenerator, packed_scores);
+#endif
+
 						}
 					}
 				}
 			}
 
 			// insert item
-			for (unsigned i = 0; i < m_Beam->size(); ++i) {
+			for (int i = 0; i < m_Beam->size(); ++i) {
 				pCandidate = *pGenerator;
+				pCandidate.score = m_Beam->item(i)->score;
+				pCandidate.Move(m_Beam->item(i)->action);
+				m_Agenda->pushCandidate(&pCandidate);
 
 				/**
 				 * Edited by JK
@@ -936,44 +1015,23 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				if (!bTrain) {
 					std::vector<int> buffer;
 					//length-1 to account for the presence of ROOT
-					for (int j = pCandidate.NextWord; j < length - 1; ++j) {
-						buffer.push_back(j);
+					for (int k = pCandidate.NextWord; k < length - 1; ++k) {
+						buffer.push_back(k);
 					}
-
-					if (!pCandidate.Stack.empty()
-							&& pCandidate.Stack.back()
-									== DEPENDENCY_LINK_NO_HEAD) {
-						oracle->noReduce = true;
-					}
-
-					std::vector<int> actions = oracle->nextAction(
-							pCandidate.Stack, buffer);
+//					if (!pCandidate.Stack.empty()
+//							&& pCandidate.Stack.back()
+//									== DEPENDENCY_LINK_NO_HEAD) {
+//						oracle->noReduce = true;
+//					}
+//					std::vector<int> actions = oracle->nextAction(
+//							pCandidate.Stack, buffer);
 					int action;
 #ifdef LABELED
 					action = action::getUnlabeledAction(m_Beam->item(i)->action);
 #else
 					action = m_Beam->item(i)->action & INT_MAX;
 #endif
-
 					if (DEBUG) {
-						std::cout << "Possible actions: ";
-						for (int j = 0; j < actions.size(); j++) {
-							std::string temp;
-							switch (j) {
-							case 1:
-								std::cout << "SHIFT" << " ";
-								break;
-							case 2:
-								std::cout << "REDUCE" << " ";
-								break;
-							case 3:
-								std::cout << "LEFT-ARC" << " ";
-								break;
-							case 4:
-								std::cout << "RIGHT-ARC" << " ";
-								break;
-							}
-						}
 						std::cout << std::endl;
 						switch (action) {
 						case 1:
@@ -991,13 +1049,13 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 						}
 					}
 
-					if (oracle->isOracleAction(actions, action)) {
-						featureCollection->writeClass("1");
-						//std::cout << "1\t";
-					} else {
-						featureCollection->writeClass("0");
-						//std::cout << "0\t";
-					}
+//					if (oracle->isOracleAction(actions, action)) {
+//						featureCollection->writeClass("1");
+//						//std::cout << "1\t";
+//					} else {
+//						featureCollection->writeClass("0");
+//						//std::cout << "0\t";
+//					}
 
 					if (DEBUG && false) {
 						std::cout << "Children: " << std::endl;
@@ -1014,52 +1072,29 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 						}
 						std::cout << std::endl;
 					}
-				}
-				//end
 
-				pCandidate.score = m_Beam->item(i)->score;
-				pCandidate.Move(m_Beam->item(i)->action);
-
-				/**
-				 * Edited by JK
-				 */
-				if (!bTrain) {
-					featureCollection->makeFeatures(pCandidate.Stack,
-							std::vector<int>(), pCandidate.m_Children,
-							m_lCacheCoNLLCPOS);
-
-					featureCollection->printFeatures();
+//					featureCollection->makeFeatures(pCandidate.Stack,
+//							std::vector<int>(), pCandidate.m_Children,
+//							m_lCacheCoNLLCPOS);
+//
+//					featureCollection->printFeatures();
 					//featureCollection->clear();
 
 					// Feature 0: POS Tags
 				}
 				//end
-
-				m_Agenda->pushCandidate(&pCandidate);
 			}
 
 			if (bTrain && *pGenerator == correctState) {
 				bCorrect = true;
 			}
-			// JUNEKI: pGenerator iterates over each dependency parser in the beam
-			tempPGeneratorPointer = m_Agenda->generatorNext();
-			pGenerator = tempPGeneratorPointer;
-//			pGenerator = m_Agenda->generatorNext();
-
+			pGenerator = m_Agenda->generatorNext();
 		}
 
 		// JUNEKI: m_Agenda is the "global" beam. Each element in the beam is a CStateItem.
 		// JUNEKI: CStateItems are instances of a dependency parser.
 		// JUNEKI: pGenerator is a CStateItem
 		// JUNEKI: m_Beam is the "local" beam of possible actions to take for a particular dependency parser.
-
-//		std::cout << " A ";
-//		CStateItem* firstGenerator = m_Agenda->generator(0);
-//		for (int i = 0; i < firstGenerator->stacksize(); i++)
-//		{
-//			std::cout << firstGenerator->stackitem(i) << " ";
-//		}
-//		std::cout << std::endl;
 
 		// when we are doing training, we need to consider the standard move and update
 		if (bTrain) {
@@ -1195,9 +1230,8 @@ void CDepParser::parse_conll(const CCoNLLInput &sentence, CCoNLLOutput *retval,
 	/**
 	 * Edited by JK
 	 */
-	conllSentence = sentence;
+//	conllSentence = sentence;
 	//end
-
 	sentence.toTwoStringVector(input);
 
 	for (int i = 0; i < nBest; ++i) {
@@ -1238,9 +1272,8 @@ void CDepParser::train_conll(const CCoNLLOutput &correct, int round) {
 	/**
 	 * Edited by JK
 	 */
-	conllSentenceTrain = correct;
+//	conllSentenceTrain = correct;
 	//end
-
 	correct.toDependencyTree(reference);
 	UnparseSentence(&reference, &sentence);
 

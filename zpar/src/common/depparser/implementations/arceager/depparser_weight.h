@@ -12,9 +12,15 @@
 
 #include "depparser_weight_base.h"
 
-//#include "automataState.h"
+#include "automataState.h"
+
+
 
 #define iterate_templates(left, right) \
+	\
+   left(automata_mapST)right\
+   left(automata_mapN0)right\
+   \
    left(m_mapSTw)right\
    left(m_mapSTt)right\
    left(m_mapSTwt)right\
@@ -108,9 +114,10 @@
    left(m_mapN1l)right\
    left(m_mapN1c)right\
    left(m_mapN1f)right\
-\
-   left(automata_mapST)right\
-   left(automata_mapN0)right
+
+
+
+//   left(automata_map_test)right
    //edited by J
 
 
@@ -151,8 +158,8 @@ typedef CPackedScoreMap<CCoNLLFeats, SCORE_TYPE, action::MAX> CCoNLLFeatsMap;
 //TODO Juneki: Make a map storing scores for Link Automata
 
 // Make a map storing booleans
-typedef CPackedScoreMap<int, SCORE_TYPE, action::MAX> automataHashMap;
-
+typedef CPackedScoreMap<State, SCORE_TYPE, action::MAX> automataHashMap;
+//typedef CPackedScoreMap<State, SCORE_TYPE, action::MAX> automataMap;
 
 
 
@@ -284,6 +291,7 @@ public:
 
    automataHashMap automata_mapST;
    automataHashMap automata_mapN0;
+//   automataMap automata_map;
 
 
 
@@ -409,7 +417,7 @@ public:
 
 												, automata_mapST("StackLinkAutomata", DEP_TABLE_SIZE)
 												, automata_mapN0("BufferLinkAutomata", DEP_TABLE_SIZE)
-
+//												, automata_map_test("testAutomata", DEP_TABLE_SIZE)
 
 
 
