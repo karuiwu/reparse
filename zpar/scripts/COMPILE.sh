@@ -2,6 +2,5 @@
 
 
 #make && make english.depparser
-make generic.depparser
-
+make -j 3 generic.depparser 
 

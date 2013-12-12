@@ -9,6 +9,21 @@ testingInput=$3
 parsingOutput=$4
 resultOutput=$5
 
+if [ -z $5 ]; then
+    echo
+    echo "Not enough paramaters"
+    echo "RUN.sh model trainingInput testingInput parsingOutput resultOutput"
+    echo
+    exit
+fi
+
+
+shift
+shift
+shift
+shift
+shift
+
 
 #compile
 ./scripts/COMPILE.sh 
@@ -52,6 +67,7 @@ if [ "$?" = 0 ]; then
 else
     exit
 fi
+
 
 
 
