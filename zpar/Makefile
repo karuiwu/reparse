@@ -92,6 +92,29 @@ CXXFLAGS = -W $(INCLUDES) $(DEBUG) -g #-O3
 LD=$(CXX)
 LDFLAGS = 
 
+
+#================================================================
+#
+# Juneki's extra macro flags
+#
+#================================================================
+#Parsing
+CXXFLAGS += -DLINKS
+#CXXFLAGS += -DDEPENDENCIES
+
+#Link Parsing makefile flags
+CXXFLAGS += -DSINGLE_ROOT
+CXXFLAGS += -DSINGLE_PARENT
+
+#Link Automata features
+CXXFLAGS += -DAUTOMATA_1ST_FEATURES
+CXXFLAGS += -DAUTOMATA_2ND_FEATURES
+
+#Debugging
+#CXXFLAGS += -DPRINTACTIONS_JUNEKI
+
+
+
 #================================================================
 #
 # Shared objects
