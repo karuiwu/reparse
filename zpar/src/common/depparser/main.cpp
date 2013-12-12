@@ -190,10 +190,11 @@ void process_conll(const std::string sInputFile, const std::string sOutputFile, 
          if (bScores) *os_scores << scores[i] << std::endl;
       }
    }
+
    /**
     * Edited by JK
     */
-   parser.finishparsing();
+//   parser.finishparsing();
    //end
 
    delete [] outout_sent ;
