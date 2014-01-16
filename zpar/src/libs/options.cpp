@@ -12,7 +12,7 @@
 #include "options.h"
 
 COptions::COptions(int argc, char* args[], const std::string& char_options, const std::vector<std::string>& str_options) {
-   for ( unsigned long i=0; i<argc; ++i ) {
+   for ( long i=0; i<argc; ++i ) {
       std::string arg( args[i] );
       std::string name;
       std::string value;
@@ -46,7 +46,7 @@ COptions::COptions(int argc, char* args[], const std::string& char_options, cons
       
 void CConfigurations::defineConfiguration(const std::string &name, const std::string &argument, const std::string &type, const std::string &message) {
    // check for duplication
-   for (int i=0; i<configurations.size(); ++i) {
+   for (unsigned int i=0; i<configurations.size(); ++i) {
       if (configurations[i].name == name)
          THROW("duplicate definitions of configuration item: " << name);
    }
@@ -61,9 +61,9 @@ std::string CConfigurations::loadConfigurations(const std::vector< std::pair< st
    std::vector< std::string > ignored;
    bool bFound;
    // insert define
-   for (int i=0; i<options.size(); ++i) {
+   for (unsigned int i=0; i<options.size(); ++i) {
       bFound = false;
-      for (int j=0; j<configurations.size(); ++j) {
+      for (unsigned int j=0; j<configurations.size(); ++j) {
          if (configurations[j].name == options[i].first) {
             if (configurations[j].argument.empty()) {
                if (!options[i].second.empty()) THROW("configuration "<<configurations[j].name<<" does not take any arguments, but "<<options[i].second<<" given.");
@@ -82,14 +82,14 @@ std::string CConfigurations::loadConfigurations(const std::vector< std::pair< st
    std::ostringstream os;
    if (ignored.size()) {
       os << "The following options are ignored: ";
-      for (int i=0; i<ignored.size(); ++i) 
+      for (unsigned int i=0; i<ignored.size(); ++i)
          os << ignored[i] << " ";
    }
    return os.str();
 }
 
 std::string CConfigurations::getConfiguration(const std::string &name) {
-   for (int i=0; i<configurations.size(); ++i) {
+   for (unsigned int i=0; i<configurations.size(); ++i) {
       if (configurations[i].name == name)
          return configurations[i].value;
    }
@@ -99,7 +99,7 @@ std::string CConfigurations::getConfiguration(const std::string &name) {
 std::string CConfigurations::message() {
    std::ostringstream os;
    os << "Options: " << std::endl;
-   for (int i=0; i<configurations.size(); ++i) {
+   for (unsigned int i=0; i<configurations.size(); ++i) {
       os << " ";
       if (configurations[i].name.size()==1) {
          os << '-' << configurations[i].name << configurations[i].argument;

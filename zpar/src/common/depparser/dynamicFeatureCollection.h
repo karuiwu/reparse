@@ -46,7 +46,7 @@ public:
 	std::vector<std::string> classification;
 	std::vector<std::vector<char> > namespaces;
 	std::vector<std::vector<std::vector<std::string> > > features;
-	int ngram;
+	unsigned int ngram;
 
 	std::map<std::string, std::vector<std::string> > leftTags;
 	std::map<std::string, std::vector<std::string> > rightTags;

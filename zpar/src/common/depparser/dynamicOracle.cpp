@@ -11,7 +11,7 @@ void DynamicOracle::readInSentence(CCoNLLInput conllData) {
 	counter.push_back(0);
 	std::stringstream convert;
 
-	for (int i=0; i < conllData.size(); i++) {
+	for (unsigned int i=0; i < conllData.size(); i++) {
 		CCoNLLInputNode word = conllData.at(i);
 		std::vector<std::string> word_fields;
 		convert << word.id;
@@ -61,12 +61,12 @@ std::vector<int> DynamicOracle::nextAction(std::vector<int> stack, std::vector<i
 
 	if (DEBUG) {
 		std::cout << "Stack: ";
-		for (int i=0; i < stack.size(); i++) {
+		for (unsigned int i=0; i < stack.size(); i++) {
 			std::cout << stack.at(i) << " ";
 		}
 		std::cout << std::endl;
 		std::cout << "Queue: ";
-		for (int i=0; i < buffer.size(); i++) {
+		for (unsigned int i=0; i < buffer.size(); i++) {
 			std::cout << buffer.at(i) << " ";
 		}
 		std::cout << std::endl;
@@ -80,7 +80,7 @@ std::vector<int> DynamicOracle::nextAction(std::vector<int> stack, std::vector<i
 
 	int minimumCost = *std::min_element(costs.begin(), costs.end());
 	std::vector<int> actions;
-	for (int i = 0; i < costs.size(); i++) {
+	for (unsigned int i = 0; i < costs.size(); i++) {
 		if (costs.at(i) == minimumCost) {
 			actions.push_back(i+1);
 		}
@@ -277,7 +277,7 @@ int DynamicOracle::costOfShift(std::vector<int> stack, std::vector<int> buffer) 
 }
 
 bool DynamicOracle::isOracleAction(std::vector<int> oracleActions, int actionCode) {
-  for (int i = 0; i < oracleActions.size(); i++) {
+  for (unsigned int i = 0; i < oracleActions.size(); i++) {
   	if (actionCode == oracleActions.at(i)) {
 		if (DEBUG) {
 		  std::cout << "Counter: " << counter.at(currentSentenceNum) << std::endl;

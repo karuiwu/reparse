@@ -16,15 +16,15 @@ inline bool canAssignLabel(const std::vector< CTaggedWord<CTag,TAG_SEPARATOR> > 
 }
 #endif
 
-inline const bool hasLeftHead(const unsigned &tag) {
+inline bool hasLeftHead(const unsigned &tag) {
    return true;
 }
 
-inline const bool hasRightHead(const unsigned &tag) {
+inline bool hasRightHead(const unsigned &tag) {
    return true;
 }
 
-inline const bool canBeRoot(const unsigned &tag) {
+inline bool canBeRoot(const unsigned &tag) {
    return true;
 }
 

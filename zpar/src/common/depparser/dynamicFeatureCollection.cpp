@@ -150,7 +150,7 @@ void DynamicFeatureCollection::posFeatures() {
 	if (j < 0) {
 		j = 0;
 	}
-	while (j < m_stack.size()) {
+	while ((unsigned) j < m_stack.size()) {
 		int sentenceIndex = m_stack[j];
 		CCoNLLCPOS sentenceTag = m_tags[sentenceIndex];
 		tagFeatures.push_back(sentenceTag.str());
@@ -169,12 +169,12 @@ void DynamicFeatureCollection::arcFeatures() {
 	std::ostringstream convert;
 	std::vector<std::vector<std::string> > arcs;
 	std::vector<std::vector<std::string> > arcFeatures;
-	for (int k = 0; k < m_stack.size(); ++k) {
+	for (unsigned int k = 0; k < m_stack.size(); ++k) {
 		arcs.push_back(std::vector<std::string>());
 		int item = m_stack.at(k);
 		siblings_t::iterator it = m_children.find(item);
 		if (it != m_children.end()) {
-			for (int c = 0; c < it->second.size(); c++) {
+			for (unsigned int c = 0; c < it->second.size(); c++) {
 				convert << item; //add number to the stream
 				std::string parent = convert.str();
 				convert.str("");
@@ -200,8 +200,8 @@ void DynamicFeatureCollection::arcFeatures() {
 
 	namespaces.at(currentSentenceNum).push_back('a');
 	features.at(currentSentenceNum).push_back(std::vector<std::string>());
-	for (int k = 0; k < arcFeatures.size(); ++k) {
-		for (int j = 0; j < arcFeatures.at(k).size(); ++j) {
+	for (unsigned int k = 0; k < arcFeatures.size(); ++k) {
+		for (unsigned int j = 0; j < arcFeatures.at(k).size(); ++j) {
 			features.at(currentSentenceNum).back().push_back(
 					arcFeatures.at(k).at(j));
 		}
@@ -245,7 +245,7 @@ void DynamicFeatureCollection::readToMap(std::string fileName) {
 
 		if (rightChild && !leftChild) {
 			std::vector<std::string> x = split(line, ')');
-			for (int i = 0; i < x.size() - 1; ++i) {
+			for (unsigned int i = 0; i < x.size() - 1; ++i) {
 				std::vector<std::string> y = split(x.at(i), ',');
 				std::vector<std::string> a;
 				if (y.at(0) == "(") {
@@ -258,13 +258,13 @@ void DynamicFeatureCollection::readToMap(std::string fileName) {
 				rightTags.insert(
 						std::map<std::string, std::vector<std::string> >::value_type(
 								a.at(1), std::vector<std::string>()));
-				for (int j = 2; j < z.size() - 1; ++j) {
+				for (unsigned int j = 2; j < z.size() - 1; ++j) {
 					rightTags[a.at(1)].push_back(z.at(j));
 				}
 			}
 		} else if (leftChild && !rightChild) {
 			std::vector<std::string> x = split(line, ')');
-			for (int i = 0; i < x.size() - 1; ++i) {
+			for (unsigned int i = 0; i < x.size() - 1; ++i) {
 				std::vector<std::string> y = split(x.at(i), ',');
 				std::vector<std::string> a;
 				if (y.at(0) == "(") {
@@ -277,14 +277,14 @@ void DynamicFeatureCollection::readToMap(std::string fileName) {
 				leftTags.insert(
 						std::map<std::string, std::vector<std::string> >::value_type(
 								a.at(1), std::vector<std::string>()));
-				for (int j = 2; j < z.size() - 1; ++j) {
+				for (unsigned int j = 2; j < z.size() - 1; ++j) {
 					leftTags[a.at(1)].push_back(z.at(j));
 				}
 			}
 		} else if (!leftChild && !rightChild && tagCountFlag) {
 			// We read in the tagCount map.
 			std::vector<std::string> x = split(line, ')');
-			for (int i = 0; i < x.size() - 1; ++i) {
+			for (unsigned int i = 0; i < x.size() - 1; ++i) {
 				std::vector<std::string> y = split(x.at(i), ',');
 				std::vector<std::string> a;
 				if (y.at(0) == "(") {
@@ -306,7 +306,7 @@ void DynamicFeatureCollection::readToMap(std::string fileName) {
 								std::vector<std::pair<std::string, int> > >::value_type(
 								a.at(1),
 								std::vector<std::pair<std::string, int> >()));
-				for (int j = 2; j < z.size() - 1; ++j) {
+				for (unsigned int j = 2; j < z.size() - 1; ++j) {
 					//TODO: For me, the maps come out as empty. So I don't know for sure if I'm reading it in correctly.
 					// Check with Katherine if this code is right.
 					std::string pairToSplit = z.at(j);
@@ -385,7 +385,7 @@ void DynamicFeatureCollection::writeToMap(std::string fileName) {
 }
 
 void DynamicFeatureCollection::writeToMap(CCoNLLOutput conllSentenceTrain) {
-	for (int i = 1; i < conllSentenceTrain.size(); i++) {
+	for (unsigned int i = 1; i < conllSentenceTrain.size(); i++) {
 		int childID = conllSentenceTrain.at(i).id;
 		std::string tag = conllSentenceTrain.at(childID).tag;
 		int parentID = conllSentenceTrain.at(i).head;
@@ -432,7 +432,7 @@ void DynamicFeatureCollection::writeToMap(CCoNLLOutput conllSentenceTrain) {
 		std::vector<std::pair<std::string, int> > counts = tagCount[word];
 
 		bool found = false;
-		for (int j = 0; j < counts.size(); j++) {
+		for (unsigned int j = 0; j < counts.size(); j++) {
 			std::pair<std::string, int> pairs = counts[j];
 			std::string individualTag = pairs.first;
 
@@ -477,11 +477,11 @@ void DynamicFeatureCollection::writeClass(std::string result) {
 }
 
 void DynamicFeatureCollection::printFeatures() {
-	for (int f = 0; f < features.at(currentSentenceNum).size(); f++) {
+	for (unsigned int f = 0; f < features.at(currentSentenceNum).size(); f++) {
 		featuresFile << "|";
 		featuresFile << namespaces.at(currentSentenceNum).at(f);
 		featuresFile << " ";
-		for (int g = 0; g < features.at(currentSentenceNum).at(f).size(); g++) {
+		for (unsigned int g = 0; g < features.at(currentSentenceNum).at(f).size(); g++) {
 			featuresFile << features.at(currentSentenceNum).at(f).at(g);
 			if (f < features.at(currentSentenceNum).at(f).size() - 1) {
 				featuresFile << " ";
