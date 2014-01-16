@@ -11,8 +11,10 @@
 #endif
 #ifdef LABELED
    typedef CLabeledDependencyTree CDependencyParse;
+   typedef CLabeledDependencyLinkTree CDependencyLinkParse;
 #else
    typedef CDependencyTree CDependencyParse;
+   typedef CDependencyLinkTree CDependencyLinkParse;
 #endif
 #include "dep.h"
 namespace TARGET_LANGUAGE { 
@@ -27,3 +29,5 @@ namespace depparser {
 #include "options.h"
 
 #include "supertag.h"
+
+#include "linguistics/links.h"

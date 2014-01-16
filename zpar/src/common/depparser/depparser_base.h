@@ -33,11 +33,14 @@ protected:
    bool m_bTrain ; // the system runs either at training mode or decoding mode
    bool m_bCoNLL ;
 
+   //Juneki: Adding a flag for a link grammar. It will be similar to CoNLL, but with link relationships instead of dependencies.
+   bool m_bLinks;
+
    const depparser::CSuperTag *m_supertags;
 
 public:
    // constructor and destructor
-   CDepParserBase( std::string sFeatureDBPath , bool bTrain , bool bCoNLL ) : m_bTrain(bTrain) , m_bCoNLL(bCoNLL) , m_supertags(0) { 
+   CDepParserBase( std::string sFeatureDBPath , bool bTrain , bool bCoNLL, bool bLinks ) : m_bTrain(bTrain) , m_bCoNLL(bCoNLL) , m_bLinks(bLinks) , m_supertags(0) {
       // do nothing
    }
    virtual ~CDepParserBase() {

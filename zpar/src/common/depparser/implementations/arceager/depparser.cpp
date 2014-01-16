@@ -37,7 +37,7 @@ const CTag g_noneTag = CTag::NONE;
  *
  *---------------------------------------------------------------*/
 
-inline void CDepParser::getOrUpdateStackScore(const CStateItem *item,
+void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 		CPackedScoreType<SCORE_TYPE, action::MAX> &retval,
 		const unsigned &action, SCORE_TYPE amount, int round) {
 
@@ -516,7 +516,7 @@ void CDepParser::updateScoresForStates(const CStateItem *outout,
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::reduce(const CStateItem *item,
+void CDepParser::reduce(const CStateItem *item,
 		const CPackedScoreType<SCORE_TYPE, action::MAX> &scores) {
 	static action::CScoredAction scoredaction;
 	// update stack score
@@ -532,7 +532,7 @@ inline void CDepParser::reduce(const CStateItem *item,
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::arcleft(const CStateItem *item,
+void CDepParser::arcleft(const CStateItem *item,
 		const CPackedScoreType<SCORE_TYPE, action::MAX> &scores) {
 	static action::CScoredAction scoredaction;
 	static unsigned label;
@@ -559,7 +559,7 @@ inline void CDepParser::arcleft(const CStateItem *item,
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::arcright(const CStateItem *item,
+void CDepParser::arcright(const CStateItem *item,
 		const CPackedScoreType<SCORE_TYPE, action::MAX> &scores) {
 	static action::CScoredAction scoredaction;
 	static unsigned label;
@@ -581,61 +581,7 @@ inline void CDepParser::arcright(const CStateItem *item,
 
 #endif
 
-#ifdef LINKS
-/*---------------------------------------------------------------
- *
- * connectleft
- *
- *--------------------------------------------------------------*/
 
-inline void CDepParser::connectleft(const CStateItem *item,
-		const CPackedScoreType<SCORE_TYPE, action::MAX> &scores) {
-	static action::CScoredAction scoredaction;
-	static unsigned label;
-#ifdef LABELED
-	for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
-		if ( !m_weights->rules() || canAssignLabel(m_lCache, item->size(), item->stacktop(), label) ) {
-			scoredaction.action = action::encodeAction(action::CONNECT_LEFT, label);
-			scoredaction.score = item->score + scores[scoredaction.action];
-			//+scores[action::ARC_LEFT];
-			m_Beam->insertItem(&scoredaction);
-
-		}
-	}
-#else
-	scoredaction.action = action::CONNECT_LEFT;
-	scoredaction.score = item->score + scores[scoredaction.action];
-	m_Beam->insertItem(&scoredaction);
-#endif
-}
-
-/*---------------------------------------------------------------
- *
- * connectright
- *
- *--------------------------------------------------------------*/
-
-inline void CDepParser::connectright(const CStateItem *item,
-		const CPackedScoreType<SCORE_TYPE, action::MAX> &scores) {
-	static action::CScoredAction scoredaction;
-	static unsigned label;
-#ifdef LABELED
-	for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
-		if ( !m_weights->rules() || canAssignLabel(m_lCache, item->stacktop(), item->size(), label) ) {
-			scoredaction.action = action::encodeAction(action::CONNECT_RIGHT, label);
-			scoredaction.score = item->score + scores[scoredaction.action];
-			//+scores[action::ARC_RIGHT];
-			m_Beam->insertItem(&scoredaction);
-		}
-	}
-#else
-	scoredaction.action = action::CONNECT_RIGHT;
-	scoredaction.score = item->score + scores[scoredaction.action];
-	m_Beam->insertItem(&scoredaction);
-#endif
-}
-
-#endif
 
 /*---------------------------------------------------------------
  *
@@ -643,7 +589,7 @@ inline void CDepParser::connectright(const CStateItem *item,
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::shift(const CStateItem *item,
+void CDepParser::shift(const CStateItem *item,
 		const CPackedScoreType<SCORE_TYPE, action::MAX> &scores) {
 	static action::CScoredAction scoredaction;
 	// update stack score
@@ -658,7 +604,7 @@ inline void CDepParser::shift(const CStateItem *item,
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::poproot(const CStateItem *item,
+void CDepParser::poproot(const CStateItem *item,
 		const CPackedScoreType<SCORE_TYPE, action::MAX> &scores) {
 	static action::CScoredAction scoredaction;
 	// update stack score
@@ -667,6 +613,9 @@ inline void CDepParser::poproot(const CStateItem *item,
 	m_Beam->insertItem(&scoredaction);
 }
 
+
+
+//#ifdef DEPENDENCIES
 /*---------------------------------------------------------------
  *
  * work - the working process shared by training and parsing
@@ -678,6 +627,8 @@ inline void CDepParser::poproot(const CStateItem *item,
 void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		CDependencyParse *retval, const CDependencyParse &correct, int nBest,
 		SCORE_TYPE *scores) {
+
+#ifdef DEPENDENCIES
 
 	/**
 	 * Edited by JK
@@ -751,7 +702,6 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 //		oracle->readInSentence(conllSentence);
 //	}
 	//end
-
 	// initialise agenda
 	m_Agenda->clear();
 	pCandidate.clear();                          // restore state using clean
@@ -794,87 +744,65 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		if (bTrain)
 			bCorrect = false;
 
+		//JUNEKI: Will the parser still try to parse when this is commented out?
 		// none can this find with pruning ???
-		if (m_Agenda->generatorSize() == 0) {
-			WARNING("parsing failed");
-			return;
-		}
+//		if (m_Agenda->generatorSize() == 0) {
+//			WARNING("parsing failed");
+//			return;
+//		}
 
 		pGenerator = m_Agenda->generatorStart();
 		// iterate generators
 		for (int j = 0; j < m_Agenda->generatorSize(); ++j) {
-			/**
-			 * Edited by JK
-			 */
-			std::vector<int, allocator<int> >::const_iterator stackIter =
-					pGenerator->Stack.end();
-			int stackWord = -1;
-			if (!pGenerator->Stack.empty()) {
-				stackWord = *(stackIter - 1);
-			}
-
+//			/**
+//			 * Edited by JK
+//			 */
+//			std::vector<int, allocator<int> >::const_iterator stackIter =
+//					pGenerator->Stack.end();
+//			int stackWord = -1;
+//			if (!pGenerator->Stack.empty()) {
+//				stackWord = *(stackIter - 1);
+//			}
 
 			int nextWord = pGenerator->NextWord;
 
-			if (!bTrain) {
+//			if (!bTrain) {
 //				int parent = 2;
 //				int child = 1;
-//				std::map<int, std::vector<int> >::const_iterator it =
-//						pGenerator->m_Children.find(parent);
-//				if (it == pGenerator->m_Children.end()) {
-//					//I used tempPGeneratorPointer instead of pGenerator because pGenerator was const and that was giving me a lot of issues.
-//					tempPGeneratorPointer->mChildrenInsert(stackWord*100, nextWord*100);
-//					tempPGeneratorPointer->mChildrenInsert((stackWord-1)*100, (nextWord-1)*100);
-//				}
-//
 //				tempPGeneratorPointer->removeArc(parent, child);
 //				tempPGeneratorPointer->makeArc(parent,child);
-
-//				tempPGeneratorPointer->makeArc(33,35);
-			}
-
-//			if(j == 0){
-//			// print QueueStackReduceState
-//			std::cout << "QueueStackReduceState: ";
-//			for(int i=0 ; i < MAX_SENTENCE_SIZE/6; i++){
-//				cout << pGenerator->QueueStackReduceState[i] << " ";
 //			}
-//			std::cout << "\n";
-//
-//			}
-
-//			std::cout << "\n";
 
 			// These boolean values check to see if we can do certain actions during a parse.
 			// This allows us to implement generalized arc eager dependency parsing of tree inputs.
 
-			bool topOfStack_isParentOf_topOfBuffer = pGenerator->isParent(
-					stackWord, nextWord);
-			bool topOfBuffer_isParentOf_topOfStack = pGenerator->isParent(
-					nextWord, stackWord);
-
-			bool topOfStack_hasRightChildOnBuffer =
-					pGenerator->childOnBufferCheck(stackWord);
-			//if next word on buffer has children on the stack
-			bool topOfBuffer_hasLeftChildOnStack =
-					pGenerator->childOnStackCheck(nextWord);
-			bool topOfStack_hasParent = pGenerator->hasParent(stackWord);
-			bool topOfBuffer_hasParent = pGenerator->hasParent(nextWord);
-
-			bool noLeftArc = topOfStack_hasParent
-					|| topOfStack_hasRightChildOnBuffer;
-
-			bool noRightArc = topOfBuffer_hasParent
-					|| topOfBuffer_hasLeftChildOnStack;
-
-			bool noReduce = topOfStack_hasRightChildOnBuffer;
-			bool mustReduce = topOfStack_hasParent
-					|| topOfBuffer_hasLeftChildOnStack;
-
-			bool noShift = topOfBuffer_hasLeftChildOnStack;
+//			bool topOfStack_isParentOf_topOfBuffer = pGenerator->isParent(
+//					stackWord, nextWord);
+//			bool topOfBuffer_isParentOf_topOfStack = pGenerator->isParent(
+//					nextWord, stackWord);
+//
+//			bool topOfStack_hasRightChildOnBuffer =
+//					pGenerator->childOnBufferCheck(stackWord);
+//			//if next word on buffer has children on the stack
+//			bool topOfBuffer_hasLeftChildOnStack =
+//					pGenerator->childOnStackCheck(nextWord);
+//			bool topOfStack_hasParent = pGenerator->hasParent(stackWord);
+//			bool topOfBuffer_hasParent = pGenerator->hasParent(nextWord);
+//
+//			bool noLeftArc = topOfStack_hasParent
+//					|| topOfStack_hasRightChildOnBuffer;
+//
+//			bool noRightArc = topOfBuffer_hasParent
+//					|| topOfBuffer_hasLeftChildOnStack;
+//
+//			bool noReduce = topOfStack_hasRightChildOnBuffer;
+//			bool mustReduce = topOfStack_hasParent
+//					|| topOfBuffer_hasLeftChildOnStack;
+//
+//			bool noShift = topOfBuffer_hasLeftChildOnStack;
 //			bool mustShift = topOfStack_isParentOf_topOfBuffer;
 
-			if (!bTrain) {
+//			if (!bTrain) {
 //				cout << "topOfStack_isParentOf_topOfBuffer "
 //						<< topOfStack_isParentOf_topOfBuffer << "\n";
 //				cout << "topOfBuffer_isParentOf_topOfStack "
@@ -885,7 +813,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 //				cout << "mustReduce: " << mustReduce << "\n";
 //				cout << "noShift: " << noShift << "\n";
 //			cout << "\n";
-			}
+//			}
 
 			//end
 
@@ -904,24 +832,24 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			}
 			// Edited by J
 			// Here, we check to see if we already have arcs that have been made that we need to take again.
-			else if (topOfStack_isParentOf_topOfBuffer) {
-#ifdef DEPENDENCIES
-				arcright(pGenerator, packed_scores);
-#endif
-#ifdef LINKS
-				connectright(pGenerator, packed_scores);
-#endif
-			}
-
-			else if (topOfBuffer_isParentOf_topOfStack) {
-#ifdef DEPENDENCIES
-				arcleft(pGenerator, packed_scores);
-#endif
-#ifdef LINKS
-				connectleft(pGenerator, packed_scores);
-#endif
-
-			}
+//			else if (topOfStack_isParentOf_topOfBuffer) {
+//#ifdef DEPENDENCIES
+//				arcright(pGenerator, packed_scores);
+//#endif
+//#ifdef LINKS
+//				connectright(pGenerator, packed_scores);
+//#endif
+//			}
+//
+//			else if (topOfBuffer_isParentOf_topOfStack) {
+//#ifdef DEPENDENCIES
+//				arcleft(pGenerator, packed_scores);
+//#endif
+//#ifdef LINKS
+//				connectleft(pGenerator, packed_scores);
+//#endif
+//
+//			}
 			//end
 
 			// for the state items that still need more words
@@ -938,8 +866,9 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 											m_lCache[pGenerator->size()].tag.code())
 									|| hasRightHead(
 											m_lCache[pGenerator->size()].tag.code())) // rules
-							&&// JUNEKI: no shift
-							(!noShift)) {
+//							&&// JUNEKI: no shift
+//							(!noShift)
+							) {
 						shift(pGenerator, packed_scores);
 					}
 //					else if (mustShift) { // JUNEKI: must shift
@@ -957,14 +886,15 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 									|| hasLeftHead(
 											m_lCache[pGenerator->size()].tag.code())) // rules
 
-							&&// JUNEKI: no right arc
-							(!noRightArc)) {
-#ifdef DEPENDENCIES
+//							&&// JUNEKI: no right arc
+//							(!noRightArc)
+							) {
+//#ifdef DEPENDENCIES
 						arcright(pGenerator, packed_scores);
-#endif
-#ifdef LINKS
-						connectright(pGenerator, packed_scores);
-#endif
+//#endif
+//#ifdef LINKS
+//						connectright(pGenerator, packed_scores);
+//#endif
 
 					}
 				}
@@ -972,13 +902,16 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 						|| (m_bCoNLL && pGenerator->stacksize() > 1) // make sure that for conll the first item is not popped
 						) {
 					if ((pGenerator->head(pGenerator->stacktop())
-							!= DEPENDENCY_LINK_NO_HEAD) && // JUNEKI: no reduce
-							(!noReduce)) {
-						reduce(pGenerator, packed_scores);
-					} else if (mustReduce) // JUNEKI: must reduce
-					{
+							!= DEPENDENCY_LINK_NO_HEAD)
+//							&& // JUNEKI: no reduce
+//							(!noReduce)
+					) {
 						reduce(pGenerator, packed_scores);
 					}
+//					else if (mustReduce) // JUNEKI: must reduce
+//					{
+//						reduce(pGenerator, packed_scores);
+//					}
 
 					else {
 						if ((m_supertags == 0
@@ -988,14 +921,15 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 										|| hasRightHead(
 												m_lCache[pGenerator->stacktop()].tag.code())) // rules
 
-								&&// JUNEKI: no arc left
-								(!noLeftArc)) {
-#ifdef DEPENDENCIES
+//								&&// JUNEKI: no arc left
+//								(!noLeftArc)
+								) {
+//#ifdef DEPENDENCIES
 							arcleft(pGenerator, packed_scores);
-#endif
-#ifdef LINKS
-							connectleft(pGenerator, packed_scores);
-#endif
+//#endif
+//#ifdef LINKS
+//							connectleft(pGenerator, packed_scores);
+//#endif
 
 						}
 					}
@@ -1031,23 +965,6 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 #else
 					action = m_Beam->item(i)->action & INT_MAX;
 #endif
-					if (DEBUG) {
-						std::cout << std::endl;
-						switch (action) {
-						case 1:
-							std::cout << "Action: " << "SHIFT" << std::endl;
-							break;
-						case 2:
-							std::cout << "Action: " << "REDUCE" << std::endl;
-							break;
-						case 3:
-							std::cout << "Action: " << "LEFT-ARC" << std::endl;
-							break;
-						case 4:
-							std::cout << "Action: " << "RIGHT-ARC" << std::endl;
-							break;
-						}
-					}
 
 //					if (oracle->isOracleAction(actions, action)) {
 //						featureCollection->writeClass("1");
@@ -1138,6 +1055,9 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				scores[i] = pGenerator->score;
 		}
 	}TRACE("Done, the highest score is: " << m_Agenda->bestGenerator()->score ) ;TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
+
+#endif
+
 }
 
 /*---------------------------------------------------------------
@@ -1166,6 +1086,7 @@ void CDepParser::parse(const CTwoStringVector &sentence,
 
 }
 
+
 /*---------------------------------------------------------------
  *
  * train - train the models with an example
@@ -1186,7 +1107,7 @@ void CDepParser::train(const CDependencyParse &correct, int round) {
 	work(true, sentence, &outout, correct, 1, 0);
 
 }
-;
+
 
 /*---------------------------------------------------------------
  *
@@ -1208,6 +1129,8 @@ void CDepParser::initCoNLLCache(const CCoNLLInputOrOutput &sentence) {
 	}
 }
 
+
+//#ifdef DEPENDENCIES
 /*---------------------------------------------------------------
  *
  * parse_conll - do dependency parsing to a sentence
@@ -1226,12 +1149,6 @@ void CDepParser::parse_conll(const CCoNLLInput &sentence, CCoNLLOutput *retval,
 	assert(m_bCoNLL);
 
 	initCoNLLCache(sentence);
-
-	/**
-	 * Edited by JK
-	 */
-//	conllSentence = sentence;
-	//end
 	sentence.toTwoStringVector(input);
 
 	for (int i = 0; i < nBest; ++i) {
@@ -1268,12 +1185,6 @@ void CDepParser::train_conll(const CCoNLLOutput &correct, int round) {
 	assert(IsProjectiveDependencyTree(correct));
 
 	initCoNLLCache(correct);
-
-	/**
-	 * Edited by JK
-	 */
-//	conllSentenceTrain = correct;
-	//end
 	correct.toDependencyTree(reference);
 	UnparseSentence(&reference, &sentence);
 
@@ -1282,3 +1193,5 @@ void CDepParser::train_conll(const CCoNLLOutput &correct, int round) {
 	work(true, sentence, &outout, reference, 1, 0);
 
 }
+//#endif
+

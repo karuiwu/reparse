@@ -41,7 +41,7 @@ namespace TARGET_LANGUAGE {
 
 class CDepParser: public CDepParserBase {
 
-private:
+protected:
 
 	CAgendaBeam<depparser::CStateItem> *m_Agenda;
 	CAgendaSimple<depparser::action::CScoredAction> *m_Beam;
@@ -63,19 +63,16 @@ private:
 	/**
 	 * Edited by JK
 	 */
-
 //	DynamicOracle *oracle;
 //	DynamicFeatureCollection *featureCollection;
 //	CCoNLLInput conllSentence;
 //	CCoNLLOutput conllSentenceTrain;
-
 	//end
-
 public:
 	// constructor and destructor
 	CDepParser(const std::string &sFeatureDBPath, bool bTrain, bool bCoNLL =
-			false) :
-			CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) {
+			false, bool bLinks = false) :
+			CDepParserBase(sFeatureDBPath, bTrain, bCoNLL, bLinks) {
 		m_Agenda = new CAgendaBeam<depparser::CStateItem>(
 				depparser::AGENDA_SIZE);
 		m_Beam = new CAgendaSimple<depparser::action::CScoredAction>(
@@ -87,7 +84,6 @@ public:
 		/**
 		 * Edited by JK
 		 */
-
 //		oracle = new DynamicOracle;
 //		featureCollection = new DynamicFeatureCollection;
 //		if (!bTrain) {
@@ -95,9 +91,7 @@ public:
 //		}
 //		conllSentence = CCoNLLInput();
 //		conllSentenceTrain = CCoNLLOutput();
-
 		//end
-
 		if (bTrain)
 			m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage;
 		else
@@ -116,52 +110,55 @@ public:
 	}
 
 public:
+
+//#ifdef DEPENDENCIES
 	void parse(const CTwoStringVector &sentence, CDependencyParse *retval,
 			int nBest = 1, depparser::SCORE_TYPE *scores = 0);
 	void train(const CDependencyParse &correct, int round);
 
 	void parse_conll(const CCoNLLInput &sentence, CCoNLLOutput *retval,
 			int nBest = 1, depparser::SCORE_TYPE *scores = 0);
+
 	void train_conll(const CCoNLLOutput &correct, int round);
+//#endif
 
 	void finishtraining() {
 		static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(
 				m_nTrainingRound);
 		static_cast<depparser::CWeight*>(m_weights)->saveScores();
 
-		/**
-		 * Edited by JK
-		 */
-//		featureCollection->writeToMap();
-		//end
+		// Edited by JK
+		// featureCollection->writeToMap();
 		std::cout << "Total number of training errors are: " << m_nTotalErrors
 				<< std::endl;
 	}
-	/**
-	 * Edited by JK
-	 */
-//	void finishparsing() {
-//		featureCollection->trainModel();
-//	}
-	//end
 
+	//Edited by JK
+	//	void finishparsing() {
+	//	featureCollection->trainModel();
+	//	}
+	//end
 	depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
 	void updateScores(const CDependencyParse &parse,
 			const CDependencyParse &correct, int round = 0);
 
-private:
+protected:
 	enum SCORE_UPDATE {
 		eAdd = 0, eSubtract
 	};
 
+
+
 	template<typename CCoNLLInputOrOutput>
 	void initCoNLLCache(const CCoNLLInputOrOutput &sentence);
 
+//#ifdef DEPENDENCIES
 	void work(const bool bTrain, const CTwoStringVector &sentence,
 			CDependencyParse *retval, const CDependencyParse &correct,
 			int nBest, depparser::SCORE_TYPE *scores);
+//#endif
 
-	inline void getOrUpdateStackScore(const depparser::CStateItem *item,
+	void getOrUpdateStackScore(const depparser::CStateItem *item,
 			CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &retval,
 			const unsigned &action, depparser::SCORE_TYPE amount = 0,
 			int round = 0);
@@ -175,23 +172,20 @@ private:
 			const depparser::CStateItem *outout,
 			const depparser::SCORE_TYPE &amount);
 
+
+
 	// helper method
-	inline void reduce(const depparser::CStateItem *item,
+	void reduce(const depparser::CStateItem *item,
 			const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores);
-	inline void shift(const depparser::CStateItem *item,
+	void shift(const depparser::CStateItem *item,
 			const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores);
 
 #ifdef DEPENDENCIES
-	inline void arcleft( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores);
-	inline void arcright( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores);
+	void arcleft( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores);
+	void arcright( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores);
 #endif
 
-#ifdef LINKS
-	inline void connectleft( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores);
-	inline void connectright( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores);
-#endif
-
-	inline void poproot(const depparser::CStateItem *item,
+	void poproot(const depparser::CStateItem *item,
 			const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores);
 
 };

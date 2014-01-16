@@ -664,12 +664,14 @@ public:
 
 public:
 
-	// returns true is the next word advances -- by shift or arcright.
+	// returns true is the next word advances -- by shift or arcright.-
+#ifdef DEPENDENCIES
 #ifdef LABELED
-	bool StandardMoveStep( const CDependencyParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel ) {
+	bool StandardMoveStep( const CDependencyParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel )
 #else
-	bool StandardMoveStep(const CDependencyParse &tree) {
+	bool StandardMoveStep(const CDependencyParse &tree)
 #endif
+		{
 		static int top;
 		// when the next word is tree.size() it means that the sentence is done already
 		if (m_nNextWord == static_cast<int>(tree.size())) {
@@ -749,6 +751,111 @@ public:
 			}
 		}
 	}
+#endif
+
+
+
+	// returns true is the next word advances -- by shift or arcright.-
+#ifdef LINKS
+#ifdef LABELED
+	bool StandardMoveStep( const CDependencyLinkParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel )
+#else
+	bool StandardMoveStep(const CDependencyLinkParse &tree)
+#endif
+		{
+		static int top;
+		// when the next word is tree.size() it means that the sentence is done already
+		if (m_nNextWord == static_cast<int>(tree.size())) {
+			assert(m_Stack.size() > 0);
+			if (m_Stack.size() > 1) {
+				Reduce();
+				return false;
+			} else {
+				PopRoot();
+				return false;
+			}
+		}
+		// the first case is that there is some words on the stack linking to nextword
+		if (m_Stack.size() > 0) {
+			top = m_Stack.back();
+			while (!(m_lHeads[top] == DEPENDENCY_LINK_NO_HEAD))
+				top = m_lHeads[top];
+
+			//TODO
+			int treeTopHead = -1;
+			if (!tree[top].heads.empty()){
+				treeTopHead = tree[top].heads[0];
+			}
+			if (treeTopHead == m_nNextWord) { // if a local head deps on nextword first
+				if (top == m_Stack.back()) {
+#ifdef LABELED
+					//TODO
+					assert(m_lCacheLabel[top].str() == tree[top].labels[0]);
+
+#ifdef LINKS
+					ConnectLeft(m_lCacheLabel[top].code());
+#else
+					ArcLeft(m_lCacheLabel[top].code()); // link it to the next word
+#endif
+
+#else
+
+#ifdef LINKS
+					ConnectLeft();
+#else
+					ArcLeft();                       // link it to the next word
+#endif
+#endif
+					return false;
+				} else {
+					Reduce();
+					return false;
+				}
+			}
+		}
+
+		//TODO
+		// the second case is that no words on the stack links nextword, and nextword does not link to stack word
+		if (tree[m_nNextWord].heads.empty() || // the root or
+				tree[m_nNextWord].heads[0] > m_nNextWord) { // head on the right
+			Shift();
+			return true;
+		}
+		// the last case is that the next words links to stack word
+		else {                                        // head on the left
+			assert(m_Stack.size() > 0);
+			top = m_Stack.back();
+			//TODO
+			if (tree[m_nNextWord].heads[0] == top) { // the next word deps on stack top
+
+#ifdef LINKS
+#ifdef LABELED
+				//TODO
+				assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].labels[0]);
+				ConnectRight(m_lCacheLabel[m_nNextWord].code());
+#else
+				ConnectRight();
+#endif
+
+#else
+
+#ifdef LABELED
+				//TODO
+				assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].labels[0]);
+				ArcRight(m_lCacheLabel[m_nNextWord].code());
+#else
+				ArcRight();
+#endif
+#endif
+				return true;
+			} else {                           // must depend on non-immediate h
+				Reduce();
+				return false;
+			}
+		}
+	}
+#endif
+
 
 	// we want to pop the root item after the whole tree done
 	// on the one hand this seems more natural
@@ -765,25 +872,23 @@ public:
 //for (int i=0; i<item->m_Stack.size(); ++i) std::cout << item->m_Stack[i] << " "; std::cout << std::endl;
 			assert(m_Stack.size() > item->m_Stack.size());
 			top = m_Stack.back();
-			if (item->m_lHeads[top] == m_nNextWord)
-
+			if (item->m_lHeads[top] == m_nNextWord) {
 #ifdef LINKS
-
 #ifdef LABELED
 				return action::encodeAction(action::CONNECT_LEFT,item->m_lLabels[top]);
 #else
 				return action::CONNECT_LEFT;
 #endif
+#endif
 
-#else
-
+#ifdef DEPENDENCIES
 #ifdef LABELED
 				return action::encodeAction(action::ARC_LEFT, item->m_lLabels[top]);
 #else
 				return action::ARC_LEFT;
 #endif
 #endif
-			else if (item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD)
+			} else if (item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD)
 				return action::encodeAction(action::REDUCE);
 			else
 				return action::encodeAction(action::POP_ROOT);
@@ -804,10 +909,13 @@ public:
 #endif
 
 #else
+
+#ifdef DEPENDENCIES
 #ifdef LABELED
 					return action::encodeAction(action::ARC_LEFT, item->m_lLabels[top]);
 #else
 					return action::ARC_LEFT;
+#endif
 #endif
 #endif
 				} else {
@@ -835,10 +943,12 @@ public:
 #endif
 #else
 
+#ifdef DEPENDENCIES
 #ifdef LABELED
 				return action::encodeAction(action::ARC_RIGHT, item->m_lLabels[m_nNextWord]);
 #else
 				return action::ARC_RIGHT;
+#endif
 #endif
 #endif
 			} else {                           // must depend on non-immediate h
@@ -847,11 +957,13 @@ public:
 		}
 	}
 
+
+#ifdef DEPENDENCIES
 	void GenerateTree(const CTwoStringVector &input,
 			CDependencyParse &output) const {
 		output.clear();
 
-		for (int i = 0; i < size(); ++i)
+		for (int i = 0; i < size(); ++i) {
 #ifdef LABELED
 			output.push_back( CLabeledDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] , CDependencyLabel(m_lLabels[i]).str() ) );
 #else
@@ -859,7 +971,31 @@ public:
 					CDependencyTreeNode(input.at(i).first, input.at(i).second,
 							m_lHeads[i]));
 #endif
+		}
 	}
+#endif
+
+
+
+#ifdef LINKS
+	void GenerateLinkTree(const CTwoStringVector &input, CDependencyLinkParse &output) const {
+		output.clear();
+
+		for(int i = 0; i < size(); ++i) {
+#ifdef LABELED
+//TODO
+//			output.push_back( CLabeledDepenencyLinkTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i], CDependencyLabel(m_lLabels[i]).str()));
+			output.push_back( CLabeledDependencyLinkTreeNode( input.at(i).first , input.at(i).second , std::vector<int>(), std::vector<std::string>()));
+
+#else
+//TODO
+//			output.push_back( CDependencyLinkTreeNode(input.at(i).first, input.at(i).second, m_lHeads[i]));
+			output.push_back( CDependencyLinkTreeNode(input.at(i).first, input.at(i).second, std::vector<int>()));
+#endif
+		}
+	}
+#endif
+
 
 	/** Edited by J
 	 *
