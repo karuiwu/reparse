@@ -103,8 +103,8 @@ CXXFLAGS += -DLINKS
 #CXXFLAGS += -DDEPENDENCIES
 
 #Link Parsing makefile flags
-CXXFLAGS += -DSINGLE_ROOT
-CXXFLAGS += -DSINGLE_PARENT
+#CXXFLAGS += -DSINGLE_ROOT
+#CXXFLAGS += -DSINGLE_PARENT
 
 #Link Automata features
 CXXFLAGS += -DAUTOMATA_1ST_FEATURES
@@ -122,7 +122,7 @@ CXXFLAGS += -DAUTOMATA_2ND_FEATURES
 #================================================================
 
 # the objects
-LINGUISTICS_OBJECTS = $(OBJECT_DIR)/linguistics/lemma.o $(OBJECT_DIR)/linguistics/conll.o
+LINGUISTICS_OBJECTS = $(OBJECT_DIR)/linguistics/lemma.o $(OBJECT_DIR)/linguistics/conll.o $(OBJECT_DIR)/linguistics/links.o 
 OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(LINGUISTICS_OBJECTS)
 
 $(OBJECT_DIR)/%.o: $(SRC_LIBS)/%.cpp $(SRC_INCLUDES)/%.h
