@@ -20,7 +20,7 @@ parent_t DependenciesCollection::getParent(int sentence) {
 }
 
 void DependenciesCollection::addAll(sentence_t conllSentence) {
-  for (int i=0; i < conllSentence.size(); i++) {
+  for (unsigned int i=0; i < conllSentence.size(); i++) {
     int parentID = atoi(conllSentence.at(i).at(CONLLFIELD_HEAD).c_str());
     int childID = atoi(conllSentence.at(i).at(CONLLFIELD_ID).c_str());
 
