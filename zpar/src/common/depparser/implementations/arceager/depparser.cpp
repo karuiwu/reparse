@@ -42,17 +42,110 @@ void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 		const unsigned &action, SCORE_TYPE amount, int round) {
 
 	const int &st_index = item->stackempty() ? -1 : item->stacktop(); // stack top
+
+#ifdef DEPENDENCIES
 	const int &sth_index = st_index == -1 ? -1 : item->head(st_index); // stack top head
-	const int &sthh_index = sth_index == -1 ? -1 : item->head(sth_index); // stack top head
-	const int &stld_index = st_index == -1 ? -1 : item->leftdep(st_index); // leftmost dep of stack
-	const int &strd_index = st_index == -1 ? -1 : item->rightdep(st_index); // rightmost dep st
-	const int &stl2d_index = stld_index == -1 ? -1 : item->sibling(stld_index); // left 2ndmost dep of stack
-	const int &str2d_index = strd_index == -1 ? -1 : item->sibling(strd_index); // right 2ndmost dep st
+	const int &sthh_index = sth_index == -1 ? -1 : item->head(sth_index);// stack top head
+	const int &stld_index = st_index == -1 ? -1 : item->leftdep(st_index);// leftmost dep of stack
+	const int &strd_index = st_index == -1 ? -1 : item->rightdep(st_index);// rightmost dep st
+	const int &stl2d_index = stld_index == -1 ? -1 : item->sibling(stld_index);// left 2ndmost dep of stack
+	const int &str2d_index = strd_index == -1 ? -1 : item->sibling(strd_index);// right 2ndmost dep st
+#endif
+
+#ifdef LINKS
+	std::vector<int> sth_indices; // stack top head
+	if(st_index != -1){
+		sth_indices = item->head(st_index);
+	}
+
+	std::vector<int> sthh_indices; // stack top head
+	if(!sth_indices.empty()){
+		std::vector<int> temp_sthh_indices;
+		for(unsigned i=0; i<sth_indices.size(); i++){
+			std::vector<int> heads = item->head(sth_indices[i]);
+			for(unsigned j=0; j<heads.size(); j++){
+				temp_sthh_indices.push_back(heads[j]);
+			}
+		}
+		sthh_indices = temp_sthh_indices;
+		//sthh_indices = item->head(sth_index);
+	}
+
+	std::vector<int> stld_indices; // leftmost dep of stack
+	if(st_index != -1){
+		stld_indices = item->leftdep(st_index);
+	}
+
+	std::vector<int> strd_indices; // rightmost dep st
+	if(st_index != -1){
+		strd_indices = item->rightdep(st_index);
+	}
+
+	std::vector<int> stl2d_indices; // left 2ndmost dep of stack
+	if(!stld_indices.empty()){
+		std::vector<int> temp_stl2d_indices;
+		for(unsigned i=0; i<stld_indices.size(); i++){
+			std::vector<int> sibs = item->sibling(stld_indices[i]);
+			for(unsigned j=0; j<sibs.size(); j++){
+				temp_stl2d_indices.push_back(sibs[j]);
+			}
+		}
+		stl2d_indices = temp_stl2d_indices;
+//		stl2d_indices = item->sibling(stld_indices);
+	}
+	std::vector<int> str2d_indices; // right 2ndmost dep st
+	if(!strd_indices.empty()){
+		std::vector<int> temp_str2d_indices;
+		for(unsigned i=0; i<strd_indices.size(); i++){
+			std::vector<int> sibs = item->sibling(strd_indices[i]);
+			for(unsigned j=0; j<sibs.size(); j++){
+				temp_str2d_indices.push_back(sibs[j]);
+			}
+		}
+		str2d_indices = temp_str2d_indices;
+//		str2d_indices = item->sibling(strd_indices);
+	}
+
+//	const std::vector<int> &sth_index = (st_index == -1 ? std::vector<int>() : item->head(st_index)); // stack top head
+//	const std::vector<int> &sthh_index = (sth_index == -1 ? std::vector<int>() : item->head(sth_index));// stack top head
+//	const std::vector<int> &stld_index = (st_index == -1 ? std::vector<int>() : item->leftdep(st_index));// leftmost dep of stack
+//	const std::vector<int> &strd_index = (st_index == -1 ? std::vector<int>() : item->rightdep(st_index));// rightmost dep st
+//	const std::vector<int> &stl2d_index = (stld_index == -1 ? std::vector<int>() : item->sibling(stld_index));// left 2ndmost dep of stack
+//	const std::vector<int> &str2d_index = (strd_index == -1 ? std::vector<int>() : item->sibling(strd_index));// right 2ndmost dep st
+#endif
+
 	const int &n0_index =
 			(unsigned) item->size() == m_lCache.size() ? -1 : item->size(); // next
 	assert(n0_index < static_cast<int>(m_lCache.size())); // the next index shouldn't exceed sentence
+
+#ifdef DEPENDENCIES
 	const int &n0ld_index = n0_index == -1 ? -1 : item->leftdep(n0_index); // leftmost dep of next
-	const int &n0l2d_index = n0ld_index == -1 ? -1 : item->sibling(n0ld_index); // leftmost dep of next
+	const int &n0l2d_index = n0ld_index == -1 ? -1 : item->sibling(n0ld_index);// leftmost dep of next
+#endif
+
+
+#ifdef LINKS
+	std::vector<int> n0ld_indices;
+	if(n0_index != -1){
+		n0ld_indices = item->leftdep(n0_index);
+	}
+	std::vector<int> n0l2d_indices;
+	if(!n0ld_indices.empty()){
+		std::vector<int> temp_n0l2d_indices;
+		for(unsigned i=0; i<n0ld_indices.size(); i++){
+			std::vector<int> sibs = item->sibling(n0ld_indices[i]);
+			for(unsigned j=0; j<sibs.size(); j++){
+				temp_n0l2d_indices.push_back(sibs[j]);
+			}
+		}
+		n0l2d_indices = temp_n0l2d_indices;
+//		n0l2d_indices = item->sibling(n0ld_index);
+	}
+
+//	const int &n0ld_index = n0_index == -1 ? -1 : item->leftdep(n0_index)[0]; // leftmost dep of next
+//	const int &n0l2d_index = n0ld_index == -1 ? -1 : item->sibling(n0ld_index)[0];// leftmost dep of next
+#endif
+
 	const int &ht_index = item->headstackempty() ? -1 : item->headstacktop(); // headstack
 	const int &ht2_index =
 			item->headstacksize() < 2 ?
@@ -64,6 +157,9 @@ void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 	n2_index = (unsigned) (n0_index + 2) < m_lCache.size() ? n0_index + 2 : -1;
 	n3_index = (unsigned) (n0_index + 3) < m_lCache.size() ? n0_index + 3 : -1;
 
+
+	// Get the tagged word from the all the specified indices
+#ifdef DEPENDENCIES
 	const CTaggedWord<CTag, TAG_SEPARATOR> &st_word_tag =
 			st_index == -1 ? g_emptyTaggedWord : m_lCache[st_index];
 	const CTaggedWord<CTag, TAG_SEPARATOR> &sth_word_tag =
@@ -92,6 +188,46 @@ void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 			ht_index == -1 ? g_emptyTaggedWord : m_lCache[ht_index];
 	const CTaggedWord<CTag, TAG_SEPARATOR> &ht2_word_tag =
 			ht2_index == -1 ? g_emptyTaggedWord : m_lCache[ht2_index];
+#endif
+
+	// Get the tagged words from all the specified indices
+	// TODO take the first off of every list for now. Return the full array later.
+#ifdef LINKS
+
+	const CTaggedWord<CTag, TAG_SEPARATOR> &st_word_tag =
+			st_index == -1 ? g_emptyTaggedWord : m_lCache[st_index];
+
+	//TODO
+	const CTaggedWord<CTag, TAG_SEPARATOR> &sth_word_tag =
+			sth_indices.empty() ? g_emptyTaggedWord : m_lCache[sth_indices[0]];
+	const CTaggedWord<CTag, TAG_SEPARATOR> &sthh_word_tag =
+			sthh_indices.empty() ? g_emptyTaggedWord : m_lCache[sthh_indices[0]];
+	const CTaggedWord<CTag, TAG_SEPARATOR> &stld_word_tag =
+			stld_indices.empty() ? g_emptyTaggedWord : m_lCache[stld_indices[0]];
+	const CTaggedWord<CTag, TAG_SEPARATOR> &strd_word_tag =
+			strd_indices.empty() ? g_emptyTaggedWord : m_lCache[strd_indices[0]];
+	const CTaggedWord<CTag, TAG_SEPARATOR> &stl2d_word_tag =
+			stl2d_indices.empty() ? g_emptyTaggedWord : m_lCache[stl2d_indices[0]];
+	const CTaggedWord<CTag, TAG_SEPARATOR> &str2d_word_tag =
+			str2d_indices.empty() ? g_emptyTaggedWord : m_lCache[str2d_indices[0]];
+
+	const CTaggedWord<CTag, TAG_SEPARATOR> &n0_word_tag =
+			n0_index == -1 ? g_emptyTaggedWord : m_lCache[n0_index];
+
+	const CTaggedWord<CTag, TAG_SEPARATOR> &n0ld_word_tag =
+			n0ld_indices.empty() ? g_emptyTaggedWord : m_lCache[n0ld_indices[0]];
+	const CTaggedWord<CTag, TAG_SEPARATOR> &n0l2d_word_tag =
+			n0l2d_indices.empty() ? g_emptyTaggedWord : m_lCache[n0l2d_indices[0]];
+
+	const CTaggedWord<CTag, TAG_SEPARATOR> &n1_word_tag =
+			n1_index == -1 ? g_emptyTaggedWord : m_lCache[n1_index];
+	const CTaggedWord<CTag, TAG_SEPARATOR> &n2_word_tag =
+			n2_index == -1 ? g_emptyTaggedWord : m_lCache[n2_index];
+	const CTaggedWord<CTag, TAG_SEPARATOR> &ht_word_tag =
+			ht_index == -1 ? g_emptyTaggedWord : m_lCache[ht_index];
+	const CTaggedWord<CTag, TAG_SEPARATOR> &ht2_word_tag =
+			ht2_index == -1 ? g_emptyTaggedWord : m_lCache[ht2_index];
+#endif
 
 	const CWord &st_word = st_word_tag.word;
 	const CWord &sth_word = sth_word_tag.word;
@@ -123,25 +259,140 @@ void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 	const CTag &ht_tag = ht_word_tag.tag;
 	const CTag &ht2_tag = ht2_word_tag.tag;
 
+#ifdef DEPENDENCIES
 	const int &st_label =
-			st_index == -1 ? CDependencyLabel::NONE : item->label(st_index);
+	st_index == -1 ? CDependencyLabel::NONE : item->label(st_index);
 	const int &sth_label =
-			sth_index == -1 ? CDependencyLabel::NONE : item->label(sth_index);
+	sth_index == -1 ? CDependencyLabel::NONE : item->label(sth_index);
 	const int &stld_label =
-			stld_index == -1 ? CDependencyLabel::NONE : item->label(stld_index);
+	stld_index == -1 ? CDependencyLabel::NONE : item->label(stld_index);
 	const int &strd_label =
-			strd_index == -1 ? CDependencyLabel::NONE : item->label(strd_index);
+	strd_index == -1 ? CDependencyLabel::NONE : item->label(strd_index);
 	const int &stl2d_label =
-			stl2d_index == -1 ?
-					CDependencyLabel::NONE : item->label(stl2d_index);
+	stl2d_index == -1 ?
+	CDependencyLabel::NONE : item->label(stl2d_index);
 	const int &str2d_label =
-			str2d_index == -1 ?
-					CDependencyLabel::NONE : item->label(strd_index);
+	str2d_index == -1 ?
+	CDependencyLabel::NONE : item->label(strd_index);
 	const int &n0ld_label =
-			n0ld_index == -1 ? CDependencyLabel::NONE : item->label(n0ld_index);
+	n0ld_index == -1 ? CDependencyLabel::NONE : item->label(n0ld_index);
 	const int &n0l2d_label =
-			n0l2d_index == -1 ?
-					CDependencyLabel::NONE : item->label(n0l2d_index);
+	n0l2d_index == -1 ?
+	CDependencyLabel::NONE : item->label(n0l2d_index);
+#endif
+
+	//TODO These are implemented, but not fully tested.
+#ifdef LINKS
+//	sth_indices
+//	sthh_indices
+//	stld_indices
+//	strd_indices
+//	stl2d_indices
+//	str2d_indices
+//
+//	n0ld_indices
+//	n0l2d_indices
+
+
+	std::vector<unsigned long> st_labels;
+	if(st_index != -1){
+		st_labels = item->label(st_index);
+	}
+	std::vector<unsigned long> sth_labels;
+	if(!sth_indices.empty()){
+		std::vector<unsigned long> temp_sth_labels;
+		for(unsigned i=0; i<sth_indices.size(); i++){
+			std::vector<unsigned long> sth = item->label(sth_indices[i]);
+			for(unsigned j=0; j < sth.size(); j++){
+				temp_sth_labels.push_back(sth[j]);
+			}
+		}
+		sth_labels = temp_sth_labels;
+//		sthh_labels = item->label(sth_index);
+	}
+	std::vector<unsigned long> stld_labels;
+	if(st_index != -1){
+		std::vector<unsigned long> temp_stld_labels;
+		for(unsigned i=0; i < stld_indices.size(); i++){
+			std::vector<unsigned long> ld_labels = item->label(stld_indices[i]);
+			for(unsigned j=0; j < ld_labels.size(); j++){
+				temp_stld_labels.push_back(ld_labels[j]);
+			}
+		}
+		stld_labels = temp_stld_labels;
+		//		stld_labels = item->leftdep(st_index);
+	}
+	std::vector<unsigned long> strd_labels;
+	if(st_index != -1){
+		std::vector<unsigned long> temp_strd_labels;
+		for(unsigned i=0; i < strd_indices.size(); i++){
+			std::vector<unsigned long> rd_labels = item->label(strd_indices[i]);
+			for(unsigned j=0; j < rd_labels.size(); j++){
+				temp_strd_labels.push_back(rd_labels[j]);
+			}
+		}
+		strd_labels = temp_strd_labels;
+		//strd_labels = item->rightdep(st_index);
+	}
+
+	std::vector<unsigned long> stl2d_labels;
+	if(!stld_indices.empty()){
+		std::vector<unsigned long> temp_stl2d_labels;
+		for(unsigned i=0; i < stl2d_indices.size(); i++){
+			std::vector<unsigned long> ld_labels = item->label(stl2d_indices[i]);
+			for(unsigned j=0; j < ld_labels.size(); j++){
+				temp_stl2d_labels.push_back(ld_labels[j]);
+			}
+		}
+		stl2d_labels = temp_stl2d_labels;
+		//stld_indices = item->sibling(stld_index);
+	}
+
+	std::vector<unsigned long> str2d_labels;
+	if(!strd_indices.empty()){
+		std::vector<unsigned long> temp_str2d_labels;
+		for(unsigned i=0; i < str2d_indices.size(); i++){
+			std::vector<unsigned long> rd_labels = item->label(str2d_indices[i]);
+			for(unsigned j=0; j < rd_labels.size(); j++){
+				temp_str2d_labels.push_back(rd_labels[j]);
+			}
+		}
+		str2d_labels = temp_str2d_labels;
+		//str2d_indices = item->sibling(strd_index);
+	}
+
+	std::vector<unsigned long> n0ld_labels;
+	if(n0_index != -1){
+		std::vector<unsigned long> temp_n0ld_labels;
+		for(unsigned i=0; i<n0ld_indices.size(); i++){
+			std::vector<unsigned long> ld_labels = item->label(n0ld_indices[i]);
+			for(unsigned j=0; j<ld_labels.size(); j++){
+				temp_n0ld_labels.push_back(ld_labels[j]);
+			}
+		}
+		n0ld_labels = temp_n0ld_labels;
+	}
+	std::vector<unsigned long> n0l2d_labels;
+	if(!n0ld_indices.empty()){
+		std::vector<unsigned long> temp_n0l2d_labels;
+		for(unsigned i=0; i<n0l2d_indices.size(); i++){
+			std::vector<unsigned long> l2d_labels = item->label(n0l2d_indices[i]);
+			for(unsigned j=0; j<l2d_labels.size(); j++){
+				temp_n0l2d_labels.push_back(l2d_labels[j]);
+			}
+		}
+		n0l2d_labels = temp_n0l2d_labels;
+	}
+
+//	const int &st_label = (item->label(st_index)).empty() ? CDependencyLabel::NONE : (int)(item->label(st_index))[0];
+//	const int &sth_label = (item->label(sth_index)).empty() ? CDependencyLabel::NONE : (int)(item->label(sth_index))[0];
+//	const int &stld_label = (item->label(stld_indices)).empty() ? CDependencyLabel::NONE : (int)(item->label(stld_index))[0];
+//	const int &strd_label = (item->label(strd_indices)).empty() ? CDependencyLabel::NONE : (int)(item->label(strd_index))[0];
+//	const int &stl2d_label = (item->label(stl2d_indices)).empty() ? CDependencyLabel::NONE : (int)(item->label(stl2d_index))[0];
+//	const int &str2d_label = (item->label(strd_indices)).empty() ? CDependencyLabel::NONE : (int)(item->label(strd_index))[0];
+//	const int &n0ld_label = (item->label(n0ld_indices)).empty() ? CDependencyLabel::NONE : (int)(item->label(n0ld_index))[0];
+//	const int &n0l2d_label = (item->label(n0l2d_indices)).empty() ? CDependencyLabel::NONE : (int)(item->label(n0l2d_index))[0];
+#endif
 
 	static int st_n0_dist;
 	st_n0_dist = encodeLinkDistance(st_index, n0_index);
@@ -206,52 +457,148 @@ void CDepParser::getOrUpdateStackScore(const CStateItem *item,
 		cast_weights->m_mapN2wt.getOrUpdateScore( retval, n2_word_tag, action, m_nScoreIndex, amount, round);
 	}
 
-	if (sth_index != -1) {
+#ifdef DEPENDENCIES
+	if (sth_index != -1)
+#endif
+#ifdef LINKS
+	if (!sth_indices.empty())
+#endif
+	{
 		cast_weights->m_mapSTHw.getOrUpdateScore( retval, sth_word, action, m_nScoreIndex, amount, round);
 		cast_weights->m_mapSTHt.getOrUpdateScore( retval, sth_tag, action, m_nScoreIndex, amount, round );
+#ifdef DEPENDENCIES
 		cast_weights->m_mapSTi.getOrUpdateScore( retval, st_label, action, m_nScoreIndex, amount, round);
+#endif
+#ifdef LINKS
+		//TODO st_labels[0]
+		cast_weights->m_mapSTi.getOrUpdateScore( retval, st_labels[0], action, m_nScoreIndex, amount, round);
+#endif
 	}
 
-	if (sthh_index != -1) {
+#ifdef DEPENDENCIES
+	if (sthh_index != -1)
+#endif
+#ifdef LINKS
+	if (!sthh_indices.empty())
+#endif
+	{
 		cast_weights->m_mapSTHHw.getOrUpdateScore( retval, sthh_word, action, m_nScoreIndex, amount, round);
 		cast_weights->m_mapSTHHt.getOrUpdateScore( retval, sthh_tag, action, m_nScoreIndex, amount, round );
+#ifdef DEPENDENCIES
 		cast_weights->m_mapSTHi.getOrUpdateScore( retval, sth_label, action, m_nScoreIndex, amount, round);
+#endif
+#ifdef LINKS
+		//TODO sth_labels[0]
+		cast_weights->m_mapSTHi.getOrUpdateScore( retval, sth_labels[0], action, m_nScoreIndex, amount, round);
+#endif
 	}
 
-	if (stld_index != -1) {
+#ifdef DEPENDENCIES
+	if (stld_index != -1)
+#endif
+#ifdef LINKS
+	if (!stld_indices.empty())
+#endif
+	{
 		cast_weights->m_mapSTLDw.getOrUpdateScore( retval, stld_word, action, m_nScoreIndex, amount, round );
 		cast_weights->m_mapSTLDt.getOrUpdateScore( retval, stld_tag, action, m_nScoreIndex, amount, round );
+#ifdef DEPENDENCIES
 		cast_weights->m_mapSTLDi.getOrUpdateScore( retval, stld_label, action, m_nScoreIndex, amount, round);
+#endif
+#ifdef LINKS
+		//TODO stld_labels[0]
+		cast_weights->m_mapSTLDi.getOrUpdateScore( retval, stld_labels[0], action, m_nScoreIndex, amount, round);
+#endif
 	}
 
-	if (strd_index != -1) {
+#ifdef DEPENDENCIES
+	if (strd_index != -1)
+#endif
+#ifdef LINKS
+	if (!strd_indices.empty())
+#endif
+	{
 		cast_weights->m_mapSTRDw.getOrUpdateScore( retval, strd_word, action, m_nScoreIndex, amount, round );
 		cast_weights->m_mapSTRDt.getOrUpdateScore( retval, strd_tag, action, m_nScoreIndex, amount, round );
+#ifdef DEPENDENCIES
 		cast_weights->m_mapSTRDi.getOrUpdateScore( retval, strd_label, action, m_nScoreIndex, amount, round);
+#endif
+#ifdef LINKS
+		//TODO strd_labels[0]
+		cast_weights->m_mapSTRDi.getOrUpdateScore( retval, strd_labels[0], action, m_nScoreIndex, amount, round);
+#endif
 	}
 
-	if (n0ld_index != -1) {
+#ifdef DEPENDENCIES
+	if (n0ld_index != -1)
+#endif
+#ifdef LINKS
+	if (!n0ld_indices.empty())
+#endif
+	{
 		cast_weights->m_mapN0LDw.getOrUpdateScore( retval, n0ld_word, action, m_nScoreIndex, amount, round );
 		cast_weights->m_mapN0LDt.getOrUpdateScore( retval, n0ld_tag, action, m_nScoreIndex, amount, round );
+#ifdef DEPENDENCIES
 		cast_weights->m_mapN0LDi.getOrUpdateScore( retval, n0ld_label, action, m_nScoreIndex, amount, round);
+#endif
+#ifdef LINKS
+		//TODO n0ld_labels[0]
+		cast_weights->m_mapN0LDi.getOrUpdateScore( retval, n0ld_labels[0], action, m_nScoreIndex, amount, round);
+#endif
 	}
 
-	if (stl2d_index != -1) {
+#ifdef DEPENDENCIES
+	if (stl2d_index != -1)
+#endif
+#ifdef LINKS
+	if (!stl2d_indices.empty())
+#endif
+	{
 		cast_weights->m_mapSTL2Dw.getOrUpdateScore( retval, stl2d_word, action, m_nScoreIndex, amount, round );
 		cast_weights->m_mapSTL2Dt.getOrUpdateScore( retval, stl2d_tag, action, m_nScoreIndex, amount, round );
+#ifdef DEPENDENCIES
 		cast_weights->m_mapSTL2Di.getOrUpdateScore( retval, stl2d_label, action, m_nScoreIndex, amount, round);
+#endif
+#ifdef LINKS
+		//TODO stl2d_labels[0]
+		cast_weights->m_mapSTL2Di.getOrUpdateScore( retval, stl2d_labels[0], action, m_nScoreIndex, amount, round);
+#endif
 	}
 
-	if (str2d_index != -1) {
+#ifdef DEPENDENCIES
+	if (str2d_index != -1)
+#endif
+#ifdef LINKS
+	if (!str2d_indices.empty())
+#endif
+	{
 		cast_weights->m_mapSTR2Dw.getOrUpdateScore( retval, str2d_word, action, m_nScoreIndex, amount, round );
 		cast_weights->m_mapSTR2Dt.getOrUpdateScore( retval, str2d_tag, action, m_nScoreIndex, amount, round );
+#ifdef DEPENDENCIES
 		cast_weights->m_mapSTR2Di.getOrUpdateScore( retval, str2d_label, action, m_nScoreIndex, amount, round);
+#endif
+#ifdef LINKS
+		//TODO str2d_labels[0]
+		cast_weights->m_mapSTR2Di.getOrUpdateScore( retval, str2d_labels[0], action, m_nScoreIndex, amount, round);
+#endif
 	}
 
-	if (n0l2d_index != -1) {
+#ifdef DEPENDENCIES
+	if (n0l2d_index != -1)
+#endif
+#ifdef LINKS
+	if (!n0l2d_indices.empty())
+#endif
+	{
 		cast_weights->m_mapN0L2Dw.getOrUpdateScore( retval, n0l2d_word, action, m_nScoreIndex, amount, round );
 		cast_weights->m_mapN0L2Dt.getOrUpdateScore( retval, n0l2d_tag, action, m_nScoreIndex, amount, round );
+#ifdef DEPENDENCIES
 		cast_weights->m_mapN0L2Di.getOrUpdateScore( retval, n0l2d_label, action, m_nScoreIndex, amount, round);
+#endif
+#ifdef LINKS
+		//TODO n0l2d_labels[0]
+		cast_weights->m_mapN0L2Di.getOrUpdateScore( retval, n0l2d_labels[0], action, m_nScoreIndex, amount, round);
+#endif
 	}
 
 	// s0 and n0
@@ -581,8 +928,6 @@ void CDepParser::arcright(const CStateItem *item,
 
 #endif
 
-
-
 /*---------------------------------------------------------------
  *
  *   - help function
@@ -612,8 +957,6 @@ void CDepParser::poproot(const CStateItem *item,
 	scoredaction.score = item->score + scores[scoredaction.action];
 	m_Beam->insertItem(&scoredaction);
 }
-
-
 
 //#ifdef DEPENDENCIES
 /*---------------------------------------------------------------
@@ -648,7 +991,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	static CStateItem pCandidate(&m_lCache);
 
 	// used only for training
-	static bool bCorrect;  // used in learning for early update
+	static bool bCorrect;// used in learning for early update
 	static bool bContradictsRules;
 	static CStateItem correctState(&m_lCache);
 	static CPackedScoreType<SCORE_TYPE, action::MAX> packed_scores;
@@ -656,7 +999,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	ASSERT((unsigned )length < MAX_SENTENCE_SIZE,
 			"The size of the sentence is larger than the system configuration.");
 
-	TRACE("Initialising the decoding process...") ;
+	TRACE("Initialising the decoding process...");
 	// initialise word cache
 	bContradictsRules = false;
 	m_lCache.clear();
@@ -704,11 +1047,11 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	//end
 	// initialise agenda
 	m_Agenda->clear();
-	pCandidate.clear();                          // restore state using clean
-	m_Agenda->pushCandidate(&pCandidate);           // and push it back
-	m_Agenda->nextRound();                       // as the generator item
+	pCandidate.clear();// restore state using clean
+	m_Agenda->pushCandidate(&pCandidate);// and push it back
+	m_Agenda->nextRound();// as the generator item
 	if (bTrain)
-		correctState.clear();
+	correctState.clear();
 
 	// verifying supertags
 	if (m_supertags) {
@@ -733,7 +1076,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	// skip the training example if contradicts
 	if (bTrain && m_weights->rules() && bContradictsRules) {
 		std::cout << "Skipping training example because it contradicts rules..."
-				<< std::endl;
+		<< std::endl;
 		return;
 	}
 
@@ -742,7 +1085,7 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	for (index = 0; index < length * 2; ++index) {
 
 		if (bTrain)
-			bCorrect = false;
+		bCorrect = false;
 
 		//JUNEKI: Will the parser still try to parse when this is commented out?
 		// none can this find with pruning ???
@@ -856,19 +1199,19 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			else {
 				if (!pGenerator->afterreduce()) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.
 					if ((pGenerator->size() < length - 1
-							|| pGenerator->stackempty())
-							&& // keep only one global root
+									|| pGenerator->stackempty())
+							&&// keep only one global root
 							(pGenerator->stackempty() || m_supertags == 0
 									|| m_supertags->canShift(pGenerator->size()))
-							&& // supertags
+							&&// supertags
 							(pGenerator->stackempty() || !m_weights->rules()
 									|| canBeRoot(
 											m_lCache[pGenerator->size()].tag.code())
 									|| hasRightHead(
-											m_lCache[pGenerator->size()].tag.code())) // rules
+											m_lCache[pGenerator->size()].tag.code()))// rules
 //							&&// JUNEKI: no shift
 //							(!noShift)
-							) {
+					) {
 						shift(pGenerator, packed_scores);
 					}
 //					else if (mustShift) { // JUNEKI: must shift
@@ -877,18 +1220,18 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				}
 				if (!pGenerator->stackempty()) {
 					if ((pGenerator->size() < length - 1
-							|| pGenerator->headstacksize() == 1) && // one root
+									|| pGenerator->headstacksize() == 1) && // one root
 							(m_supertags == 0
 									|| m_supertags->canArcRight(
 											pGenerator->stacktop(),
-											pGenerator->size())) && // supertags conform to this action
+											pGenerator->size())) &&// supertags conform to this action
 							(!m_weights->rules()
 									|| hasLeftHead(
-											m_lCache[pGenerator->size()].tag.code())) // rules
+											m_lCache[pGenerator->size()].tag.code()))// rules
 
 //							&&// JUNEKI: no right arc
 //							(!noRightArc)
-							) {
+					) {
 //#ifdef DEPENDENCIES
 						arcright(pGenerator, packed_scores);
 //#endif
@@ -900,9 +1243,9 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				}
 				if ((!m_bCoNLL && !pGenerator->stackempty())
 						|| (m_bCoNLL && pGenerator->stacksize() > 1) // make sure that for conll the first item is not popped
-						) {
+				) {
 					if ((pGenerator->head(pGenerator->stacktop())
-							!= DEPENDENCY_LINK_NO_HEAD)
+									!= DEPENDENCY_LINK_NO_HEAD)
 //							&& // JUNEKI: no reduce
 //							(!noReduce)
 					) {
@@ -915,15 +1258,15 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 
 					else {
 						if ((m_supertags == 0
-								|| m_supertags->canArcLeft(pGenerator->size(),
-										pGenerator->stacktop())) && // supertags
+										|| m_supertags->canArcLeft(pGenerator->size(),
+												pGenerator->stacktop())) && // supertags
 								(!m_weights->rules()
 										|| hasRightHead(
-												m_lCache[pGenerator->stacktop()].tag.code())) // rules
+												m_lCache[pGenerator->stacktop()].tag.code()))// rules
 
 //								&&// JUNEKI: no arc left
 //								(!noLeftArc)
-								) {
+						) {
 //#ifdef DEPENDENCIES
 							arcleft(pGenerator, packed_scores);
 //#endif
@@ -1052,9 +1395,9 @@ void CDepParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		if (pGenerator) {
 			pGenerator->GenerateTree(sentence, retval[i]);
 			if (scores)
-				scores[i] = pGenerator->score;
+			scores[i] = pGenerator->score;
 		}
-	}TRACE("Done, the highest score is: " << m_Agenda->bestGenerator()->score ) ;TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
+	}TRACE("Done, the highest score is: " << m_Agenda->bestGenerator()->score );TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
 
 #endif
 
@@ -1086,7 +1429,6 @@ void CDepParser::parse(const CTwoStringVector &sentence,
 
 }
 
-
 /*---------------------------------------------------------------
  *
  * train - train the models with an example
@@ -1108,7 +1450,6 @@ void CDepParser::train(const CDependencyParse &correct, int round) {
 
 }
 
-
 /*---------------------------------------------------------------
  *
  * initCoNLLCache
@@ -1128,7 +1469,6 @@ void CDepParser::initCoNLLCache(const CCoNLLInputOrOutput &sentence) {
 			readCoNLLFeats(m_lCacheCoNLLFeats[i], sentence.at(i).feats);
 	}
 }
-
 
 //#ifdef DEPENDENCIES
 /*---------------------------------------------------------------

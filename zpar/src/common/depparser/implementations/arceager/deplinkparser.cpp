@@ -29,9 +29,6 @@ void CDepLinkParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		CDependencyLinkParse *retval, const CDependencyLinkParse &correct,
 		int nBest, SCORE_TYPE *scores) {
 
-//	CStateItem temp;
-
-
 #ifdef LINKS
 #ifdef DEBUG
 	clock_t total_start_time = clock();
@@ -64,24 +61,53 @@ void CDepLinkParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		if (bTrain && m_weights->rules()) {
 
 #ifdef SINGLE_ROOT
+#ifdef DEPENDENCIES
 			// the root
 			if (correct[index].head == DEPENDENCY_LINK_NO_HEAD
-					&& canBeRoot(m_lCache[index].tag.code()) == false) {
+					&& canBeRoot(m_lCache[index].tag.code()) == false)
+#endif
+#ifdef LINKS
+			if (correct[index].heads.empty() && canBeRoot(m_lCache[index].tag.code()) == false)
+#endif
+			{
 				TRACE("Rule contradiction: " << m_lCache[index].tag.code() << " can be root.");
 				bContradictsRules = true;
 			}
 #endif
 
 #ifdef SINGLE_PARENT
+#ifdef DEPENDENCIES
 			// head left
 			if (correct[index].head < index
-					&& hasLeftHead(m_lCache[index].tag.code()) == false) {
+					&& hasLeftHead(m_lCache[index].tag.code()) == false)
+#endif
+#ifdef LINKS
+			bool headsCheck_L = false;
+			bool headsCheck_R = false;
+			for(unsigned i = 0; i< correct[index].heads.size(); i++){
+				if(correct[index].heads[i] < index){
+					headsCheck_L = true;
+				}
+				if(correct[index].heads[i] > index){
+					headsCheck_R = true;
+				}
+			}
+			if(headsCheck_L && hasLeftHead(m_lCache[index].tag.code()) == false)
+#endif
+			{
 				TRACE("Rule contradiction: " << m_lCache[index].tag.code() << " has left head.");
 				bContradictsRules = true;
 			}
+
+#ifdef DEPENDENCES
 			// head right
 			if (correct[index].head > index
-					&& hasRightHead(m_lCache[index].tag.code()) == false) {
+					&& hasRightHead(m_lCache[index].tag.code()) == false)
+#endif
+#ifdef LINKS
+			if(headsCheck_R && hasRightHead(m_lCache[index].tag.code()) == false)
+#endif
+			{
 				TRACE("Rule contradiction: " << m_lCache[index].tag.code() << " has right head.");
 				bContradictsRules = true;
 			}
@@ -95,8 +121,9 @@ void CDepLinkParser::work(const bool bTrain, const CTwoStringVector &sentence,
 	pCandidate.clear();// restore state using clean
 	m_Agenda->pushCandidate(&pCandidate);// and push it back
 	m_Agenda->nextRound();// as the generator item
-	if (bTrain)
-	correctState.clear();
+	if (bTrain){
+		correctState.clear();
+	}
 
 	// verifying supertags
 	if (m_supertags) {
@@ -120,7 +147,7 @@ void CDepLinkParser::work(const bool bTrain, const CTwoStringVector &sentence,
 
 			//TODO
 			int head = -1;
-			if(!correct[index].heads.empty()){
+			if(!correct[index].heads.empty()) {
 				head = correct[index].heads[0];
 			}
 
@@ -160,29 +187,36 @@ void CDepLinkParser::work(const bool bTrain, const CTwoStringVector &sentence,
 			if (pGenerator->size() == length) {
 				assert(pGenerator->stacksize() != 0);
 				if (pGenerator->stacksize() > 1) {
-					CDepParser::reduce(pGenerator, packed_scores);
+					reduce(pGenerator, packed_scores);
 				} else {
-					CDepParser::poproot(pGenerator, packed_scores);
-
+					poproot(pGenerator, packed_scores);
 				}
 			}
 
 			// for the state items that still need more words
 			else {
+
+#ifdef LINKS
+				// if pGenerator has already arc-righted
+				// then shift
+//				pGenerator->lastAction();
+
+				// In a link parser, after a connect right operation, we shift.
+				if(pGenerator->lastAction() == action::CONNECT_RIGHT)
+				{
+					shift(pGenerator, packed_scores);
+				}
+				else
+#endif
 				if (!pGenerator->afterreduce()) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.
-					if ((pGenerator->size() < length - 1
-									|| pGenerator->stackempty())
+					if ((pGenerator->size() < length - 1 || pGenerator->stackempty())
 							&&// keep only one global root
-							(pGenerator->stackempty() || m_supertags == 0
-									|| m_supertags->canShift(pGenerator->size()))
+							(pGenerator->stackempty() || m_supertags == 0 || m_supertags->canShift(pGenerator->size()))
 							&&// supertags
-							(pGenerator->stackempty() || !m_weights->rules()
-									|| canBeRoot(
-											m_lCache[pGenerator->size()].tag.code())
-									|| hasRightHead(
+							(pGenerator->stackempty() || !m_weights->rules() || canBeRoot(m_lCache[pGenerator->size()].tag.code()) || hasRightHead(
 											m_lCache[pGenerator->size()].tag.code()))// rules
 					) {
-						this->CDepParser::shift(pGenerator, packed_scores);
+						shift(pGenerator, packed_scores);
 					}
 				}
 				if (!pGenerator->stackempty()) {
@@ -202,12 +236,11 @@ void CDepLinkParser::work(const bool bTrain, const CTwoStringVector &sentence,
 				if ((!m_bCoNLL && !pGenerator->stackempty())
 						|| (m_bCoNLL && pGenerator->stacksize() > 1) // make sure that for conll the first item is not popped
 				) {
-					if ((pGenerator->head(pGenerator->stacktop())
-									!= DEPENDENCY_LINK_NO_HEAD)
+					if ((pGenerator->head(pGenerator->stacktop()).empty())
 //							&& // JUNEKI: no reduce
 //							(!noReduce)
 					) {
-						this->CDepParser::reduce(pGenerator, packed_scores);
+						reduce(pGenerator, packed_scores);
 					}
 //					else if (mustReduce) // JUNEKI: must reduce
 //					{
@@ -284,7 +317,6 @@ void CDepLinkParser::work(const bool bTrain, const CTwoStringVector &sentence,
 		if (pGenerator) {
 			pGenerator->GenerateLinkTree(sentence, retval[i]);
 
-
 			if (scores)
 			scores[i] = pGenerator->score;
 		}
@@ -355,6 +387,11 @@ void CDepLinkParser::connectright(const CStateItem *item,
 
 template<typename LinkInputOrOutput>
 void CDepLinkParser::initLinkCache(const LinkInputOrOutput &sentence) {
+
+//	std::cout << "size: " << sentence.size() << "\n";
+//	std::cout << "sentence:\n" << sentence;
+//	std::cout << "\n";
+
 	m_lCacheCoNLLLemma.resize(sentence.size());
 	m_lCacheCoNLLCPOS.resize(sentence.size());
 	m_lCacheCoNLLFeats.resize(sentence.size());
@@ -378,9 +415,9 @@ void CDepLinkParser::initLinkCache(const LinkInputOrOutput &sentence) {
 void CDepLinkParser::parse_links(const LinkInput &sentence, LinkOutput *retval,
 		int nBest, SCORE_TYPE *scores) {
 
-	static CDependencyParse empty;
+	static CDependencyLinkParse empty;
 	static CTwoStringVector input;
-	static CDependencyParse outout[AGENDA_SIZE];
+	static CDependencyLinkParse outout[AGENDA_SIZE];
 
 	assert(m_bLinks);
 
@@ -395,26 +432,26 @@ void CDepLinkParser::parse_links(const LinkInput &sentence, LinkOutput *retval,
 	sentence.toTwoStringVector(input);
 
 	//TODO
-//	for (int i = 0; i < nBest; ++i) {
-//		// clear the outout sentences
-//		retval[i].clear();
-//		outout[i].clear();
-//		if (scores)
-//			scores[i] = 0; //pGenerator->score;
-//	}
-//
-//		work(false, input, outout, empty, nBest, scores);
-//
-//		for (int i = 0; i < std::min(nBest, m_Agenda->generatorSize()); ++i) {
-//			// now make the conll format stype outout
-//			retval[i].fromCoNLLInput(sentence);
-//			retval[i].copyDependencyHeads(outout[i]);
-//		}
+	for (int i = 0; i < nBest; ++i) {
+		// clear the outout sentences
+		retval[i].clear();
+		outout[i].clear();
+		if (scores)
+		scores[i] = 0;//pGenerator->score;
+	}
+
+	work(false, input, outout, empty, nBest, scores);
+
+	for (int i = 0; i < std::min(nBest, m_Agenda->generatorSize()); ++i) {
+		// now make the conll format stype outout
+		retval[i].fromLinkInput(sentence);
+		retval[i].copyDependencyHeads(outout[i]);
+	}
 }
 
 /*---------------------------------------------------------------
- * (Juneki)
- * train_links - like train_conll that works with links
+ *
+ * train_links - similar to train_conll that works with links
  *
  *---------------------------------------------------------------*/
 void CDepLinkParser::train_links(const LinkOutput &correct, int round) {
@@ -426,10 +463,13 @@ void CDepLinkParser::train_links(const LinkOutput &correct, int round) {
 	assert(m_bLinks);
 	assert(IsProjectiveDependencyTree(correct));
 
-	//TODO
 	initLinkCache(correct);
 	correct.toDependencyTree(reference);
 	UnparseSentence(&reference, &sentence);
+
+//	std::cout << "correct: \n" << correct << "\n";
+//	std::cout << "outout: \n" << outout << "\n";
+//	std::cout << "reference: \n" << reference << "\n";
 
 	// The following code does update for each processing stage
 	m_nTrainingRound = round;

@@ -370,12 +370,14 @@ int main(int argc, char* argv[]) {
 				configurations.getConfiguration("l").empty() ? false : true;
 		std::string sSuperPath = configurations.getConfiguration("p");
 
+
 		if (bCoNLL) {
 			process_conll(options.args[1], options.args[2], options.args[3],
 					nBest, bScores, sSuperPath);
 		}
 #ifdef LINKS
 		else if (bLinks) {
+
 			process_links(options.args[1], options.args[2], options.args[3],
 					nBest, bScores, sSuperPath);
 		}

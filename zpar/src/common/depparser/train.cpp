@@ -59,6 +59,7 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
 
 	int nCount = 0;
 
+
 	// read input
 //   if (bCoNLL) is >> ref_conll; else is >> ref_sent;
 
@@ -71,6 +72,7 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
 				supertags->setSentenceSize(ref_conll.size());
 				(*is_supertags) >> *supertags;
 			}
+
 			parser.train_conll(ref_conll, nCount);
 
 		}
@@ -85,6 +87,7 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
 				supertags->setSentenceSize(ref_links.size());
 				(*is_supertags) >> *supertags;
 			}
+
 			parser.train_links(ref_links, nCount);
 		}
 	}

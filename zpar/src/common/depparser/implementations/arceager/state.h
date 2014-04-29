@@ -51,26 +51,37 @@ protected:
 	std::vector<int> m_HeadStack;
 	int m_nNextWord;                         // index for the next word
 
+#ifdef DEPENDENCIES
 	int m_lHeads[MAX_SENTENCE_SIZE];         // the lexical head for each word
-	int m_lDepsL[MAX_SENTENCE_SIZE]; // the leftmost dependency for each word (just for cache, temporary info)
-	int m_lDepsR[MAX_SENTENCE_SIZE]; // the rightmost dependency for each word (just for cache, temporary info)
-	int m_lDepNumL[MAX_SENTENCE_SIZE];       // the number of left dependencies
-	int m_lDepNumR[MAX_SENTENCE_SIZE];       // the number of right dependencies
-	CSetOfTags<CDependencyLabel> m_lDepTagL[MAX_SENTENCE_SIZE]; // the set of left tags
-	CSetOfTags<CDependencyLabel> m_lDepTagR[MAX_SENTENCE_SIZE]; // the set of right tags
-	int m_lSibling[MAX_SENTENCE_SIZE];       // the sibling towards head
+	int m_lDepsL[MAX_SENTENCE_SIZE];// the leftmost dependency for each word (just for cache, temporary info)
+	int m_lDepsR[MAX_SENTENCE_SIZE];// the rightmost dependency for each word (just for cache, temporary info)
+	int m_lSibling[MAX_SENTENCE_SIZE];// the sibling towards head
 #ifdef LABELED
 	unsigned long m_lLabels[MAX_SENTENCE_SIZE]; // the label of each dependency link
 #endif
+#endif
+
+#ifdef LINKS
+	std::vector<std::vector<int> > m_lHeads;
+	std::vector<std::vector<int> > m_lDepsL;
+	std::vector<std::vector<int> > m_lDepsR;
+	std::vector<std::vector<int> > m_lSibling;
+#ifdef LABELED
+	std::vector<std::vector<unsigned long> > m_lLabels;
+#endif
+#endif
+
+	CSetOfTags<CDependencyLabel> m_lDepTagL[MAX_SENTENCE_SIZE]; // the set of left tags
+	CSetOfTags<CDependencyLabel> m_lDepTagR[MAX_SENTENCE_SIZE]; // the set of right tags
+	int m_lDepNumL[MAX_SENTENCE_SIZE]; // the number of left dependencies
+	int m_lDepNumR[MAX_SENTENCE_SIZE]; // the number of right dependencies
+
 	unsigned long m_nLastAction;                  // the last stack action
 	const std::vector<CTaggedWord<CTag, TAG_SEPARATOR> >* m_lCache;
 
 public:
 	SCORE_TYPE score; // score of stack - predicting how potentially this is the correct one
 
-	std::vector<int> previous_m_Stack;
-	std::vector<int> previous_m_HeadStack;
-	int previous_m_nNextWord;
 	std::map<int, std::vector<int> > m_Children;
 
 	std::vector<int> Stack;
@@ -87,16 +98,24 @@ public:
 
 	//End
 
-	void saveCurrentStacksToPrevious() {
-		previous_m_Stack = std::vector<int>(m_Stack);
-		previous_m_HeadStack = std::vector<int>(m_HeadStack);
-		previous_m_nNextWord = m_nNextWord;
-	}
-
 public:
 	// constructors and destructor
 	CStateItem(const std::vector<CTaggedWord<CTag, TAG_SEPARATOR> >*cache = 0) :
 			m_lCache(cache) {
+
+#ifdef LINKS
+		for(unsigned i=0; i < MAX_SENTENCE_SIZE; i++){
+			m_lHeads.push_back(std::vector<int>());
+			m_lDepsL.push_back(std::vector<int>());
+			m_lDepsR.push_back(std::vector<int>());
+			m_lSibling.push_back(std::vector<int>());
+#ifdef LABELED
+			m_lLabels.push_back(std::vector<unsigned long>());
+#endif
+		}
+#endif
+
+
 		clear();
 
 		// Edited by J
@@ -139,27 +158,57 @@ public:
 	}
 	inline bool operator ==(const CStateItem &item) const {
 		int i;
-		if (m_nNextWord != item.m_nNextWord)
+		if (m_nNextWord != item.m_nNextWord) {
 			return false;
-		for (i = 0; i < m_nNextWord; ++i) {
-			if (m_lHeads[i] != item.m_lHeads[i])
-				return false;
 		}
-#ifdef LABELED
-		for ( i=0; i<m_nNextWord; ++i )
-		if ( m_lLabels[i] != item.m_lLabels[i] )
-		return false;
+
+		for (i = 0; i < m_nNextWord; ++i) {
+
+			// check if the heads all match up.
+#ifdef DEPENDENCIES
+			if (m_lHeads[i] != item.m_lHeads[i]) {
+				return false;
+			}
 #endif
+#ifdef LINKS
+			// for links, check if all the link heads match up.
+			if(m_lHeads[i].size() != item.m_lHeads[i].size()) {
+				return false;
+			}
+
+			unsigned j;
+			for(j = 0; j < m_lHeads[i].size(); j++) {
+				if(m_lHeads[i][j] != item.m_lHeads[i][j]) {
+					return false;
+				}
+			}
+#endif
+
+			// check if all the labels match up
+#ifdef LABELED
+#ifdef DEPENDENCIES
+			if ( m_lLabels[i] != item.m_lLabels[i] ) {
+				return false;
+			}
+#endif
+#ifdef LINKS
+			// for links, check if all the link labels match up.
+			if(m_lLabels[i].size() != item.m_lLabels[i].size()) {
+				return false;
+			}
+
+			for(j = 0; j < m_lLabels[i].size(); j++) {
+				if(m_lLabels[i][j] != item.m_lLabels[i][j]) {
+					return false;
+				}
+			}
+#endif
+#endif
+		}
 		if (m_Stack.size() != item.m_Stack.size())
 			return false;
 		if (m_Stack.size() > 0 && m_Stack.back() != item.m_Stack.back())
 			return false;
-
-		//Edited by J
-//		if(linkAutomata[m_nNextWord].hash() != item.linkAutomata[m_nNextWord].hash()){
-//			return false;
-//		}
-		//end
 
 		// I think that the stacks don't have to be compared
 		// might be proved by translating tree to stack
@@ -190,7 +239,6 @@ public:
 		assert(index < m_Stack.size());
 		return m_Stack[index];
 	}
-
 	inline bool headstackempty() const {
 		return m_HeadStack.empty();
 	}
@@ -214,6 +262,16 @@ public:
 #endif
 	}
 
+	inline unsigned long lastAction() const {
+#ifdef LABELED
+		return action::getUnlabeledAction(m_nLastAction);
+#else
+		return m_nLastAction;
+#endif
+	}
+
+	// useful functions for dependencies.
+#ifdef DEPENDENCIES
 	inline int head(const int &index) const {
 		assert(index <= m_nNextWord);
 		return m_lHeads[index];
@@ -230,11 +288,11 @@ public:
 		assert(index <= m_nNextWord);
 		return m_lSibling[index];
 	}
-	inline int size() const {
-		return m_nNextWord;
-	}
+
 #ifdef LABELED
 	inline int label( const int &index ) const {assert(index<=m_nNextWord); return m_lLabels[index];}
+#endif
+
 #endif
 
 	inline int leftarity(const int &index) const {
@@ -257,6 +315,38 @@ public:
 		return m_lDepTagR[index];
 	}
 
+	inline int size() const {
+		return m_nNextWord;
+	}
+
+	// useful functions for links
+#ifdef LINKS
+	std::vector<int> head(const int &index) const {
+		assert(index <= m_nNextWord);
+		return m_lHeads[index];
+	}
+	std::vector<int> leftdep(const int &index) const {
+		assert(index <= m_nNextWord);
+		return m_lDepsL[index];
+	}
+	std::vector<int> rightdep(const int &index) const {
+		assert(index <= m_nNextWord);
+		return m_lDepsR[index];
+	}
+	std::vector<int> sibling(const int &index) const {
+		assert(index <= m_nNextWord);
+		return m_lSibling[index];
+	}
+
+#ifdef LABELED
+	std::vector<unsigned long> label( const int &index ) const {
+		assert(index<=m_nNextWord);
+		return m_lLabels[index];
+	}
+#endif
+
+#endif
+
 	void clear() {
 		m_nNextWord = 0;
 		m_Stack.clear();
@@ -271,14 +361,15 @@ public:
 		linkAutomata[m_nNextWord].clearState();
 		//end
 
-		ClearNext();
 
+		ClearNext();
 	}
 
 	void operator =(const CStateItem &item) {
 		m_Stack = item.m_Stack;
 
 		/* Edited by JK */
+		//TODO I should remove Stack and NextWord. At the time, I didn't know that we just needed m_Stack, and m_nNextWord.
 		Stack = item.m_Stack;
 		NextWord = item.m_nNextWord;
 		//end
@@ -296,39 +387,55 @@ public:
 		m_lCache = item.m_lCache;
 		score = item.score;
 		for (int i = 0; i <= m_nNextWord; ++i) { // only copy active word (including m_nNext)
+
+#ifdef DEPENDENCIES
 			m_lHeads[i] = item.m_lHeads[i];
 			m_lDepsL[i] = item.m_lDepsL[i];
 			m_lDepsR[i] = item.m_lDepsR[i];
+
+			m_lSibling[i] = item.m_lSibling[i];
+#ifdef LABELED
+			m_lLabels[i] = item.m_lLabels[i];
+#endif
+#endif
+
+#ifdef LINKS
+			// copy the entire vectors over. Representing all of the heads for each index.
+			copyVector(m_lHeads[i], item.m_lHeads[i]);
+			copyVector(m_lDepsL[i], item.m_lDepsL[i]);
+			copyVector(m_lDepsR[i], item.m_lDepsR[i]);
+
+			copyVector(m_lSibling[i], item.m_lSibling[i]);
+
+#ifdef LABELED
+			copyVector(m_lLabels[i], item.m_lLabels[i]);
+#endif
+#endif
+
 			m_lDepNumL[i] = item.m_lDepNumL[i];
 			m_lDepNumR[i] = item.m_lDepNumR[i];
 			m_lDepTagL[i] = item.m_lDepTagL[i];
 			m_lDepTagR[i] = item.m_lDepTagR[i];
-			m_lSibling[i] = item.m_lSibling[i];
 
 			// Edited by J
 			QueueStackReduceState[i] = item.QueueStackReduceState[i];
 			linkAutomata[i] = item.linkAutomata[i];
-
-#ifdef LABELED
-			m_lLabels[i] = item.m_lLabels[i];
-#endif
 		}
 	}
 
 //-----------------------------------------------------------------------------
 
 public:
-	// the arc left action links the current stack top to the next word with popping
+// the arc left action links the current stack top to the next word with popping
 #ifdef LABELED
 
 #ifdef LINKS
 	void ConnectLeft(unsigned long lab) {
 #else
-		void ArcLeft(unsigned long lab) {
+	void ArcLeft(unsigned long lab) {
 #endif
 
 #else
-
 #ifdef LINKS
 	void ConnectLeft()
 #else
@@ -342,7 +449,14 @@ public:
 #endif
 
 		assert(m_Stack.size() > 0);
+
+#ifdef DEPENDENCIES
 		assert(m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD);
+#endif
+#ifdef LINKS
+		assert(!m_lHeads[m_Stack.back()].empty());
+#endif
+
 		static int left;
 		left = m_Stack.back();
 
@@ -363,9 +477,6 @@ public:
 
 		//head automata operations. The stack node cannot take any more right children. The queue node takes a left child.
 		setAutomataPOS(m_nNextWord);
-		linkAutomata[left].clearHistory();
-		linkAutomata[m_nNextWord].clearHistory();
-
 		linkAutomata[left].halt();
 		linkAutomata[left].takeParent(&linkAutomata[m_nNextWord]);
 		linkAutomata[m_nNextWord].transition(&linkAutomata[left]);
@@ -374,10 +485,23 @@ public:
 
 		m_Stack.pop_back();
 		m_HeadStack.pop_back();
-		m_lHeads[left] = m_nNextWord;
 
+		// set the head of "left" to be the next word.
+#ifdef DEPENDENCIES
+		m_lHeads[left] = m_nNextWord;
+#endif
+#ifdef LINKS
+		m_lHeads[left].push_back(m_nNextWord);
+#endif
+
+		// set the label corresponding to this arc
 #ifdef LABELED
+#ifdef DEPENDENCIES
 		m_lLabels[left] = lab;
+#endif
+#ifdef LINKS
+		m_lLabels[left].push_back(lab);
+#endif
 		m_lDepTagL[m_nNextWord].add(lab);
 
 		// JUNEKI: Just poking around dependency labels objects.
@@ -387,9 +511,17 @@ public:
 		//end
 
 #endif
+
+#ifdef DEPENDENCIES
 		m_lSibling[left] = m_lDepsL[m_nNextWord];
 		m_lDepsL[m_nNextWord] = left;
+#endif
+#ifdef LINKS
+		copyVector(m_lSibling[left], m_lDepsL[m_nNextWord]);
+		m_lDepsL[m_nNextWord].push_back(left);
+#endif
 		m_lDepNumL[m_nNextWord]++;
+
 #ifdef LABELED
 
 #ifdef LINKS
@@ -441,8 +573,19 @@ public:
 		assert(m_Stack.size() > 0);
 		static int left;
 		left = m_Stack.back();
+
+//#ifdef DEPENDENCIES
+		//TODO
+		// Separate out the implicit shift action from right arc
 		m_Stack.push_back(m_nNextWord);
+//#endif
+
+#ifdef DEPENDENCIES
 		m_lHeads[m_nNextWord] = left;
+#endif
+#ifdef LINKS
+		m_lHeads[m_nNextWord].push_back(left);
+#endif
 
 		/**
 		 * Edited by JK
@@ -460,14 +603,13 @@ public:
 
 		//head automata operations. Arc Right. The queue node cannot take any more left children. The stack node takes a right child.
 		setAutomataPOS(m_nNextWord);
-		linkAutomata[left].clearHistory();
-		linkAutomata[m_nNextWord].clearHistory();
 
 		linkAutomata[left].transition(&linkAutomata[m_nNextWord]);
 		linkAutomata[m_nNextWord].takeParent(&linkAutomata[left]);
 //		linkAutomata[m_nNextWord].flip();
 		//end
 
+#ifdef DEPENDENCIES
 #ifdef LABELED
 		m_lLabels[m_nNextWord] = lab;
 		m_lDepTagR[left].add(lab);
@@ -475,8 +617,28 @@ public:
 		m_lSibling[m_nNextWord] = m_lDepsR[left];
 		m_lDepsR[left] = m_nNextWord;
 		m_lDepNumR[left]++;
+
 		m_nNextWord++;
 		ClearNext();
+#endif
+
+#ifdef LINKS
+#ifdef LABELED
+		m_lLabels[m_nNextWord].push_back(lab);
+		m_lDepTagR[left].add(lab);
+#endif
+		for(unsigned i = 0; i < m_lDepsR[left].size(); i++) {
+			m_lSibling[m_nNextWord].push_back(m_lDepsR[left][i]);
+		}
+
+		m_lDepsR[left].push_back(m_nNextWord);
+		m_lDepNumR[left]++;
+
+		//TODO Want to change the action not to move the next word after an arc right
+		m_nNextWord++;
+		ClearNext();
+
+#endif
 
 #ifdef LABELED
 
@@ -544,7 +706,13 @@ public:
 		printStacks();
 #endif
 
+#ifdef DEPENDENCIES
 		assert(m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD);
+#endif
+#ifdef LINKS
+		assert(!m_lHeads[m_Stack.back()].empty());
+#endif
+
 		m_Stack.pop_back();
 		m_nLastAction = action::encodeAction(action::REDUCE);
 
@@ -571,39 +739,67 @@ public:
 
 	// this is used for the convenience of scoring and updating
 	void PopRoot() {
-		assert(
-				m_Stack.size() == 1
-						&& m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD); // make sure only one root item in stack
+
+#ifdef DEPENDENCIES
+		assert(m_Stack.size() == 1 && m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD); // make sure only one root item in stack
 #ifdef LABELED
-								m_lLabels[m_Stack.back()] = CDependencyLabel::ROOT;
+		m_lLabels[m_Stack.back()] = CDependencyLabel::ROOT;
 #endif
 		m_nLastAction = action::encodeAction(action::POP_ROOT);
 		m_Stack.pop_back(); // pop it
+#endif
+
+#ifdef LINKS
+		assert(m_Stack.size() == 1 && m_lHeads[m_Stack.back()].empty()); // make sure only one root item in stack
+#ifdef LABELED
+		m_lLabels[m_Stack.back()].push_back(CDependencyLabel::ROOT);
+#endif
+		m_nLastAction = action::encodeAction(action::POP_ROOT);
+		m_Stack.pop_back(); // pop it
+#endif
+
 	}
 
 	// the clear next action is used to clear the next word, used with forwarding the next word index
 	void ClearNext() {
+
+#ifdef DEPENDENCIES
 		m_lHeads[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD;
 		m_lDepsL[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD;
 		m_lDepsR[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD;
-		m_lDepNumL[m_nNextWord] = 0;
-		m_lDepTagL[m_nNextWord].clear();
-		m_lDepNumR[m_nNextWord] = 0;
-		m_lDepTagR[m_nNextWord].clear();
 		m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD;
+#endif
+
+#ifdef LINKS
+		m_lHeads[m_nNextWord].clear();
+		m_lDepsL[m_nNextWord].clear();
+		m_lDepsR[m_nNextWord].clear();
+		m_lSibling[m_nNextWord].clear();
+#endif
+
+		m_lDepNumL[m_nNextWord] = 0;
+		m_lDepNumR[m_nNextWord] = 0;
+		m_lDepTagL[m_nNextWord].clear();
+		m_lDepTagR[m_nNextWord].clear();
 
 		//Edited by J
 		linkAutomata[m_nNextWord].clearState();
 		//end
 
 #ifdef LABELED
+#ifdef DEPENDENCIES
 		m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
+#endif
+#ifdef LINKS
+		m_lLabels[m_nNextWord].clear();
+#endif
 #endif
 	}
 
 	// the move action is a simple call to do action according to the action code
 	void Move(const unsigned long &ac) {
-		saveCurrentStacksToPrevious();
+//		saveCurrentStacksToPrevious();
+
 #ifdef LABELED
 		switch (action::getUnlabeledAction(ac)) {
 #else
@@ -671,7 +867,7 @@ public:
 #else
 	bool StandardMoveStep(const CDependencyParse &tree)
 #endif
-		{
+	{
 		static int top;
 		// when the next word is tree.size() it means that the sentence is done already
 		if (m_nNextWord == static_cast<int>(tree.size())) {
@@ -688,25 +884,14 @@ public:
 		if (m_Stack.size() > 0) {
 			top = m_Stack.back();
 			while (!(m_lHeads[top] == DEPENDENCY_LINK_NO_HEAD))
-				top = m_lHeads[top];
+			top = m_lHeads[top];
 			if (tree[top].head == m_nNextWord) { // if a local head deps on nextword first
 				if (top == m_Stack.back()) {
 #ifdef LABELED
 					assert(m_lCacheLabel[top].str() == tree[top].label);
-
-#ifdef LINKS
-					ConnectLeft(m_lCacheLabel[top].code());
-#else
 					ArcLeft(m_lCacheLabel[top].code()); // link it to the next word
-#endif
-
 #else
-
-#ifdef LINKS
-					ConnectLeft();
-#else
-					ArcLeft();                       // link it to the next word
-#endif
+					ArcLeft();       // link it to the next word
 #endif
 					return false;
 				} else {
@@ -716,26 +901,16 @@ public:
 			}
 		}
 		// the second case is that no words on the stack links nextword, and nextword does not link to stack word
-		if (tree[m_nNextWord].head == DEPENDENCY_LINK_NO_HEAD || // the root or
+		if (tree[m_nNextWord].head == DEPENDENCY_LINK_NO_HEAD ||// the root or
 				tree[m_nNextWord].head > m_nNextWord) { // head on the right
 			Shift();
 			return true;
 		}
 		// the last case is that the next words links to stack word
-		else {                                        // head on the left
+		else {                               // head on the left
 			assert(m_Stack.size() > 0);
 			top = m_Stack.back();
 			if (tree[m_nNextWord].head == top) { // the next word deps on stack top
-
-#ifdef LINKS
-#ifdef LABELED
-				assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
-				ConnectRight(m_lCacheLabel[m_nNextWord].code());
-#else
-				ConnectRight();
-#endif
-
-#else
 
 #ifdef LABELED
 				assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
@@ -743,17 +918,14 @@ public:
 #else            
 				ArcRight();
 #endif            
-#endif
 				return true;
-			} else {                           // must depend on non-immediate h
+			} else {           // must depend on non-immediate h
 				Reduce();
 				return false;
 			}
 		}
 	}
 #endif
-
-
 
 	// returns true is the next word advances -- by shift or arcright.-
 #ifdef LINKS
@@ -762,7 +934,7 @@ public:
 #else
 	bool StandardMoveStep(const CDependencyLinkParse &tree)
 #endif
-		{
+	{
 		static int top;
 		// when the next word is tree.size() it means that the sentence is done already
 		if (m_nNextWord == static_cast<int>(tree.size())) {
@@ -778,79 +950,72 @@ public:
 		// the first case is that there is some words on the stack linking to nextword
 		if (m_Stack.size() > 0) {
 			top = m_Stack.back();
-			while (!(m_lHeads[top] == DEPENDENCY_LINK_NO_HEAD))
-				top = m_lHeads[top];
+			std::list<int> topList(m_lHeads[top].begin(), m_lHeads[top].end());
 
-			//TODO
-			int treeTopHead = -1;
-			if (!tree[top].heads.empty()){
-				treeTopHead = tree[top].heads[0];
-			}
-			if (treeTopHead == m_nNextWord) { // if a local head deps on nextword first
-				if (top == m_Stack.back()) {
+			// Breadth-First search the top list. If the head of a top is the next word, then connect left.
+			while (!(topList.empty()))
+			{
+				top = topList.front();
+				topList.pop_front();
+
+				std::vector<int> tempTops = m_lHeads[top];
+				for(unsigned i = 0; i < tempTops.size(); i++){
+					int candidateTop = tempTops[i];
+
+					if(candidateTop == m_nNextWord) { // if a local head deps on nextword first
+						if(top == m_Stack.back()){
 #ifdef LABELED
-					//TODO
-					assert(m_lCacheLabel[top].str() == tree[top].labels[0]);
-
-#ifdef LINKS
-					ConnectLeft(m_lCacheLabel[top].code());
+							assert(m_lCacheLabel[top].str() == tree[top].labels[i]);
+							ConnectLeft(m_lCacheLabel[top].code());
 #else
-					ArcLeft(m_lCacheLabel[top].code()); // link it to the next word
+							ConnectLeft();
 #endif
-
-#else
-
-#ifdef LINKS
-					ConnectLeft();
-#else
-					ArcLeft();                       // link it to the next word
-#endif
-#endif
-					return false;
-				} else {
-					Reduce();
-					return false;
+							return false;
+						} else{
+							Reduce();
+							return false;
+						}
+					}
+					topList.push_back(tempTops[i]);
 				}
 			}
 		}
 
-		//TODO
 		// the second case is that no words on the stack links nextword, and nextword does not link to stack word
-		if (tree[m_nNextWord].heads.empty() || // the root or
-				tree[m_nNextWord].heads[0] > m_nNextWord) { // head on the right
+		bool shouldShift = false;
+		if(tree[m_nNextWord].heads.empty()){// the root or
+			shouldShift = true;
+		}
+		else{
+			for(unsigned i = 0; i < tree[m_nNextWord].heads.size(); i++){
+				if(tree[m_nNextWord].heads[i] > m_nNextWord){// head on the right
+					shouldShift = true;
+				}
+			}
+		}
+
+		if(shouldShift){
 			Shift();
 			return true;
 		}
 		// the last case is that the next words links to stack word
-		else {                                        // head on the left
+		else {                               // head on the left
 			assert(m_Stack.size() > 0);
 			top = m_Stack.back();
-			//TODO
-			if (tree[m_nNextWord].heads[0] == top) { // the next word deps on stack top
 
-#ifdef LINKS
+			for(unsigned i = 0; i < tree[m_nNextWord].heads.size(); i++){
+				if(tree[m_nNextWord].heads[i] == top){
 #ifdef LABELED
-				//TODO
-				assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].labels[0]);
-				ConnectRight(m_lCacheLabel[m_nNextWord].code());
+					assert(m_lCacheLabel0m_nNextWord].str()==tree[m_nNextWord].labels[i]);
+					ConnectRight(m_lCacheLabel[m_nNextWord].code());
 #else
-				ConnectRight();
+					ConnectRight();
 #endif
-
-#else
-
-#ifdef LABELED
-				//TODO
-				assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].labels[0]);
-				ArcRight(m_lCacheLabel[m_nNextWord].code());
-#else
-				ArcRight();
-#endif
-#endif
-				return true;
-			} else {                           // must depend on non-immediate h
-				Reduce();
-				return false;
+					return true;
+				} else {         // must depend on non-immediate h
+					Reduce();
+					return false;
+				}
 			}
 		}
 	}
@@ -864,59 +1029,37 @@ public:
 		assert(m_Stack.size() == 0);
 	}
 
+#ifdef DEPENDENCIES
 	unsigned FollowMove(const CStateItem *item) {
 		static int top;
 		// if the next words are same then don't check head because it might be a finished sentence (m_nNextWord==sentence.sz)
 		if (m_nNextWord == item->m_nNextWord) {
-//for (int i=0; i<m_Stack.size(); ++i) std::cout << m_Stack[i] << " "; std::cout << std::endl;
-//for (int i=0; i<item->m_Stack.size(); ++i) std::cout << item->m_Stack[i] << " "; std::cout << std::endl;
 			assert(m_Stack.size() > item->m_Stack.size());
 			top = m_Stack.back();
-			if (item->m_lHeads[top] == m_nNextWord) {
-#ifdef LINKS
-#ifdef LABELED
-				return action::encodeAction(action::CONNECT_LEFT,item->m_lLabels[top]);
-#else
-				return action::CONNECT_LEFT;
-#endif
-#endif
 
-#ifdef DEPENDENCIES
+			if (item->m_lHeads[top] == m_nNextWord) {
 #ifdef LABELED
 				return action::encodeAction(action::ARC_LEFT, item->m_lLabels[top]);
 #else
 				return action::ARC_LEFT;
 #endif
-#endif
-			} else if (item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD)
+			} else if (item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD) {
 				return action::encodeAction(action::REDUCE);
-			else
+			} else {
 				return action::encodeAction(action::POP_ROOT);
+			}
 		}
 		// the first case is that there is some words on the stack linking to nextword
 		if (m_Stack.size() > 0) {
 			top = m_Stack.back();
 			while (!(m_lHeads[top] == DEPENDENCY_LINK_NO_HEAD))
-				top = m_lHeads[top];
+			top = m_lHeads[top];
 			if (item->head(top) == m_nNextWord) { // if a local head deps on nextword first
 				if (top == m_Stack.back()) {
-
-#ifdef LINKS
-#ifdef LABELED
-					return action::encodeAction(action::CONNECT_LEFT, item->m_lLabels[top]);
-#else
-					return action::CONNECT_LEFT;
-#endif
-
-#else
-
-#ifdef DEPENDENCIES
 #ifdef LABELED
 					return action::encodeAction(action::ARC_LEFT, item->m_lLabels[top]);
 #else
 					return action::ARC_LEFT;
-#endif
-#endif
 #endif
 				} else {
 					return action::encodeAction(action::REDUCE);
@@ -924,38 +1067,139 @@ public:
 			}
 		}
 		// the second case is that no words on the stack links nextword, and nextword does not link to stack word
-		if (item->head(m_nNextWord) == DEPENDENCY_LINK_NO_HEAD || // the root or
+		if (item->head(m_nNextWord) == DEPENDENCY_LINK_NO_HEAD ||// the root or
 				item->head(m_nNextWord) > m_nNextWord) { // head on the right
 			return action::encodeAction(action::SHIFT);
 		}
 		// the last case is that the next words links to stack word
-		else {                                        // head on the left
+		else {                               // head on the left
 			assert(m_Stack.size() > 0);
 			top = m_Stack.back();
 			if (item->head(m_nNextWord) == top) { // the next word deps on stack top
-
-#ifdef LINKS
-#ifdef LABELED
-				return action::encodeAction(action::CONNECT_RIGHT, item->m_lLabels[m_nNextWord]);
-#else
-				return action::CONNECT_RIGHT;
-
-#endif
-#else
-
-#ifdef DEPENDENCIES
 #ifdef LABELED
 				return action::encodeAction(action::ARC_RIGHT, item->m_lLabels[m_nNextWord]);
 #else
 				return action::ARC_RIGHT;
 #endif
-#endif
-#endif
-			} else {                           // must depend on non-immediate h
+			} else {           // must depend on non-immediate h
 				return action::encodeAction(action::REDUCE);
 			}
 		}
 	}
+#endif
+
+
+
+
+#ifdef LINKS
+	unsigned FollowMove(const CStateItem *item) {
+		static int top;
+		// if the next words are same then don't check head because it might be a finished sentence (m_nNextWord==sentence.sz)
+		if (m_nNextWord == item->m_nNextWord) {
+			assert(m_Stack.size() > item->m_Stack.size());
+			top = m_Stack.back();
+
+			bool contains = false;
+			int containsIndex = -1;
+			for(unsigned i = 0; i < item->m_lHeads[top].size(); i++) {
+				if (item->m_lHeads[top][i] == m_nNextWord) {
+					contains = true;
+					containsIndex = i;
+					break;
+				}
+			}
+
+			if(contains) {
+#ifdef LABELED
+				return action::encodeAction(action::CONNECT_LEFT, item->m_lLabels[top][containsIndex]);
+#else
+				return action::CONNECT_LEFT;
+#endif
+			} else if (!item->m_lHeads[top].empty()) {
+				return action::encodeAction(action::REDUCE);
+			} else {
+				return action::encodeAction(action::POP_ROOT);
+			}
+		}
+
+
+
+		// the first case is that there is some words on the stack linking to nextword
+		if (m_Stack.size() > 0) {
+			top = m_Stack.back();
+
+			std::list<int> topList(m_lHeads[top].begin(), m_lHeads[top].end());
+
+			// Because we have multiheadedness, we have to do a more exhaustive search for m_nNextWord
+			// Breadth-First Search of the tops.
+			while(!topList.empty()){
+				top = topList.front();
+				topList.pop_front();
+
+				std::vector<int> tempTops = item->m_lHeads[top];
+				for(unsigned i = 0; i < tempTops.size(); i++){
+					int candidateTop = tempTops[i];
+
+					if(candidateTop == m_nNextWord){
+						if(top == m_Stack.back()){
+#ifdef LABELED
+							return action::encodeAction(action::CONNECT_LEFT, item->m_lLabels[top][i]);
+#else
+							return action::CONNECT_LEFT
+#endif
+						} else{
+							return action::encodeAction(action::REDUCE);
+						}
+					}
+					topList.push_back(tempTops[i]);
+				}
+			}
+		}
+
+
+		// the second case is that no words on the stack links nextword, and nextword does not link to stack word
+		const std::vector<int> heads_nextWord = item->head(m_nNextWord);
+		bool shouldShift = false;
+		if(heads_nextWord.empty()) { // the root or
+			shouldShift = true;
+		}
+		if(!shouldShift){
+			for(unsigned i = 0; i < heads_nextWord.size(); i++) {
+				if(heads_nextWord[i] > m_nNextWord) {  // head on the right
+					shouldShift = true;
+				}
+			}
+		}
+		if (shouldShift) {
+			return action::encodeAction(action::SHIFT);
+		}
+		// the last case is that the next words links to stack word
+		else {                               // head on the left
+			assert(m_Stack.size() > 0);
+			top = m_Stack.back();
+			bool shouldRightArc = false;
+			int rightArcIndex = -1;
+
+			for(unsigned i = 0; i < heads_nextWord.size(); i++){
+				if(heads_nextWord[i] == top){
+					shouldRightArc = true;
+					rightArcIndex = i;
+					break;
+				}
+			}
+
+			if (shouldRightArc) { // the next word deps on stack top
+#ifdef LABELED
+				return action::encodeAction(action::CONNECT_RIGHT, item->m_lLabels[m_nNextWord][rightArcIndex]);
+#else
+				return action::CONNECT_RIGHT;
+#endif
+			} else {           // must depend on non-immediate h
+				return action::encodeAction(action::REDUCE);
+			}
+		}
+	}
+#endif
 
 
 #ifdef DEPENDENCIES
@@ -975,28 +1219,35 @@ public:
 	}
 #endif
 
-
-
 #ifdef LINKS
 	void GenerateLinkTree(const CTwoStringVector &input, CDependencyLinkParse &output) const {
 		output.clear();
 
 		for(int i = 0; i < size(); ++i) {
+
+//			std::vector<int> heads = m_lHeads[i];
+//			heads.push_back(m_lHeads);
+
 #ifdef LABELED
-//TODO
 //			output.push_back( CLabeledDepenencyLinkTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i], CDependencyLabel(m_lLabels[i]).str()));
-			output.push_back( CLabeledDependencyLinkTreeNode( input.at(i).first , input.at(i).second , std::vector<int>(), std::vector<std::string>()));
+
+			std::vector<std::string> labels;
+			for(unsigned j = 0; j < m_lLabels[i].size(); j++) {
+				labels.push_back(CDependencyLabel(m_lLabels[i][j]).str());
+			}
+
+			output.push_back( CLabeledDependencyLinkTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i], labels));
 
 #else
 //TODO
 //			output.push_back( CDependencyLinkTreeNode(input.at(i).first, input.at(i).second, m_lHeads[i]));
-			output.push_back( CDependencyLinkTreeNode(input.at(i).first, input.at(i).second, std::vector<int>()));
+			output.push_back( CDependencyLinkTreeNode(input.at(i).first, input.at(i).second, m_lHeads[i]));
 #endif
 		}
 	}
 #endif
 
-
+#ifdef DEPENDENCIES
 	/** Edited by J
 	 *
 	 */
@@ -1007,8 +1258,9 @@ public:
 	bool hasParent(int index) const {
 		return m_lHeads_lookup(index) != -1 && m_lHeads_lookup(index) != 0;
 	}
+#endif
 
-	//locationCode: 0 = buffer. 1 = stack. 2 = reduced
+//locationCode: 0 = buffer. 1 = stack. 2 = reduced
 	bool childCheck(int index, int locationCode) const {
 		std::map<int, std::vector<int> >::const_iterator bufferWordLookup =
 				m_Children.find(index);
@@ -1136,7 +1388,7 @@ public:
 		}
 	}
 
-	// will make an arc between parent and child.
+// will make an arc between parent and child.
 	void makeArc(int parent, int child) {
 
 		//TODO delete all of the crossing arcs to maintain projectivity
@@ -1207,10 +1459,19 @@ public:
 
 		switch (code) {
 		case 1:
+
+#ifdef LINKS
+			cerr << "CONNECT LEFT\n";
+#else
 			cerr << "ARC LEFT" << "\n";
+#endif
 			break;
 		case 2:
+#ifdef LINKS
+			cerr << "CONNECT RIGHT\n";
+#else
 			cerr << "ARC RIGHT" << "\n";
+#endif
 			break;
 		case 3:
 			cerr << "SHIFT" << "\n";
@@ -1280,12 +1541,12 @@ public:
 		cerr << "---\n\n";
 	}
 
-	// Link Automata inline access operations.
+// Link Automata inline access operations.
 	inline const State* automataLookup(int const index) const {
 		return &linkAutomata[index];
 	}
 
-	// Takes a POS tag at a given index and converts it into an int. We then give it to the the link automata.
+// Takes a POS tag at a given index and converts it into an int. We then give it to the the link automata.
 	void setAutomataPOS(int index) {
 		static map<string, int> POSmap;
 		static int POSmapIndexValue = 1;
@@ -1310,9 +1571,25 @@ public:
 		linkAutomata[index].POStag = value;
 	}
 
+	void copyVector(std::vector<long unsigned int> v,
+			const std::vector<long unsigned int> item) {
+		v.clear();
+		for (unsigned i = 0; i < item.size(); i++) {
+			v.push_back(item[i]);
+		}
+	}
+
+	void copyVector(std::vector<int> v, const std::vector<int> item) {
+		v.clear();
+		for (unsigned i = 0; i < item.size(); i++) {
+			v.push_back(item[i]);
+		}
+	}
+
 //end
 
-};
+}
+;
 
 }
 // namespace depparser
